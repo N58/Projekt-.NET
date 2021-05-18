@@ -1,0 +1,14 @@
+﻿@page
+@model PortalKulinarny.Pages.AddRecipeModel
+@{
+}
+
+<form method="post">
+    <input type="text" asp-for="Recipe.Name" class="form-control" name="name" placeholder="Podaj nazwę" />
+    <span asp-validation-for="Recipe.Name" class="text-danger"></span><br />
+    <input type="text" asp-for="Recipe.Ingredients" class="form-control" name="ingredients" placeholder="Podaj listę składników" />
+    <span asp-validation-for="Recipe.Ingredients" class="text-danger"></span><br />
+    <input type="text" asp-for="Recipe.Description" class="form-control" name="description" placeholder="Podaj opis wykonania" />
+    <span asp-validation-for="Recipe.Description" class="text-danger"></span><br />
+    <button type="submit" class="btn btn-primary">Wyślij</button>
+</form>

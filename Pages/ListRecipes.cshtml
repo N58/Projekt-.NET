@@ -1,0 +1,14 @@
+﻿@page
+@model PortalKulinarny.Pages.ListRecipesModel
+@{
+}
+
+<div class="card-columns">
+    @foreach (var recipe in Model.Recipes)
+    {
+        <div>@Html.DisplayNameFor(model => model.Recipes[0].Name): @recipe.Name</div><br />
+        <div>@Html.DisplayNameFor(model => model.Recipes[0].Ingredients): @recipe.Ingredients</div><br />
+        <div>@Html.DisplayNameFor(model => model.Recipes[0].Description): @recipe.Description</div><br />
+        <div>@Html.DisplayNameFor(model => model.Recipes[0].DateTime): @recipe.DateTime</div>
+    }
+</div>

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PortalKulinarny.Data;
+using PortalKulinarny.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,12 @@ namespace PortalKulinarny
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDbContext<RecipeDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
             services.AddRazorPages();
+            services.AddTransient<DatabaseRecipesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

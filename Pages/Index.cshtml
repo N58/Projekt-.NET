@@ -4,7 +4,12 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@foreach (var recipe in Model.Recipes)
+{
+<p>
+    <div>@Html.DisplayNameFor(model => model.Recipes.First().Name): @recipe.Name</div>
+    <div>@Html.DisplayNameFor(model => model.Recipes.First().Ingredients): @recipe.Ingredients</div>
+    <div>@Html.DisplayNameFor(model => model.Recipes.First().Description): @recipe.Description</div>
+    <div>@Html.DisplayNameFor(model => model.Recipes.First().DateTime): @recipe.DateTime</div>
+</p>
+}
