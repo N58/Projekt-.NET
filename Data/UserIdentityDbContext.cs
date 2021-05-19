@@ -2,13 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using PortalKulinarny.Areas.Identity.Data;
 using System.Text;
 
 namespace PortalKulinarny.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class UserIdentityDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public UserIdentityDbContext(DbContextOptions<UserIdentityDbContext> options)
             : base(options)
         {
         }
