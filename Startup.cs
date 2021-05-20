@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PortalKulinarny.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 
 namespace PortalKulinarny
 {
@@ -38,8 +40,11 @@ namespace PortalKulinarny
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-            services.AddRazorPages();
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthenticationMessageOptions>(Configuration);
             services.AddTransient<DatabaseRecipesService>();
+
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
