@@ -21,7 +21,7 @@ namespace PortalKulinarny.Areas.Identity.Data
         [PersonalData]
         [MaxLength(20)]
         [Column(TypeName = "varchar(20)")]
-        public string SecondName { get; set; }
+        public string LastName { get; set; }
 
     }
 }
