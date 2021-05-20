@@ -12,9 +12,8 @@ namespace PortalKulinarny.Areas.Identity.Data
     public class ApplicationUser : IdentityUser
     {
         [Required]
-        [MaxLength(20)]
-        [Column(TypeName = "varchar(20)")]
-        public string Name { get; set; }
+        [Column(TypeName = "DateTime2")]
+        public DateTime DoJ { get; set; }
         [PersonalData]
         [MaxLength(20)]
         [Column(TypeName = "varchar(20)")]
