@@ -11,7 +11,6 @@ namespace PortalKulinarny.Areas.Identity.Data
 {
     public class ApplicationUser : IdentityUser
     {
-        [Required]
         [Column(TypeName = "DateTime2")]
         public DateTime DoJ { get; set; }
         [PersonalData]

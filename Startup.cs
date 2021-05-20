@@ -40,8 +40,8 @@ namespace PortalKulinarny
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-            services.AddTransient<IEmailSender, EmailSender>();
-            services.Configure<AuthenticationMessageOptions>(Configuration);
+            //services.AddTransient<IEmailSender, EmailSender>();
+            //services.Configure<AuthenticationMessageOptions>(Configuration);
             services.AddTransient<DatabaseRecipesService>();
 
             services.AddRazorPages();

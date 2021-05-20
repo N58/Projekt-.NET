@@ -47,7 +47,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [StringLength(20, ErrorMessage = "The {0} must be at max {1} characters long.")]
+            [StringLength(20)]
             [Display(Name = "Nazwa Użytkownika")]
             public string UserName { get; set; }
             [Required]
