@@ -10,14 +10,14 @@ using PortalKulinarny.Data;
 namespace PortalKulinarny.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    [Migration("20210518164638_RecipeDbContextModel")]
-    partial class RecipeDbContextModel
+    [Migration("20210520205952_Recipes")]
+    partial class Recipes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.11")
+                .HasAnnotation("ProductVersion", "3.1.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -35,10 +35,6 @@ namespace PortalKulinarny.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Ingredients")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -48,7 +44,7 @@ namespace PortalKulinarny.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Recipes");
+                    b.ToTable("Recipe");
                 });
 #pragma warning restore 612, 618
         }

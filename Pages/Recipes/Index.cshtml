@@ -1,11 +1,11 @@
 ﻿@page
 @model PortalKulinarny.Pages.Recipes.IndexModel
-
+@using System.Security.Claims;
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Przepisy</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -14,13 +14,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe[0].UserId)
+                Użytkownik
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Recipe[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipe[0].Ingredients)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Recipe[0].Description)
@@ -32,29 +29,33 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Recipe) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ingredients)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateTime)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Recipe)
+        {
+            <tr>
+                <td>
+                    @await Model.GetUserName(item.UserId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTime)
+                </td>
+                <td>
+                    @if (item.UserId != null && item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    | <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    @if (item.UserId != null && item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

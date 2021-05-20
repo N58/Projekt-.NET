@@ -37,9 +37,10 @@ namespace PortalKulinarny
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<UserIdentityDbContext>();
             services.AddDbContext<RecipeDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<IngredientsDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             //services.AddTransient<IEmailSender, EmailSender>();
             //services.Configure<AuthenticationMessageOptions>(Configuration);
             services.AddTransient<DatabaseRecipesService>();

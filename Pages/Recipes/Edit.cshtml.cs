@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,11 +13,12 @@ using PortalKulinarny.Models;
 
 namespace PortalKulinarny.Pages.Recipes
 {
+    [Authorize]
     public class EditModel : PageModel
     {
-        private readonly PortalKulinarny.Data.RecipeDbContext _context;
+        private readonly RecipeDbContext _context;
 
-        public EditModel(PortalKulinarny.Data.RecipeDbContext context)
+        public EditModel(RecipeDbContext context)
         {
             _context = context;
         }
@@ -30,7 +33,10 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _context.Recipes.FirstOrDefaultAsync(m => m.Id == id);
+            Recipe = await _context.Recipe.FirstOrDefaultAsync(m => m.Id == id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (Recipe.UserId == null || Recipe.UserId != userId)
+                return RedirectToPage("./Index");
 
             if (Recipe == null)
             {
@@ -71,7 +77,7 @@ namespace PortalKulinarny.Pages.Recipes
 
         private bool RecipeExists(int id)
         {
-            return _context.Recipes.Any(e => e.Id == id);
+            return _context.Recipe.Any(e => e.Id == id);
         }
     }
 }

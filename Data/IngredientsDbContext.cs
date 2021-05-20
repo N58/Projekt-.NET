@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace PortalKulinarny.Data
 {
-    public class RecipeDbContext : DbContext
+    public class IngredientsDbContext : DbContext
     {
-        public DbSet<Recipe> Recipe { get; set; }
+        public DbSet<Ingredients> Ingredients { get; set; }
 
-        public RecipeDbContext(DbContextOptions<RecipeDbContext> options) : base(options) { }
+        public IngredientsDbContext(DbContextOptions options) : base(options) { }
     }
 }

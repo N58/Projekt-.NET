@@ -15,7 +15,7 @@ namespace PortalKulinarny.Services
 
         public IEnumerable<Recipe> GetRecipes()
         {
-            return _context.Recipes;
+            return _context.Recipe;
         }
     }
 }
