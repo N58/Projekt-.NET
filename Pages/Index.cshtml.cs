@@ -14,29 +14,36 @@ namespace PortalKulinarny.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        [Required(ErrorMessage = "Pusto >:(")]
         [Display(Name = "Szukajka")]
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public string Search { get; set; }
-        public DatabaseRecipesService RecipeService;
+        public DatabaseRecipesService _recipeService;
         public IEnumerable<Recipe> Recipes { get; private set; }
 
-        public IndexModel(ILogger<IndexModel> logger, DatabaseRecipesService productService)
+        public IndexModel(ILogger<IndexModel> logger, DatabaseRecipesService recipeService)
         {
             _logger = logger;
-            RecipeService = productService;
+            _recipeService = recipeService;
         }
         public IActionResult OnPost()
         {
-            if (!String.IsNullOrWhiteSpace(Search))
+            if (ModelState.IsValid)
             {
-                return RedirectToPage("./Recipes/Index/", new { Search = Search });
+                return RedirectToPage("./Recipes/Index", new { Search = Search });
             }
+            Recipes = GetRecipes();
             return Page();
         }
 
         public void OnGet()
         {
-            Recipes = RecipeService.GetRecipes();
+            Recipes = GetRecipes();
+        }
+
+        public IEnumerable<Recipe> GetRecipes()
+        {
+            return _recipeService.GetRecipes();
         }
     }
 }
