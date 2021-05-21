@@ -4,14 +4,30 @@
     ViewData["Title"] = "Home page";
 }
 
+
+
 <a class="btn btn-success" role="button" aria-pressed="true" asp-page="/Recipes/Create">Dodaj przepis</a>
-<input style="margin-top: 20px; width: 400px; margin-left: auto; margin-right: auto;" class="form-control" placeholder="Szukaj" />
+
+<div class="text-center">
+    <h1 class="display-4">Portal kulinarny</h1>
+    <br />
+    <form method="post">
+        <div class="container">
+            <label asp-for="Search"></label>
+            <input asp-for="Search" class="form-control w-25" style="margin:auto;" />
+            <p class="font-weight-bold">
+                <span asp-validation-for="Search" class="text-danger" font></span>
+            </p>
+        </div>
+        <button type="submit" class="btn btn-primary">Wyszukaj</button>
+    </form>
+</div>
 
 @foreach (var recipe in Model.Recipes)
 {
-<p>
-    <div>@Html.DisplayNameFor(model => model.Recipes.First().Name): @recipe.Name</div>
-    <div>@Html.DisplayNameFor(model => model.Recipes.First().Description): @recipe.Description</div>
-    <div>@Html.DisplayNameFor(model => model.Recipes.First().DateTime): @recipe.DateTime</div>
-</p>
+    <p>
+        <div>@Html.DisplayNameFor(model => model.Recipes.First().Name): @recipe.Name</div>
+        <div>@Html.DisplayNameFor(model => model.Recipes.First().Description): @recipe.Description</div>
+        <div>@Html.DisplayNameFor(model => model.Recipes.First().DateTime): @recipe.DateTime</div>
+    </p>
 }

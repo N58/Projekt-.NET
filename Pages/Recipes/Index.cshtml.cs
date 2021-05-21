@@ -16,6 +16,8 @@ namespace PortalKulinarny.Pages.Recipes
     {
         private readonly RecipeDbContext _contextRecipes;
         private readonly UserManager<ApplicationUser> _userManager;
+        [BindProperty(SupportsGet = true)]
+        public string Search { get; set; }
 
         public IndexModel(RecipeDbContext contextRecipes, UserManager<ApplicationUser> userManager)
         {
@@ -27,7 +29,14 @@ namespace PortalKulinarny.Pages.Recipes
 
         public async Task OnGetAsync()
         {
-            Recipe = await _contextRecipes.Recipe.ToListAsync();
+            var recipes = from n in _contextRecipes.Recipe
+                          select n;
+            if (!string.IsNullOrWhiteSpace(Search))
+            {
+                recipes = recipes.Where(s => s.Name.Contains(Search));
+            }
+            
+            Recipe = await recipes.ToListAsync();
         }
 
         public async Task<string> GetUserName(string userId)
