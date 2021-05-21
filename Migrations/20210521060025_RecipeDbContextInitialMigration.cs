@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PortalKulinarny.Migrations
 {
-    public partial class Recipes : Migration
+    public partial class RecipeDbContextInitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

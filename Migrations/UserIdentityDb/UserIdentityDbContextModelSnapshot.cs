@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PortalKulinarny.Data;
 
-namespace PortalKulinarny.Data.Migrations
+namespace PortalKulinarny.Migrations.UserIdentityDb
 {
     [DbContext(typeof(UserIdentityDbContext))]
-    [Migration("20210520172526_UserIdentityDbContextModelSnapshot4")]
-    partial class UserIdentityDbContextModelSnapshot4
+    partial class UserIdentityDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

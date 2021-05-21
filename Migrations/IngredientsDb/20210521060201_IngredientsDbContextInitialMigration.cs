@@ -2,7 +2,7 @@
 
 namespace PortalKulinarny.Migrations.IngredientsDb
 {
-    public partial class Ingredients : Migration
+    public partial class IngredientsDbContextInitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

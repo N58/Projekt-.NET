@@ -10,8 +10,8 @@ using PortalKulinarny.Data;
 namespace PortalKulinarny.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    [Migration("20210520205952_Recipes")]
-    partial class Recipes
+    [Migration("20210521060025_RecipeDbContextInitialMigration")]
+    partial class RecipeDbContextInitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
