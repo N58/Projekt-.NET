@@ -33,7 +33,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _context.Recipe.FirstOrDefaultAsync(m => m.Id == id);
+            Recipe = await _context.Recipe.FindAsync(id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (Recipe.UserId == null || Recipe.UserId != userId)
                 return RedirectToPage("./Index");
@@ -47,14 +47,19 @@ namespace PortalKulinarny.Pages.Recipes
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int id)
         {
+            var recipeToUpdate = await _context.Recipe.FindAsync(id);
+            
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Recipe).State = EntityState.Modified;
+            if(await TryUpdateModelAsync<Recipe>(
+                recipeToUpdate,
+                "Recipe",
+                r => r.Name, r => r.Description))
 
             try
             {
