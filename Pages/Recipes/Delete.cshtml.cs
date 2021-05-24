@@ -15,9 +15,9 @@ namespace PortalKulinarny.Pages.Recipes
     [Authorize]
     public class DeleteModel : PageModel
     {
-        private readonly PortalKulinarny.Data.RecipeDbContext _context;
+        private readonly RecipeDbContext _context;
 
-        public DeleteModel(PortalKulinarny.Data.RecipeDbContext context)
+        public DeleteModel(RecipeDbContext context)
         {
             _context = context;
         }
@@ -32,7 +32,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _context.Recipe.FirstOrDefaultAsync(m => m.Id == id);
+            Recipe = await _context.Recipe.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
 
             if (Recipe == null)
             {
@@ -48,17 +48,19 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _context.Recipe.FindAsync(id);
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (Recipe.UserId == null || Recipe.UserId != userId)
-                return RedirectToPage("./Index");
+            var recipe = await _context.Recipe.FindAsync(id);
 
-            if (Recipe != null)
+            if (recipe == null)
             {
-                _context.Recipe.Remove(Recipe);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (recipe.UserId == null || recipe.UserId != userId)
+                return RedirectToPage("./Index");
+
+            _context.Recipe.Remove(recipe);
+            await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
         }
     }

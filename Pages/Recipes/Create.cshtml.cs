@@ -16,13 +16,11 @@ namespace PortalKulinarny.Pages.Recipes
     [Authorize]
     public class CreateModel : PageModel
     {
-        private readonly RecipeDbContext _contextRecipes;
-        private readonly IngredientsDbContext _contextIngredients;
+        private readonly RecipeDbContext _context;
 
-        public CreateModel(RecipeDbContext contextRecipes, IngredientsDbContext contextIngredients)
+        public CreateModel(RecipeDbContext context)
         {
-            _contextRecipes = contextRecipes;
-            _contextIngredients = contextIngredients;
+            _context = context;
         }
 
         public IActionResult OnGet()
@@ -43,25 +41,29 @@ namespace PortalKulinarny.Pages.Recipes
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 Recipe.UserId = userId;
                 Recipe.DateTime = DateTime.Now;
+                Recipe.ModificationDateTime = DateTime.Now;
 
-                // Add to database
-                _contextRecipes.Recipe.Add(Recipe);
-                await _contextRecipes.SaveChangesAsync();
-
-                var recipeId = Recipe.Id;
                 var ingredient = new Ingredients()
                 {
-                    Name = "test",
-                    RecipeFK = recipeId
+                    Name = "test"
                 };
                 var ingredient2 = new Ingredients()
                 {
-                    Name = "test2",
-                    RecipeFK = recipeId
+                    Name = "test2"
                 };
-                _contextIngredients.Ingredients.Add(ingredient);
-                _contextIngredients.Ingredients.Add(ingredient2);
-                await _contextIngredients.SaveChangesAsync();
+                Recipe.Ingredients = new List<Ingredients>();
+                Recipe.Ingredients.Add(ingredient);
+                Recipe.Ingredients.Add(ingredient2);
+
+                Recipe.Likes = new List<Likes>();
+
+                // Add to database
+                if (await TryUpdateModelAsync<Recipe>(Recipe, "recipe", r => r.UserId, r => r.Name, r => r.Description, r => r.DateTime, r => r.ModificationDateTime, r => r.Ingredients, r => r.Likes))
+                {
+                    _context.Recipe.Add(Recipe);
+                    await _context.SaveChangesAsync();
+                    return RedirectToPage("./Index");
+                }
 
                 return RedirectToPage("./Index");
             }

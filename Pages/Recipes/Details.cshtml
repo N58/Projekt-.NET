@@ -12,7 +12,7 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            Użytkownik
+            @Html.DisplayNameFor(model => model.Recipe.UserId)
         </dt>
         <dd class="col-sm-10">
             @await Model.GetUserName(Model.Recipe.UserId)
@@ -24,12 +24,21 @@
             @Html.DisplayFor(model => model.Recipe.Name)
         </dd>
         <dt class="col-sm-2">
-            Składniki
+            @Html.DisplayNameFor(model => model.Recipe.Likes)
+        </dt>
+        <dt class="col-sm-10">
+            @if (Model.Recipe.Likes != null)
+                @Html.DisplayFor(model => model.Recipe.Likes.Count)
+            else
+                { @Html.Display("0") }
+        </dt>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Recipe.Ingredients)
         </dt>
         <dd class="col-sm-10">
-            @foreach (var ingredient in Model.Ingredients)
+            @foreach (var ingredient in Model.Recipe.Ingredients)
             {
-            <span>@ingredient.Name, </span>
+                <span>@ingredient.Name, </span>
             }
         </dd>
         <dt class="col-sm-2">
@@ -43,6 +52,12 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Recipe.DateTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Recipe.ModificationDateTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Recipe.ModificationDateTime)
         </dd>
     </dl>
 </div>

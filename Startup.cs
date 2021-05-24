@@ -38,8 +38,6 @@ namespace PortalKulinarny
                 .AddEntityFrameworkStores<UserIdentityDbContext>();
             services.AddDbContext<RecipeDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<IngredientsDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.Configure<IdentityOptions>(options =>
             {

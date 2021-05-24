@@ -11,6 +11,7 @@ namespace PortalKulinarny.Models
     {
         public int Id { get; set; }
 
+        [Display(Name = "Użytkownik")]
         public string UserId { get; set; }
 
         [Required(ErrorMessage = "Musisz podać nazwę przepisu!")]
@@ -23,7 +24,12 @@ namespace PortalKulinarny.Models
 
         [Display(Name = "Data")]
         public DateTime DateTime { get; set; }
+        [Display(Name = "Data modyfikacji")]
+        public DateTime ModificationDateTime { get; set; }
 
-        
+        [Display(Name = "Składniki")]
+        public ICollection<Ingredients> Ingredients { get; set; }
+        [Display(Name = "Polubienia")]
+        public ICollection<Likes> Likes { get; set; }
     }
 }

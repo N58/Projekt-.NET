@@ -14,19 +14,16 @@ namespace PortalKulinarny.Pages.Recipes
 {
     public class DetailsModel : PageModel
     {
-        private readonly RecipeDbContext _contextRecipes;
-        private readonly IngredientsDbContext _contextIngredients;
+        private readonly RecipeDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public DetailsModel(RecipeDbContext contextRecipes, IngredientsDbContext contextIngredients, UserManager<ApplicationUser> userManager)
+        public DetailsModel(RecipeDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _contextRecipes = contextRecipes;
-            _contextIngredients = contextIngredients;
+            _context = context;
             _userManager = userManager;
         }
 
         public Recipe Recipe { get; set; }
-        public List<Ingredients> Ingredients { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -35,14 +32,13 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _contextRecipes.Recipe.FirstOrDefaultAsync(m => m.Id == id);
+            Recipe = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Likes).AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
 
             if (Recipe == null)
             {
                 return NotFound();
             }
 
-            Ingredients = _contextIngredients.Ingredients.Where(m => m.RecipeFK == Recipe.Id).ToList();
             return Page();
         }
 

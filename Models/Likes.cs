@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PortalKulinarny.Models
 {
-    public class Ingredients
+    public class Likes
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        [Key]
+        public string UserId { get; set; }
 
+        [Key]
         public int RecipeID { get; set; }
         public Recipe Recipe { get; set; }
     }

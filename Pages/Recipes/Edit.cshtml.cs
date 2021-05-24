@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -34,14 +35,16 @@ namespace PortalKulinarny.Pages.Recipes
             }
 
             Recipe = await _context.Recipe.FindAsync(id);
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (Recipe.UserId == null || Recipe.UserId != userId)
-                return RedirectToPage("./Index");
 
             if (Recipe == null)
             {
                 return NotFound();
             }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (Recipe.UserId == null || Recipe.UserId != userId)
+                return RedirectToPage("./Index");
+
             return Page();
         }
 
@@ -50,39 +53,22 @@ namespace PortalKulinarny.Pages.Recipes
         public async Task<IActionResult> OnPostAsync(int id)
         {
             var recipeToUpdate = await _context.Recipe.FindAsync(id);
-            
-            if (!ModelState.IsValid)
+
+            if (recipeToUpdate == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            if(await TryUpdateModelAsync<Recipe>(
-                recipeToUpdate,
-                "Recipe",
-                r => r.Name, r => r.Description))
+            recipeToUpdate.ModificationDateTime = DateTime.Now;
 
-            try
+            if (await TryUpdateModelAsync<Recipe>(recipeToUpdate, "Recipe",
+                r => r.Name, r => r.Description, r => r.ModificationDateTime))
             {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RecipeExists(Recipe.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool RecipeExists(int id)
-        {
-            return _context.Recipe.Any(e => e.Id == id);
         }
     }
 }
