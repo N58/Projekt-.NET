@@ -45,30 +45,35 @@ namespace PortalKulinarny.Pages.Recipes
 
         public async Task<IActionResult> OnPostAsync(int id)
         {
-            var recipeToUpdate = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Likes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            var recipeToUpdate = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Likes).FirstOrDefaultAsync(m => m.RecipeId == id);
             if (recipeToUpdate == null)
             {
                 return NotFound();
             }
 
-            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userID == null || recipeToUpdate.UserId == userID)
+            var userToUpdate = await _context.Users.Include(u => u.Likes).FirstOrDefaultAsync(u => u.Id == userID);
+            if (userToUpdate == null || recipeToUpdate.UserId == userID)
             {
                 return NotFound();
             }
 
             var like = await _context.Likes.FirstOrDefaultAsync(l => l.UserId == userID && l.RecipeId == recipeToUpdate.RecipeId);
 
-            Recipe = await _context.Recipe.Include(r => r.Likes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
+            //Recipe = await _context.Recipe.Include(r => r.Likes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
+
 
             if (like == null)
             {
                 var newLike = new Like()
                 {
-                    UserId = userID
+                    Recipe = recipeToUpdate, User = userToUpdate
                 };
-                Recipe.Likes.Add(newLike);
-                if (await TryUpdateModelAsync<Recipe>(recipeToUpdate, "Recipe", r => r.Likes))
+                recipeToUpdate.Likes.Add(newLike);
+                //userToUpdate.Likes.Add(newLike);
+
+                if (await TryUpdateModelAsync<Recipe>(recipeToUpdate) /*&& await TryUpdateModelAsync<ApplicationUser>(userToUpdate)*/)
                 {
                     await _context.SaveChangesAsync();
                     return Page();
