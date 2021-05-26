@@ -8,15 +8,20 @@ using PortalKulinarny.Models;
 
 namespace PortalKulinarny.Data
 {
-    public class UserIdentityDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public UserIdentityDbContext(DbContextOptions<UserIdentityDbContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
+        public DbSet<Recipe> Recipe { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<Like> Likes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Like>()
                 .HasKey(l => new { l.UserId, l.RecipeId });
             modelBuilder.Entity<Like>()

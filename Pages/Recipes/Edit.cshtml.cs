@@ -17,9 +17,9 @@ namespace PortalKulinarny.Pages.Recipes
     [Authorize]
     public class EditModel : PageModel
     {
-        private readonly RecipeDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public EditModel(RecipeDbContext context)
+        public EditModel(ApplicationDbContext context)
         {
             _context = context;
         }

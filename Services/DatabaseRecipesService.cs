@@ -6,9 +6,9 @@ namespace PortalKulinarny.Services
 {
     public class DatabaseRecipesService
     {
-        private readonly RecipeDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DatabaseRecipesService(RecipeDbContext context)
+        public DatabaseRecipesService(ApplicationDbContext context)
         {
             _context = context;
         }

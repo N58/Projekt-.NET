@@ -15,10 +15,10 @@ namespace PortalKulinarny.Pages.Recipes
 {
     public class DetailsModel : PageModel
     {
-        private readonly RecipeDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public DetailsModel(RecipeDbContext context, UserManager<ApplicationUser> userManager)
+        public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;

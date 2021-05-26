@@ -16,9 +16,9 @@ namespace PortalKulinarny.Pages.Recipes
     [Authorize]
     public class CreateModel : PageModel
     {
-        private readonly RecipeDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public CreateModel(RecipeDbContext context)
+        public CreateModel(ApplicationDbContext context)
         {
             _context = context;
         }

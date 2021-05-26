@@ -22,6 +22,7 @@ namespace PortalKulinarny.Areas.Identity.Data
         [MaxLength(20)]
         [Column(TypeName = "varchar(20)")]
         public string LastName { get; set; }
+        public ICollection<Recipe> Recipes { get; set; }
         public ICollection<Like> Likes { get; set; }
     }
 }

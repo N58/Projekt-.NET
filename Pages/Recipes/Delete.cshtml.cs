@@ -15,9 +15,9 @@ namespace PortalKulinarny.Pages.Recipes
     [Authorize]
     public class DeleteModel : PageModel
     {
-        private readonly RecipeDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DeleteModel(RecipeDbContext context)
+        public DeleteModel(ApplicationDbContext context)
         {
             _context = context;
         }
