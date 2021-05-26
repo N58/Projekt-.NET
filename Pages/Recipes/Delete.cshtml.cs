@@ -32,7 +32,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _context.Recipe.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+            Recipe = await _context.Recipe.AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
 
             if (Recipe == null)
             {

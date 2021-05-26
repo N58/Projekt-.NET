@@ -29,8 +29,8 @@
         <dt class="col-sm-10">
             @if (Model.Recipe.Likes != null)
                 @Html.DisplayFor(model => model.Recipe.Likes.Count)
-            else
-                { @Html.Display("0") }
+                else
+                { @Html.Display("0")}
         </dt>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Recipe.Ingredients)
@@ -61,7 +61,12 @@
         </dd>
     </dl>
 </div>
+<form method="post">
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Recipe.Id">Edit</a> |
+    <a asp-page="./Edit" asp-route-id="@Model.Recipe.RecipeId">Edit</a> |
     <a asp-page="./Index">Back to List</a>
 </div>

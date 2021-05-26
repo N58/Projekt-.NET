@@ -30,7 +30,7 @@ namespace PortalKulinarny.Pages.Recipes
 
         [BindProperty]
         public Recipe Recipe { get; set; }
-        public List<Ingredients> IngredientsList { get; set; }
+        public List<Ingredient> IngredientsList { get; set; }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
@@ -43,19 +43,19 @@ namespace PortalKulinarny.Pages.Recipes
                 Recipe.DateTime = DateTime.Now;
                 Recipe.ModificationDateTime = DateTime.Now;
 
-                var ingredient = new Ingredients()
+                var ingredient = new Ingredient()
                 {
                     Name = "test"
                 };
-                var ingredient2 = new Ingredients()
+                var ingredient2 = new Ingredient()
                 {
                     Name = "test2"
                 };
-                Recipe.Ingredients = new List<Ingredients>();
+                Recipe.Ingredients = new List<Ingredient>();
                 Recipe.Ingredients.Add(ingredient);
                 Recipe.Ingredients.Add(ingredient2);
 
-                Recipe.Likes = new List<Likes>();
+                Recipe.Likes = new List<Like>();
 
                 // Add to database
                 if (await TryUpdateModelAsync<Recipe>(Recipe, "recipe", r => r.UserId, r => r.Name, r => r.Description, r => r.DateTime, r => r.ModificationDateTime, r => r.Ingredients, r => r.Likes))

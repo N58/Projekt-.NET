@@ -10,15 +10,23 @@ namespace PortalKulinarny.Data
     public class RecipeDbContext : DbContext
     {
         public DbSet<Recipe> Recipe { get; set; }
-        public DbSet<Ingredients> Ingredients { get; set; }
-        public DbSet<Likes> Likes { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
         public RecipeDbContext(DbContextOptions<RecipeDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Likes>()
-                .HasKey(c => new { c.UserId, c.RecipeID });
+            modelBuilder.Entity<Like>()
+                .HasKey(l => new { l.UserId, l.RecipeId });
+            modelBuilder.Entity<Like>()
+                .HasOne(l => l.Recipe)
+                .WithMany(l => l.Likes)
+                .HasForeignKey(l => l.RecipeId);
+            modelBuilder.Entity<Like>()
+                .HasOne(l => l.User)
+                .WithMany(l => l.Likes)
+                .HasForeignKey(l => l.UserId);
         }
     }
 }

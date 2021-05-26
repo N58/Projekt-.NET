@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using PortalKulinarny.Models;
 
 
 namespace PortalKulinarny.Areas.Identity.Data
@@ -21,6 +22,6 @@ namespace PortalKulinarny.Areas.Identity.Data
         [MaxLength(20)]
         [Column(TypeName = "varchar(20)")]
         public string LastName { get; set; }
-
+        public ICollection<Like> Likes { get; set; }
     }
 }

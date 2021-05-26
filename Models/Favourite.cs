@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PortalKulinarny.Models
 {
-    public class Favourites
+    public class Favourite
     {
         public string UserID { get; set; }
         public int RecipeID { get; set; }

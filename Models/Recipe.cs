@@ -9,7 +9,7 @@ namespace PortalKulinarny.Models
 {
     public class Recipe
     {
-        public int Id { get; set; }
+        public int RecipeId { get; set; }
 
         [Display(Name = "Użytkownik")]
         public string UserId { get; set; }
@@ -28,8 +28,8 @@ namespace PortalKulinarny.Models
         public DateTime ModificationDateTime { get; set; }
 
         [Display(Name = "Składniki")]
-        public ICollection<Ingredients> Ingredients { get; set; }
+        public ICollection<Ingredient> Ingredients { get; set; }
         [Display(Name = "Polubienia")]
-        public ICollection<Likes> Likes { get; set; }
+        public ICollection<Like> Likes { get; set; }
     }
 }
