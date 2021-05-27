@@ -10,7 +10,7 @@ using PortalKulinarny.Data;
 namespace PortalKulinarny.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210526092722_initialSchema")]
+    [Migration("20210527092439_initialSchema")]
     partial class initialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -232,6 +232,21 @@ namespace PortalKulinarny.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("PortalKulinarny.Models.Favourite", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RecipeId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("Favourite");
+                });
+
             modelBuilder.Entity("PortalKulinarny.Models.Ingredient", b =>
                 {
                     b.Property<int>("Id")
@@ -250,21 +265,6 @@ namespace PortalKulinarny.Migrations
                     b.HasIndex("RecipeID");
 
                     b.ToTable("Ingredients");
-                });
-
-            modelBuilder.Entity("PortalKulinarny.Models.Like", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "RecipeId");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("PortalKulinarny.Models.Recipe", b =>
@@ -288,6 +288,9 @@ namespace PortalKulinarny.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -296,6 +299,24 @@ namespace PortalKulinarny.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Recipe");
+                });
+
+            modelBuilder.Entity("PortalKulinarny.Models.Vote", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("Value")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("UserId", "RecipeId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -349,6 +370,21 @@ namespace PortalKulinarny.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PortalKulinarny.Models.Favourite", b =>
+                {
+                    b.HasOne("PortalKulinarny.Models.Recipe", "Recipe")
+                        .WithMany("Favourites")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PortalKulinarny.Areas.Identity.Data.ApplicationUser", "User")
+                        .WithMany("Favourites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PortalKulinarny.Models.Ingredient", b =>
                 {
                     b.HasOne("PortalKulinarny.Models.Recipe", "Recipe")
@@ -358,10 +394,17 @@ namespace PortalKulinarny.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PortalKulinarny.Models.Like", b =>
+            modelBuilder.Entity("PortalKulinarny.Models.Recipe", b =>
+                {
+                    b.HasOne("PortalKulinarny.Areas.Identity.Data.ApplicationUser", "User")
+                        .WithMany("Recipes")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("PortalKulinarny.Models.Vote", b =>
                 {
                     b.HasOne("PortalKulinarny.Models.Recipe", "Recipe")
-                        .WithMany("Likes")
+                        .WithMany("Votes")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -371,13 +414,6 @@ namespace PortalKulinarny.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("PortalKulinarny.Models.Recipe", b =>
-                {
-                    b.HasOne("PortalKulinarny.Areas.Identity.Data.ApplicationUser", "User")
-                        .WithMany("Recipes")
-                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

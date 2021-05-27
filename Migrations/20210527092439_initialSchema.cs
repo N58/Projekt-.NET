@@ -165,6 +165,7 @@ namespace PortalKulinarny.Migrations
                     Description = table.Column<string>(nullable: false),
                     DateTime = table.Column<DateTime>(nullable: false),
                     ModificationDateTime = table.Column<DateTime>(nullable: false),
+                    Rating = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -176,6 +177,30 @@ namespace PortalKulinarny.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Favourite",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    RecipeId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favourite", x => new { x.UserId, x.RecipeId });
+                    table.ForeignKey(
+                        name: "FK_Favourite_Recipe_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipe",
+                        principalColumn: "RecipeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Favourite_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -203,7 +228,8 @@ namespace PortalKulinarny.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
-                    RecipeId = table.Column<int>(nullable: false)
+                    RecipeId = table.Column<int>(nullable: false),
+                    Value = table.Column<byte>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -262,6 +288,11 @@ namespace PortalKulinarny.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Favourite_RecipeId",
+                table: "Favourite",
+                column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ingredients_RecipeID",
                 table: "Ingredients",
                 column: "RecipeID");
@@ -293,6 +324,9 @@ namespace PortalKulinarny.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Favourite");
 
             migrationBuilder.DropTable(
                 name: "Ingredients");

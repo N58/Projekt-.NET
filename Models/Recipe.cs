@@ -21,16 +21,16 @@ namespace PortalKulinarny.Models
 
         [Display(Name = "Data")]
         public DateTime DateTime { get; set; }
-        [Display(Name = "Data modyfikacji")]
+        [Display(Name = "Data ostatniej modyfikacji")]
         public DateTime ModificationDateTime { get; set; }
-
+        [Display(Name = "Ocena")]
+        public int Rating { get; set; }
         [Display(Name = "Składniki")]
         public ICollection<Ingredient> Ingredients { get; set; }
         public ApplicationUser User { get; set;}
         [Display(Name = "Użytkownik")]
         public string UserId { get; set; }
-
-        [Display(Name = "Polubienia")]
-        public ICollection<Like> Likes { get; set; }
+        public ICollection<Favourite> Favourites { get; set; }
+        public ICollection<Vote> Votes { get; set; }
     }
 }

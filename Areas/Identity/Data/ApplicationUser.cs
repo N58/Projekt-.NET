@@ -23,6 +23,7 @@ namespace PortalKulinarny.Areas.Identity.Data
         [Column(TypeName = "varchar(20)")]
         public string LastName { get; set; }
         public ICollection<Recipe> Recipes { get; set; }
-        public ICollection<Like> Likes { get; set; }
+        public ICollection<Favourite> Favourites { get; set; }
+        public ICollection<Vote> Likes { get; set; }
     }
 }

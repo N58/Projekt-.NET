@@ -8,9 +8,9 @@ namespace PortalKulinarny.Models
 {
     public class Favourite
     {
-        public string UserID { get; set; }
+        public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        public int RecipeID { get; set; }
+        public int RecipeId { get; set; }
         public Recipe Recipe { get; set; }
     }
 }

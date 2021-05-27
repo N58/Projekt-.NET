@@ -17,21 +17,33 @@ namespace PortalKulinarny.Data
 
         public DbSet<Recipe> Recipe { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<Like> Likes { get; set; }
+        public DbSet<Vote> Votes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Like>()
-                .HasKey(l => new { l.UserId, l.RecipeId });
-            modelBuilder.Entity<Like>()
-                .HasOne(l => l.Recipe)
-                .WithMany(l => l.Likes)
-                .HasForeignKey(l => l.RecipeId);
-            modelBuilder.Entity<Like>()
-                .HasOne(l => l.User)
-                .WithMany(l => l.Likes)
-                .HasForeignKey(l => l.UserId);
+            modelBuilder.Entity<Vote>()
+                .HasKey(v => new { v.UserId, v.RecipeId });
+            modelBuilder.Entity<Vote>()
+                .HasOne(v => v.Recipe)
+                .WithMany(v => v.Votes)
+                .HasForeignKey(v => v.RecipeId);
+            modelBuilder.Entity<Vote>()
+                .HasOne(v => v.User)
+                .WithMany(v => v.Likes)
+                .HasForeignKey(v => v.UserId);
+
+
+            modelBuilder.Entity<Favourite>()
+                .HasKey(f => new { f.UserId, f.RecipeId });
+            modelBuilder.Entity<Favourite>()
+                .HasOne(f => f.Recipe)
+                .WithMany(f => f.Favourites)
+                .HasForeignKey(f => f.RecipeId);
+            modelBuilder.Entity<Favourite>()
+                .HasOne(f => f.User)
+                .WithMany(f => f.Favourites)
+                .HasForeignKey(f => f.UserId);
         }
     }
 }

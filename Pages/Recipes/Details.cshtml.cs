@@ -23,7 +23,6 @@ namespace PortalKulinarny.Pages.Recipes
             _context = context;
             _userManager = userManager;
         }
-
         public Recipe Recipe { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -33,7 +32,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Likes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
+            Recipe = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Votes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
 
             if (Recipe == null)
             {
@@ -42,47 +41,77 @@ namespace PortalKulinarny.Pages.Recipes
 
             return Page();
         }
+        
 
-        public async Task<IActionResult> OnPostAsync(int id)
+        public async Task<IActionResult> OnPostLikeDislikeAsync(int? id, string value)
         {
+            int valueNormalised;
+
             var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
-            var recipeToUpdate = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Likes).FirstOrDefaultAsync(m => m.RecipeId == id);
+            var recipeToUpdate = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Votes).FirstOrDefaultAsync(m => m.RecipeId == id);
             if (recipeToUpdate == null)
             {
                 return NotFound();
             }
 
-            var userToUpdate = await _context.Users.Include(u => u.Likes).FirstOrDefaultAsync(u => u.Id == userID);
-            if (userToUpdate == null || recipeToUpdate.UserId == userID)
+            var userVoting = await _context.Users.FirstOrDefaultAsync(u => u.Id == userID);
+            if (userVoting == null || recipeToUpdate.UserId == userID)
             {
                 return NotFound();
             }
 
-            var like = await _context.Likes.FirstOrDefaultAsync(l => l.UserId == userID && l.RecipeId == recipeToUpdate.RecipeId);
-
-            //Recipe = await _context.Recipe.Include(r => r.Likes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
-
-
-            if (like == null)
+            if (int.TryParse(value, out valueNormalised))
             {
-                var newLike = new Like()
+                if (valueNormalised < 0)
                 {
-                    Recipe = recipeToUpdate, User = userToUpdate
-                };
-                recipeToUpdate.Likes.Add(newLike);
-                //userToUpdate.Likes.Add(newLike);
-
-                if (await TryUpdateModelAsync<Recipe>(recipeToUpdate) /*&& await TryUpdateModelAsync<ApplicationUser>(userToUpdate)*/)
+                    valueNormalised = -1;
+                }
+                if (valueNormalised >= 0)
                 {
-                    await _context.SaveChangesAsync();
-                    return Page();
+                    valueNormalised = 1;
                 }
             }
             else
             {
-
+                return NotFound();
             }
+
+            var vote = await _context.Votes.FirstOrDefaultAsync(l => l.UserId == userID && l.RecipeId == recipeToUpdate.RecipeId);
+
+            if (vote == null)
+            {
+                var newVote = new Vote()
+                {
+                    Recipe = recipeToUpdate, User = userVoting, Value = valueNormalised
+                };
+                recipeToUpdate.Votes.Add(newVote);
+                recipeToUpdate.Rating += valueNormalised;
+
+                if (await TryUpdateModelAsync<Recipe>(recipeToUpdate))
+                {
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                recipeToUpdate.Rating -= vote.Value;
+                if (await TryUpdateModelAsync<Recipe>(recipeToUpdate))
+                {
+                    _context.Votes.Remove(vote);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            Recipe = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Votes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
+            return Page();
+
+        }
+
+
+        public async Task<IActionResult> OnPostFavouritiesAsync(int id)
+        {
+
             return Page();
 
         }

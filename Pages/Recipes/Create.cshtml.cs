@@ -55,10 +55,10 @@ namespace PortalKulinarny.Pages.Recipes
                 Recipe.Ingredients.Add(ingredient);
                 Recipe.Ingredients.Add(ingredient2);
 
-                Recipe.Likes = new List<Like>();
+                Recipe.Votes = new List<Vote>();
 
                 // Add to database
-                if (await TryUpdateModelAsync<Recipe>(Recipe, "recipe", r => r.UserId, r => r.Name, r => r.Description, r => r.DateTime, r => r.ModificationDateTime, r => r.Ingredients, r => r.Likes))
+                if (await TryUpdateModelAsync<Recipe>(Recipe, "recipe", r => r.UserId, r => r.Name, r => r.Description, r => r.DateTime, r => r.ModificationDateTime, r => r.Ingredients, r => r.Votes))
                 {
                     _context.Recipe.Add(Recipe);
                     await _context.SaveChangesAsync();

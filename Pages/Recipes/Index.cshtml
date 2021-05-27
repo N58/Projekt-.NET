@@ -20,7 +20,7 @@
                 @Html.DisplayNameFor(model => model.Recipe[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe[0].Likes)
+                @Html.DisplayNameFor(model => model.Recipe[0].Votes)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Recipe[0].Description)
@@ -45,8 +45,8 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @if (item.Likes != null) 
-                    @Html.DisplayFor(modelItem => item.Likes.Count) 
+                @if (item.Votes != null)
+                    @Html.DisplayFor(modelItem => item.Votes.Count) 
                 else { <span>0</span> }
             </td>
             <td>
