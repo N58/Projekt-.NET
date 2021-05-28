@@ -1,6 +1,5 @@
 ﻿@page
 @model PortalKulinarny.Pages.Recipes.DetailsModel
-@using Microsoft.AspNetCore.Http.Extensions
 
 @{
     ViewData["Title"] = "Details";
@@ -59,26 +58,27 @@
         </dd>
     </dl>
 </div>
-@if(Model.User != null)
-{
-<form method="post">
-    <div>
-        <input type="submit" value="+1" asp-page-handler="UpVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
-    </div>
-</form>
-<form method="post">
-    <div>
-        <input type="submit" value="-1" asp-page-handler="DownVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
-    </div>
-</form>
-<form method="post">
-    <div>
-        <input type="submit" value="Dodaj do ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
-    </div>
-</form>
-}
-
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.Recipe.RecipeId">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    @if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId != Model.Recipe.UserId)
+    {
+        <form method="post">
+            <input type="submit" value="+1" asp-page-handler="UpVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
+        </form>
+        <form method="post">
+            <input type="submit" value="-1" asp-page-handler="DownVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
+        </form>
+
+    }
+    @if (!String.IsNullOrWhiteSpace(Model.UserId))
+    {
+        <form method="post">
+            <input type="submit" value="Dodaj do ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
+        </form>
+    }
 </div>
+
+
+    <div>
+        <a asp-page="./Edit" asp-route-id="@Model.Recipe.RecipeId">Edit</a> |
+        <a asp-page="./Index">Back to List</a>
+    </div>

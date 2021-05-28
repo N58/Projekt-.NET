@@ -32,6 +32,7 @@ namespace PortalKulinarny.Pages.Recipes
             _favouritiesService = favouritiesService;
         }
         public Recipe Recipe { get; set; }
+        public string UserId { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -122,6 +123,7 @@ namespace PortalKulinarny.Pages.Recipes
         public async Task LoadModel(int? id)
         {
             Recipe = await _recipesService.FindByIdAsync(id);
+            UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }
