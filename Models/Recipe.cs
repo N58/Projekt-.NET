@@ -32,5 +32,6 @@ namespace PortalKulinarny.Models
         public string UserId { get; set; }
         public ICollection<Favourite> Favourites { get; set; }
         public ICollection<Vote> Votes { get; set; }
+        public ICollection<Category> Categories { get; set; }
     }
 }

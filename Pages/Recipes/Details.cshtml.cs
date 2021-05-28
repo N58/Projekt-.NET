@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using PortalKulinarny.Areas.Identity.Data;
 using PortalKulinarny.Data;
 using PortalKulinarny.Models;
+using PortalKulinarny.Services;
 
 namespace PortalKulinarny.Pages.Recipes
 {
@@ -17,11 +18,16 @@ namespace PortalKulinarny.Pages.Recipes
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly DatabaseRecipesService _recipesService;
+        private readonly VoteService _voteService;
 
-        public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
+            DatabaseRecipesService recipesService, VoteService voteService)
         {
             _context = context;
             _userManager = userManager;
+            _recipesService = recipesService;
+            _voteService = voteService;
         }
         public Recipe Recipe { get; set; }
 
@@ -32,7 +38,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Votes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
+            Recipe = await _recipesService.FindByIdAsync(id);
 
             if (Recipe == null)
             {
@@ -43,75 +49,50 @@ namespace PortalKulinarny.Pages.Recipes
         }
         
 
-        public async Task<IActionResult> OnPostLikeDislikeAsync(int? id, string value)
+        public async Task<IActionResult> OnPostUpVoteAsync(int? id)
         {
-            int valueNormalised;
+            var recipeVoted = await _recipesService.FindByIdAsync(id);
 
-            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userVoting = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
+            {
+                await _voteService.UpVote(recipeVoted, userVoting);
+            }
+            catch(Exception e)
+            {
+                //todo better exception handling
+                return RedirectToPage("./Error");
+            }
             
-            var recipeToUpdate = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Votes).FirstOrDefaultAsync(m => m.RecipeId == id);
-            if (recipeToUpdate == null)
-            {
-                return NotFound();
-            }
-
-            var userVoting = await _context.Users.FirstOrDefaultAsync(u => u.Id == userID);
-            if (userVoting == null || recipeToUpdate.UserId == userID)
-            {
-                return NotFound();
-            }
-
-            if (int.TryParse(value, out valueNormalised))
-            {
-                if (valueNormalised < 0)
-                {
-                    valueNormalised = -1;
-                }
-                if (valueNormalised >= 0)
-                {
-                    valueNormalised = 1;
-                }
-            }
-            else
-            {
-                return NotFound();
-            }
-
-            var vote = await _context.Votes.FirstOrDefaultAsync(l => l.UserId == userID && l.RecipeId == recipeToUpdate.RecipeId);
-
-            if (vote == null)
-            {
-                var newVote = new Vote()
-                {
-                    Recipe = recipeToUpdate, User = userVoting, Value = valueNormalised
-                };
-                recipeToUpdate.Votes.Add(newVote);
-                recipeToUpdate.Rating += valueNormalised;
-
-                if (await TryUpdateModelAsync<Recipe>(recipeToUpdate))
-                {
-                    await _context.SaveChangesAsync();
-                }
-            }
-            else
-            {
-                recipeToUpdate.Rating -= vote.Value;
-                if (await TryUpdateModelAsync<Recipe>(recipeToUpdate))
-                {
-                    _context.Votes.Remove(vote);
-                    await _context.SaveChangesAsync();
-                }
-            }
-
-            Recipe = await _context.Recipe.Include(r => r.Ingredients).Include(r => r.Votes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
+            Recipe = await _recipesService.FindByIdAsync(id);
             return Page();
-
         }
 
+        public async Task<IActionResult> OnPostDownVoteAsync(int? id, string value)
+        {
+            var recipeVoted = await _recipesService.FindByIdAsync(id);
+
+            var userVoting = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
+            {
+                await _voteService.DownVote(recipeVoted, userVoting);
+            }
+            catch (Exception e)
+            {
+                //todo better exception handling
+                return RedirectToPage("/Error");
+            }
+
+            Recipe = await _recipesService.FindByIdAsync(id);
+            return Page();
+        }
 
         public async Task<IActionResult> OnPostFavouritiesAsync(int id)
         {
 
+            Recipe = await _context.Recipes.Include(r => r.Ingredients).Include(r => r.Votes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
             return Page();
 
         }

@@ -34,7 +34,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _context.Recipe.FindAsync(id);
+            Recipe = await _context.Recipes.FindAsync(id);
 
             if (Recipe == null)
             {
@@ -52,7 +52,7 @@ namespace PortalKulinarny.Pages.Recipes
         // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync(int id)
         {
-            var recipeToUpdate = await _context.Recipe.FindAsync(id);
+            var recipeToUpdate = await _context.Recipes.FindAsync(id);
 
             if (recipeToUpdate == null)
             {

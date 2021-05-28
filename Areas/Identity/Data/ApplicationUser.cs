@@ -25,5 +25,6 @@ namespace PortalKulinarny.Areas.Identity.Data
         public ICollection<Recipe> Recipes { get; set; }
         public ICollection<Favourite> Favourites { get; set; }
         public ICollection<Vote> Likes { get; set; }
+        public ICollection<Category> Categories { get; set; }
     }
 }

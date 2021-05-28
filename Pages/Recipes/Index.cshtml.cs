@@ -28,7 +28,7 @@ namespace PortalKulinarny.Pages.Recipes
 
         public async Task OnGetAsync()
         {
-            var recipes = from n in _context.Recipe
+            var recipes = from n in _context.Recipes
                           select n;
             if (!string.IsNullOrWhiteSpace(Search))
             {

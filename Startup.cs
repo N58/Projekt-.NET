@@ -57,13 +57,14 @@ namespace PortalKulinarny
                 // User settings.
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
+                options.User.RequireUniqueEmail = true;
             });
 
 
             //services.AddTransient<IEmailSender, EmailSender>();
             //services.Configure<AuthenticationMessageOptions>(Configuration);
             services.AddTransient<DatabaseRecipesService>();
+            services.AddTransient<VoteService>();
 
             services.AddRazorPages();
         }

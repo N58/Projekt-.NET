@@ -32,7 +32,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _context.Recipe.AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
+            Recipe = await _context.Recipes.AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
 
             if (Recipe == null)
             {
@@ -48,7 +48,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            var recipe = await _context.Recipe.FindAsync(id);
+            var recipe = await _context.Recipes.FindAsync(id);
 
             if (recipe == null)
             {
@@ -59,7 +59,7 @@ namespace PortalKulinarny.Pages.Recipes
             if (recipe.UserId == null || recipe.UserId != userId)
                 return RedirectToPage("./Index");
 
-            _context.Recipe.Remove(recipe);
+            _context.Recipes.Remove(recipe);
             await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
         }

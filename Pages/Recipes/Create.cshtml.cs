@@ -60,7 +60,7 @@ namespace PortalKulinarny.Pages.Recipes
                 // Add to database
                 if (await TryUpdateModelAsync<Recipe>(Recipe, "recipe", r => r.UserId, r => r.Name, r => r.Description, r => r.DateTime, r => r.ModificationDateTime, r => r.Ingredients, r => r.Votes))
                 {
-                    _context.Recipe.Add(Recipe);
+                    _context.Recipes.Add(Recipe);
                     await _context.SaveChangesAsync();
                     return RedirectToPage("./Index");
                 }
