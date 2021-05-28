@@ -68,12 +68,12 @@
 </form>
 <form method="post">
     <div>
-        <input type="submit" value="-1" asp-page-handler="DownVote" asp-route-id="@Model.Recipe.RecipeId" asp-route-value="-1" class="btn btn-primary" />
+        <input type="submit" value="-1" asp-page-handler="DownVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
     </div>
 </form>
 <form method="post">
     <div>
-        <input type="submit" value="Dodaj do ulubionych" asp-page-handler="Favourities" class="btn btn-primary" />
+        <input type="submit" value="Dodaj do ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
     </div>
 </form>
 }

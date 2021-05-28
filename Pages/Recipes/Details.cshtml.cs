@@ -20,14 +20,16 @@ namespace PortalKulinarny.Pages.Recipes
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly DatabaseRecipesService _recipesService;
         private readonly VoteService _voteService;
+        private readonly FavouritiesService _favouritiesService;
 
         public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
-            DatabaseRecipesService recipesService, VoteService voteService)
+            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService)
         {
             _context = context;
             _userManager = userManager;
             _recipesService = recipesService;
             _voteService = voteService;
+            _favouritiesService = favouritiesService;
         }
         public Recipe Recipe { get; set; }
 
@@ -38,7 +40,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe = await _recipesService.FindByIdAsync(id);
+            await LoadModel(id);
 
             if (Recipe == null)
             {
@@ -61,11 +63,11 @@ namespace PortalKulinarny.Pages.Recipes
             }
             catch(Exception e)
             {
-                //todo better exception handling
-                return RedirectToPage("./Error");
+                //todo better exception handling??
+                return RedirectToPage("/Error");
             }
-            
-            Recipe = await _recipesService.FindByIdAsync(id);
+
+            await LoadModel(id);
             return Page();
         }
 
@@ -81,18 +83,32 @@ namespace PortalKulinarny.Pages.Recipes
             }
             catch (Exception e)
             {
-                //todo better exception handling
+                //todo better exception handling??
                 return RedirectToPage("/Error");
             }
 
-            Recipe = await _recipesService.FindByIdAsync(id);
+            await LoadModel(id);
             return Page();
         }
 
         public async Task<IActionResult> OnPostFavouritiesAsync(int id)
         {
+            var recipeAdded = await _recipesService.FindByIdAsync(id);
 
-            Recipe = await _context.Recipes.Include(r => r.Ingredients).Include(r => r.Votes).AsNoTracking().FirstOrDefaultAsync(m => m.RecipeId == id);
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userAdding = await _context.Users.Include(u => u.Favourites).FirstOrDefaultAsync(u => u.Id == userID);
+
+            try
+            {
+                await _favouritiesService.AddRemoveFav(recipeAdded, userAdding);
+            }
+            catch (Exception e)
+            {
+                //todo better exception handling??
+                return RedirectToPage("/Error");
+            }
+
+            await LoadModel(id);
             return Page();
 
         }
@@ -101,6 +117,11 @@ namespace PortalKulinarny.Pages.Recipes
         {
             ApplicationUser applicationUser = await _userManager.FindByIdAsync(userId);
             return applicationUser?.UserName;
+        }
+
+        public async Task LoadModel(int? id)
+        {
+            Recipe = await _recipesService.FindByIdAsync(id);
         }
     }
 }

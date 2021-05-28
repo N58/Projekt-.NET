@@ -66,11 +66,11 @@ namespace PortalKulinarny.Services
             }
         }
 
-        public async Task RemoveVote(Recipe recipeToUpdate, Vote vote)
+        public async Task RemoveVote(Recipe recipeVoted, Vote vote)
         {
-            recipeToUpdate.Rating -= vote.Value;
-            recipeToUpdate.Votes.Remove(vote);
-            await _recipesService.Update(recipeToUpdate);
+            recipeVoted.Rating -= vote.Value;
+            recipeVoted.Votes.Remove(vote);
+            await _recipesService.Update(recipeVoted);
         }
 
         public async Task CreateVote(Recipe recipeVoted, ApplicationUser userVoting, int value)

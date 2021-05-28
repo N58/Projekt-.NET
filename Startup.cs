@@ -65,6 +65,7 @@ namespace PortalKulinarny
             //services.Configure<AuthenticationMessageOptions>(Configuration);
             services.AddTransient<DatabaseRecipesService>();
             services.AddTransient<VoteService>();
+            services.AddTransient<FavouritiesService>();
 
             services.AddRazorPages();
         }

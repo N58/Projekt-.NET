@@ -18,6 +18,7 @@ namespace PortalKulinarny.Data
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Vote> Votes { get; set; }
+        public DbSet<Favourite> Favourites { get; set; }
         public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
