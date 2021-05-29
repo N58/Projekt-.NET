@@ -62,11 +62,8 @@ namespace PortalKulinarny.Services
             }
             else
             {
-                if(vote.Value != voteValue)
-                {
-                    await CreateVote(recipeVoted, userVoting, voteValue);
-                }
                 await RemoveVote(recipeVoted, vote);
+                await CreateVote(recipeVoted, userVoting, voteValue);
             }
         }
 
