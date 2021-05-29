@@ -62,7 +62,8 @@ namespace PortalKulinarny.Data
             modelBuilder.Entity<Category>()
                 .HasOne(c => c.User)
                 .WithMany(c => c.Categories)
-                .HasForeignKey(c => c.UserId);
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

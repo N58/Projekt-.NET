@@ -60,9 +60,6 @@ namespace PortalKulinarny
                 options.User.RequireUniqueEmail = true;
             });
 
-
-            //services.AddTransient<IEmailSender, EmailSender>();
-            //services.Configure<AuthenticationMessageOptions>(Configuration);
             services.AddTransient<DatabaseRecipesService>();
             services.AddTransient<VoteService>();
             services.AddTransient<FavouritiesService>();
