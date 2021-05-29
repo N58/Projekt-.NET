@@ -24,6 +24,9 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
+        public static string Favourities => "Favourities";
+
+        public static string FavouritiesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Favourities);
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);

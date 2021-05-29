@@ -30,22 +30,26 @@ namespace PortalKulinarny.Data
             modelBuilder.Entity<Vote>()
                 .HasOne(v => v.Recipe)
                 .WithMany(v => v.Votes)
-                .HasForeignKey(v => v.RecipeId);
+                .HasForeignKey(v => v.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Vote>()
                 .HasOne(v => v.User)
                 .WithMany(v => v.Likes)
-                .HasForeignKey(v => v.UserId);
+                .HasForeignKey(v => v.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Favourite>()
                 .HasKey(f => new { f.UserId, f.RecipeId });
             modelBuilder.Entity<Favourite>()
                 .HasOne(f => f.Recipe)
                 .WithMany(f => f.Favourites)
-                .HasForeignKey(f => f.RecipeId);
+                .HasForeignKey(f => f.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Favourite>()
                 .HasOne(f => f.User)
                 .WithMany(f => f.Favourites)
-                .HasForeignKey(f => f.UserId);
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             modelBuilder.Entity<Category>()

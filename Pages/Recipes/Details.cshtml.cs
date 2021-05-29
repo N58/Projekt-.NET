@@ -41,7 +41,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            await LoadModel(id);
+            await LoadAsync(id);
 
             if (Recipe == null)
             {
@@ -68,7 +68,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return RedirectToPage("/Error");
             }
 
-            await LoadModel(id);
+            await LoadAsync(id);
             return Page();
         }
 
@@ -88,7 +88,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return RedirectToPage("/Error");
             }
 
-            await LoadModel(id);
+            await LoadAsync(id);
             return Page();
         }
 
@@ -109,7 +109,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return RedirectToPage("/Error");
             }
 
-            await LoadModel(id);
+            await LoadAsync(id);
             return Page();
 
         }
@@ -120,7 +120,7 @@ namespace PortalKulinarny.Pages.Recipes
             return applicationUser?.UserName;
         }
 
-        public async Task LoadModel(int? id)
+        public async Task LoadAsync(int? id)
         {
             Recipe = await _recipesService.FindByIdAsync(id);
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

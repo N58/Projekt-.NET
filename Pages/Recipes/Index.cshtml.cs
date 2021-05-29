@@ -24,7 +24,7 @@ namespace PortalKulinarny.Pages.Recipes
             _userManager = userManager;
         }
 
-        public IList<Recipe> Recipe { get; set; }
+        public IList<Recipe> Recipes { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -35,7 +35,7 @@ namespace PortalKulinarny.Pages.Recipes
                 recipes = recipes.Where(s => s.Name.Contains(Search));
             }
             
-            Recipe = await recipes.ToListAsync();
+            Recipes = await recipes.ToListAsync();
         }
 
         public async Task<string> GetUserName(string userId)

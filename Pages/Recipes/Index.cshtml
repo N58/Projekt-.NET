@@ -14,28 +14,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe[0].UserId)
+                @Html.DisplayNameFor(model => model.Recipes[0].UserId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe[0].Name)
+                @Html.DisplayNameFor(model => model.Recipes[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe[0].Rating)
+                @Html.DisplayNameFor(model => model.Recipes[0].Rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe[0].Description)
+                @Html.DisplayNameFor(model => model.Recipes[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe[0].DateTime)
+                @Html.DisplayNameFor(model => model.Recipes[0].DateTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe[0].ModificationDateTime)
+                @Html.DisplayNameFor(model => model.Recipes[0].ModificationDateTime)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Recipe)
+        @foreach (var item in Model.Recipes)
         {
         <tr>
             <td>
