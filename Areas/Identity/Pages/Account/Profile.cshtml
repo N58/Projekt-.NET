@@ -15,16 +15,16 @@
 
 <h3>@Html.DisplayNameFor(model => model.Recipes)</h3>
 <div class="card-columns">
-    @foreach (var recipe in Model.Recipes.Select((value, i) => new { i, value }))
+    @foreach (var recipe in Model.Recipes)
     {
         <div class="col">
             <div class="card border-dark mb-3" style="width: 22rem;">
                 <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
                 <div class="card-body">
-                    <h5 class="card-title">@recipe.value.Name</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.value.Rating</h6>
-                    <p class="card-text">@recipe.value.Description</p>
-                    <p class="card-text"><small class="text-muted">@recipe.value.DateTime</small></p>
+                    <h5 class="card-title">@recipe.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Rating</h6>
+                    <p class="card-text">@recipe.Description</p>
+                    <p class="card-text"><small class="text-muted">@recipe.DateTime</small></p>
                 </div>
             </div>
         </div>
@@ -34,16 +34,16 @@
 
 <h3>@Html.DisplayNameFor(model => model.Favourites)</h3>
 <div class="card-columns">
-    @foreach (var recipe in Model.Favourites.Select((value, i) => new { i, value }))
+    @foreach (var recipe in Model.Favourites)
     {
         <div class="col">
             <div class="card border-dark mb-3" style="width: 22rem;">
                 <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
                 <div class="card-body">
-                    <h5 class="card-title">@recipe.value.Recipe.Name</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.value.Recipe.Rating</h6>
-                    <p class="card-text">@recipe.value.Recipe.Description</p>
-                    <p class="card-text"><small class="text-muted">@recipe.value.Recipe.DateTime</small></p>
+                    <h5 class="card-title">@recipe.Recipe.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Recipe.Rating</h6>
+                    <p class="card-text">@recipe.Recipe.Description</p>
+                    <p class="card-text"><small class="text-muted">@recipe.Recipe.DateTime</small></p>
                 </div>
             </div>
         </div>
