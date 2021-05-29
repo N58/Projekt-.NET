@@ -30,6 +30,13 @@ namespace PortalKulinarny.Models
         public ApplicationUser User { get; set;}
         [Display(Name = "Użytkownik")]
         public string UserId { get; set; }
+
+        public int GetRating()
+        {
+            int rating = 0;
+            Votes.ToList().ForEach(v => rating += v.Value);
+            return rating;
+        }
         public ICollection<Favourite> Favourites { get; set; }
         public ICollection<Vote> Votes { get; set; }
         public ICollection<Category> Categories { get; set; }

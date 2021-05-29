@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using PortalKulinarny.Areas.Identity.Data;
+using PortalKulinarny.Services;
+using System.Net.Http;
+using System;
+using System.Net.Http.Headers;
+using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 
 namespace PortalKulinarny.Areas.Identity.Pages.Account
 {
@@ -15,11 +21,14 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _sender;
+        private readonly MessageService _emailSender;
 
-        public RegisterConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender sender)
+        public RegisterConfirmationModel(UserManager<ApplicationUser> userManager, 
+            IEmailSender sender, MessageService emailSender)
         {
             _userManager = userManager;
             _sender = sender;
+            _emailSender = emailSender;
         }
 
         public string Email { get; set; }
@@ -43,7 +52,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
 
             Email = email;
             // Once you add a real email sender, you should remove this code that lets you confirm the account
-            DisplayConfirmAccountLink = true;
+            DisplayConfirmAccountLink = false;
             if (DisplayConfirmAccountLink)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
@@ -54,6 +63,18 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme);
+            }
+            else
+            {
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    protocol: Request.Scheme);
+                await _emailSender.SendEmailAsync(email, "Confirm your account",
+                   $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
             }
 
             return Page();

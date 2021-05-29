@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PortalKulinarny.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using PortalKulinarny.Configuration;
 
 
 namespace PortalKulinarny
@@ -39,6 +40,8 @@ namespace PortalKulinarny
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -60,6 +63,7 @@ namespace PortalKulinarny
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.AddTransient<MessageService>();
             services.AddTransient<DatabaseRecipesService>();
             services.AddTransient<VoteService>();
             services.AddTransient<FavouritiesService>();
