@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +26,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
             _favouritiesService = favouritiesService;
         }
 
+        public string UserID { get; set; }
         [Display(Name = "U¿ytkownik")]
         public string Username { get; set; }
         [Display(Name = "Imiê")]
@@ -52,7 +52,8 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
 
         private async Task LoadAsync(ApplicationUser user)
         {
-            Username = await _userManager.GetUserNameAsync(user);
+            UserID = user.Id;
+            Username = user.UserName;
             FirstName = user.FirstName;
             LastName = user.LastName;
             Recipes = (List<Recipe>)await _recipesService.FindByUserIdAsync(user);

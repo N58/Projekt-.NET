@@ -39,7 +39,7 @@
         {
             <tr>
                 <td>
-                    @await Model._utilsService.GetUserName(item.UserId)
+                    <a asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@item.UserId">@await Model._utilsService.GetUserName(item.UserId)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)

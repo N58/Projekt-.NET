@@ -1,24 +1,21 @@
 ﻿@page
 @model PortalKulinarny.Areas.Identity.Pages.Account.ProfileModel
+@using System.Security.Claims;
 @{
 }
 <h3>@Html.DisplayNameFor(model => model.Username): @Model.Username</h3>
 <h6>@Html.DisplayNameFor(model => model.FirstName): @Model.FirstName</h6>
 <h6>@Html.DisplayNameFor(model => model.LastName): @Model.LastName</h6>
+@if (User.FindFirst(ClaimTypes.NameIdentifier).Value == Model.UserID)
+{
+    <a asp-page="/Account/Manage/Index">Zarządzaj kontem</a>
+}
 <br />
 
 <h3>@Html.DisplayNameFor(model => model.Recipes)</h3>
 <div class="row">
     @foreach (var recipe in Model.Recipes.Select((value, i) => new { i, value }))
     {
-        if (recipe.i % 4 == 0 && recipe.i != 0)
-        {
-            @Html.Raw("</div>")
-        }
-        if (recipe.i % 4 == 0)
-        {
-            @Html.Raw("<div class='row'>")
-        }
         <div class="col">
             <div class="card" style="width: 15rem;">
                 <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
@@ -30,9 +27,22 @@
             </div>
         </div>
     }
-    @Html.Raw("</div>")
 </div>
 <br />
 
 <h3>@Html.DisplayNameFor(model => model.Favourites)</h3>
-
+<div class="row">
+    @foreach (var recipe in Model.Favourites.Select((value, i) => new { i, value }))
+    {
+        <div class="col">
+            <div class="card" style="width: 15rem;">
+                <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                <div class="card-body">
+                    <h5 class="card-title">@recipe.value.Recipe.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@recipe.value.User.UserName</h6>
+                    <p class="card-text">@recipe.value.Recipe.Description</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
