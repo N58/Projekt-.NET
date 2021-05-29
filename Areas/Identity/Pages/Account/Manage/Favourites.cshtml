@@ -57,12 +57,12 @@
                 <td>
                     @if (item.UserId != null && item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
                     {
-                        <a asp-page="../Pages/Recpies/Edit" asp-route-id="@item.RecipeId">Edit</a>
+                        <a asp-page="../Pages/Recipes/Edit" asp-route-id="@item.RecipeId">Edit</a>
                     }
-                    | <a asp-page="../Pages/Recpies/Edit" asp-route-id="@item.RecipeId">Details</a> |
+                    | <a asp-page="../Pages/Recipes/Details" asp-route-id="@item.RecipeId">Details</a> |
                     @if (item.UserId != null && item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
                     {
-                        <a asp-page="../Pages/Recpies/Edit" asp-route-id="@item.RecipeId">Delete</a>
+                        <a asp-page="../Pages/Recipes/Delete" asp-route-id="@item.RecipeId">Delete</a>
                     }
                 </td>
             </tr>
