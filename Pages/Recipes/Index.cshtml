@@ -37,37 +37,37 @@
     <tbody>
         @foreach (var item in Model.Recipes)
         {
-        <tr>
-            <td>
-                @await Model.GetUserName(item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModificationDateTime)
-            </td>
-            <td>
-                @if (item.UserId != null && item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-                {
-                    <a asp-page="./Edit" asp-route-id="@item.RecipeId">Edit</a>
-                }
-                | <a asp-page="./Details" asp-route-id="@item.RecipeId">Details</a> |
-                @if (item.UserId != null && item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-                {
-                    <a asp-page="./Delete" asp-route-id="@item.RecipeId">Delete</a>
-                }
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @await Model._utilsService.GetUserName(item.UserId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModificationDateTime)
+                </td>
+                <td>
+                    @if (item.UserId != null && item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        <a asp-page="./Edit" asp-route-id="@item.RecipeId">Edit</a>
+                    }
+                    | <a asp-page="./Details" asp-route-id="@item.RecipeId">Details</a> |
+                    @if (item.UserId != null && item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        <a asp-page="./Delete" asp-route-id="@item.RecipeId">Delete</a>
+                    }
+                </td>
+            </tr>
         }
     </tbody>
 </table>

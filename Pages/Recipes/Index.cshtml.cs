@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using PortalKulinarny.Areas.Identity.Data;
 using PortalKulinarny.Data;
 using PortalKulinarny.Models;
+using PortalKulinarny.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,14 +15,15 @@ namespace PortalKulinarny.Pages.Recipes
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        public readonly UtilsService _utilsService;
+
         [BindProperty(SupportsGet = true)]
         public string Search { get; set; }
 
-        public IndexModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public IndexModel(ApplicationDbContext context, UtilsService utilsService)
         {
             _context = context;
-            _userManager = userManager;
+            _utilsService = utilsService;
         }
 
         public IList<Recipe> Recipes { get; set; }
@@ -36,12 +38,6 @@ namespace PortalKulinarny.Pages.Recipes
             }
             
             Recipes = await recipes.ToListAsync();
-        }
-
-        public async Task<string> GetUserName(string userId)
-        {
-            ApplicationUser applicationUser = await _userManager.FindByIdAsync(userId);
-            return applicationUser?.UserName;
         }
     }
 }

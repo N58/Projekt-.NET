@@ -21,15 +21,17 @@ namespace PortalKulinarny.Pages.Recipes
         private readonly DatabaseRecipesService _recipesService;
         private readonly VoteService _voteService;
         private readonly FavouritiesService _favouritiesService;
+        public readonly UtilsService _utilsService;
 
         public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
-            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService)
+            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UtilsService utilsService)
         {
             _context = context;
             _userManager = userManager;
             _recipesService = recipesService;
             _voteService = voteService;
             _favouritiesService = favouritiesService;
+            _utilsService = utilsService;
         }
         public Recipe Recipe { get; set; }
         public string UserId { get; set; }
