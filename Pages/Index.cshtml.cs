@@ -43,7 +43,7 @@ namespace PortalKulinarny.Pages
 
         public IEnumerable<Recipe> GetRecipes()
         {
-            return _recipeService.GetRecipes();
+            return _recipeService.GetRecipes().OrderByDescending(r => r.Rating).Take(10);
         }
     }
 }

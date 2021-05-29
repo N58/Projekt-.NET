@@ -23,11 +23,20 @@
     </form>
 </div>
 
-@foreach (var recipe in Model.Recipes)
-{
-    <p>
-        <div>@Html.DisplayNameFor(model => model.Recipes.First().Name): @recipe.Name</div>
-        <div>@Html.DisplayNameFor(model => model.Recipes.First().Description): @recipe.Description</div>
-        <div>@Html.DisplayNameFor(model => model.Recipes.First().DateTime): @recipe.DateTime</div>
-    </p>
-}
+<br />
+<div class="card-columns">
+    @foreach (var recipe in Model.Recipes.Select((value, i) => new { i, value }))
+    {
+        <div class="col">
+            <div class="card border-dark mb-3" style="width: 22rem;">
+                <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                <div class="card-body">
+                    <h5 class="card-title">@recipe.value.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.value.Rating</h6>
+                    <p class="card-text">@recipe.value.Description</p>
+                    <p class="card-text"><small class="text-muted">@recipe.value.DateTime</small></p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

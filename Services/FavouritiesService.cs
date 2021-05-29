@@ -76,7 +76,10 @@ namespace PortalKulinarny.Services
 
         public async Task<IEnumerable<Favourite>> FindFavouritesByUserIdAsync(ApplicationUser userAdding)
         {
-            var favourite = await _context.Favourites.Where(v => v.UserId == userAdding.Id).ToListAsync();
+            var favourite = await _context.Favourites
+                .Include(r => r.Recipe)
+                .Where(v => v.UserId == userAdding.Id)
+                .ToListAsync();
             return favourite;
         }
     }
