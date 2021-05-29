@@ -21,10 +21,10 @@ namespace PortalKulinarny.Pages.Recipes
         private readonly DatabaseRecipesService _recipesService;
         private readonly VoteService _voteService;
         private readonly FavouritiesService _favouritiesService;
-        public readonly UtilsService _utilsService;
+        public readonly UserService _utilsService;
 
         public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
-            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UtilsService utilsService)
+            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UserService utilsService)
         {
             _context = context;
             _userManager = userManager;
@@ -114,12 +114,6 @@ namespace PortalKulinarny.Pages.Recipes
             await LoadAsync(id);
             return Page();
 
-        }
-
-        public async Task<string> GetUserName(string userId)
-        {
-            ApplicationUser applicationUser = await _userManager.FindByIdAsync(userId);
-            return applicationUser?.UserName;
         }
 
         public async Task LoadAsync(int? id)

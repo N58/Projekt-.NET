@@ -63,7 +63,7 @@ namespace PortalKulinarny
             services.AddTransient<DatabaseRecipesService>();
             services.AddTransient<VoteService>();
             services.AddTransient<FavouritiesService>();
-            services.AddTransient<UtilsService>();
+            services.AddTransient<UserService>();
 
             services.AddRazorPages();
         }

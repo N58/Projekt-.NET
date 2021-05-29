@@ -15,12 +15,12 @@ namespace PortalKulinarny.Pages.Recipes
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        public readonly UtilsService _utilsService;
+        public readonly UserService _utilsService;
 
         [BindProperty(SupportsGet = true)]
         public string Search { get; set; }
 
-        public IndexModel(ApplicationDbContext context, UtilsService utilsService)
+        public IndexModel(ApplicationDbContext context, UserService utilsService)
         {
             _context = context;
             _utilsService = utilsService;
