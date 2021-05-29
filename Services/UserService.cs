@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace PortalKulinarny.Services
 {
-    public class UtilsService
+    public class UserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UtilsService(UserManager<ApplicationUser> userManager)
+        public UserService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
