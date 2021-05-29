@@ -33,21 +33,22 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Display(Name = "Imię")]
+            public string FirstName { get; set; }
+            [Display(Name = "Nazwisko")]
+            public string LastName { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                FirstName = user.FirstName,
+                LastName = user.LastName
             };
         }
 
@@ -77,18 +78,10 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
-            }
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _userManager.UpdateAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
