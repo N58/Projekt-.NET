@@ -64,10 +64,21 @@ namespace PortalKulinarny.Services
             {
                 if(vote.Value != voteValue)
                 {
-                    await CreateVote(recipeVoted, userVoting, voteValue);
+                    vote.Value = voteValue;
+                    await Update(vote);
                 }
-                await RemoveVote(recipeVoted, vote);
+                else
+                {
+                    await RemoveVote(recipeVoted, vote);
+                }
+                
             }
+        }
+
+        public async Task Update(Vote vote)
+        {
+            _context.Update(vote);
+            await _context.SaveChangesAsync();
         }
 
         public async Task RemoveVote(Recipe recipeVoted, Vote vote)
