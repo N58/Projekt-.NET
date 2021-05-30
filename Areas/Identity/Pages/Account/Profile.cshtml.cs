@@ -26,24 +26,14 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
             _favouritiesService = favouritiesService;
         }
 
-        public string UserID { get; set; }
-        [Display(Name = "U¿ytkownik")]
-        public string Username { get; set; }
-        [Display(Name = "Imiê")]
-        public string FirstName { get; set; }
-        [Display(Name = "Nazwisko")]
-        public string LastName { get; set; }
-        [Display(Name = "Przepisy")]
-        public List<Recipe> Recipes { get; set; }
-        [Display(Name = "Ulubione")]
-        public List<Favourite> Favourites { get; set; }
+        public ApplicationUser User { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.FindByIdAsync(id)}'.");
+                return NotFound($"Unable to load user with ID '{id}'.");
             }
 
             await LoadAsync(user);
@@ -52,12 +42,9 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
 
         private async Task LoadAsync(ApplicationUser user)
         {
-            UserID = user.Id;
-            Username = user.UserName;
-            FirstName = user.FirstName;
-            LastName = user.LastName;
-            Recipes = (List<Recipe>)await _recipesService.FindByUserIdAsync(user);
-            Favourites = (List<Favourite>)await _favouritiesService.FindFavouritesByUserIdAsync(user);
+            User = user;
+            User.Recipes = (ICollection<Recipe>)await _recipesService.FindByUserIdAsync(user);
+            User.Favourites = (ICollection<Favourite>)await _favouritiesService.FindFavouritesByUserIdAsync(user);
         }
     }
 }
