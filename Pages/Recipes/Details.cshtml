@@ -79,7 +79,7 @@
 
 
 <div>
-    @if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId != Model.Recipe.UserId)
+    @if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == Model.Recipe.UserId)
     {
         <a asp-page="./Delete" asp-route-id="@Model.Recipe.RecipeId">Delete</a>
         <a asp-page="./Edit" asp-route-id="@Model.Recipe.RecipeId">Edit</a>
