@@ -23,8 +23,6 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        public string Username { get; set; }
-
         [TempData]
         public string StatusMessage { get; set; }
 
@@ -33,6 +31,8 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [Display(Name = "Użytkownik")]
+            public string Username { get; set; }
             [Display(Name = "Imię")]
             public string FirstName { get; set; }
             [Display(Name = "Nazwisko")]
@@ -43,10 +43,9 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
 
-            Username = userName;
-
             Input = new InputModel
             {
+                Username = userName,
                 FirstName = user.FirstName,
                 LastName = user.LastName
             };
@@ -78,10 +77,12 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            await _userManager.SetUserNameAsync(user, Input.Username);
             user.FirstName = Input.FirstName;
             user.LastName = Input.LastName;
 
             await _userManager.UpdateAsync(user);
+            await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
