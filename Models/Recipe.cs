@@ -35,7 +35,8 @@ namespace PortalKulinarny.Models
         public int GetRating()
         {
             int rating = 0;
-            Votes.ToList().ForEach(v => rating += v.Value);
+            if(Votes != null)
+                Votes.ToList().ForEach(v => rating += v.Value);
             return rating;
         }
 
