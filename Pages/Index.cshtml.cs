@@ -44,7 +44,7 @@ namespace PortalKulinarny.Pages
         public async Task<IEnumerable<Recipe>> GetRecipesAsync()
         {
             var recipes = await _recipeService.GetRecipesAsync();
-            return recipes.OrderByDescending(r => r.Rating).Take(10);
+            return recipes.OrderByDescending(r => r.Rating).Take(9);
         }
     }
 }
