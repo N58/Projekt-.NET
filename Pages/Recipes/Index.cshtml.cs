@@ -16,28 +16,30 @@ namespace PortalKulinarny.Pages.Recipes
     {
         private readonly ApplicationDbContext _context;
         public readonly UserService _utilsService;
+        private readonly DatabaseRecipesService _recipesService;
 
         [BindProperty(SupportsGet = true)]
         public string Search { get; set; }
 
-        public IndexModel(ApplicationDbContext context, UserService utilsService)
+        public IndexModel(ApplicationDbContext context, UserService utilsService, DatabaseRecipesService recipesService)
         {
             _context = context;
             _utilsService = utilsService;
+            _recipesService = recipesService;
         }
 
         public IList<Recipe> Recipes { get; set; }
 
         public async Task OnGetAsync()
         {
-            var recipes = from n in _context.Recipes
+            var recipes = from n in await _recipesService.GetRecipesAsync()
                           select n;
             if (!string.IsNullOrWhiteSpace(Search))
             {
                 recipes = recipes.Where(s => s.Name.Contains(Search));
             }
             
-            Recipes = await recipes.ToListAsync();
+            Recipes = recipes.ToList();
         }
     }
 }

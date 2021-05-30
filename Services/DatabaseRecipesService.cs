@@ -50,9 +50,14 @@ namespace PortalKulinarny.Services
             await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<Recipe> GetRecipes()
+        public async Task<IEnumerable<Recipe>> GetRecipesAsync()
         {
-            return _context.Recipes;
+            var recipes = await _context.Recipes
+                .Include(r => r.Ingredients)
+                .Include(r => r.Votes)
+                .Include(r => r.Categories)
+                .ToListAsync();
+            return recipes;
         }
     }
 }

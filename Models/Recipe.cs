@@ -24,7 +24,8 @@ namespace PortalKulinarny.Models
         [Display(Name = "Data ostatniej modyfikacji")]
         public DateTime ModificationDateTime { get; set; }
         [Display(Name = "Ocena")]
-        public int Rating { get; set; }
+        [NotMapped]
+        public int Rating { get => GetRating(); }
         [Display(Name = "Składniki")]
         public ICollection<Ingredient> Ingredients { get; set; }
         public ApplicationUser User { get; set;}
@@ -37,6 +38,7 @@ namespace PortalKulinarny.Models
             Votes.ToList().ForEach(v => rating += v.Value);
             return rating;
         }
+
         public ICollection<Favourite> Favourites { get; set; }
         public ICollection<Vote> Votes { get; set; }
         public ICollection<Category> Categories { get; set; }

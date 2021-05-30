@@ -62,13 +62,28 @@ namespace PortalKulinarny.Services
             }
             else
             {
-                await RemoveVote(recipeVoted, vote);
+                if(vote.Value != voteValue)
+                {
+                    await UpdateVote(vote, voteValue);
+                }
+                else
+                {
+                    await RemoveVote(recipeVoted, vote);
+                }
             }
         }
 
+        public async Task UpdateVote(Vote vote, int value)
+        {
+            vote.Value = value;
+            _context.Update(vote);
+            await _context.SaveChangesAsync();
+        }
+
+
         public async Task RemoveVote(Recipe recipeVoted, Vote vote)
         {
-            recipeVoted.Rating -= vote.Value;
+            //recipeVoted.Rating -= vote.Value;
             recipeVoted.Votes.Remove(vote);
             await _recipesService.Update(recipeVoted);
         }
@@ -82,7 +97,7 @@ namespace PortalKulinarny.Services
                 Value = value
             };
             recipeVoted.Votes.Add(newVote);
-            recipeVoted.Rating += newVote.Value;
+            //recipeVoted.Rating += newVote.Value;
             await _recipesService.Update(recipeVoted);
         }
 

@@ -26,24 +26,25 @@ namespace PortalKulinarny.Pages
             _logger = logger;
             _recipeService = recipeService;
         }
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
             {
                 return RedirectToPage("./Recipes/Index", new { Search = Search });
             }
-            Recipes = GetRecipes();
+            Recipes = await GetRecipesAsync();
             return Page();
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            Recipes = GetRecipes();
+            Recipes = await GetRecipesAsync();
         }
 
-        public IEnumerable<Recipe> GetRecipes()
+        public async Task<IEnumerable<Recipe>> GetRecipesAsync()
         {
-            return _recipeService.GetRecipes().OrderByDescending(r => r.Rating).Take(10);
+            var recipes = await _recipeService.GetRecipesAsync();
+            return recipes.OrderByDescending(r => r.Rating).Take(10);
         }
     }
 }
