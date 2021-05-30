@@ -56,6 +56,7 @@ namespace PortalKulinarny.Services
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
                 .Include(r => r.Categories)
+                .Include(r => r.User)
                 .ToListAsync();
             return recipes;
         }

@@ -78,6 +78,7 @@ namespace PortalKulinarny.Services
         {
             var favourite = await _context.Favourites
                 .Include(r => r.Recipe)
+                .ThenInclude(v => v.Votes)
                 .Where(v => v.UserId == userAdding.Id)
                 .ToListAsync();
             return favourite;
