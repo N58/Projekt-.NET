@@ -89,6 +89,13 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
+            
+            var isEmailFound = await _userManager.FindByEmailAsync(Input.NewEmail);
+            if (isEmailFound != null)
+            {
+                StatusMessage = "This email already exists in database.";
+                return RedirectToPage();
+            }
 
             var email = await _userManager.GetEmailAsync(user);
             if (Input.NewEmail != email)
