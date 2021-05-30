@@ -64,7 +64,7 @@ namespace PortalKulinarny.Pages.Recipes
             {
                 await _voteService.UpVote(recipeVoted, userVoting);
             }
-            catch(Exception)
+            catch
             {
                 //todo better exception handling??
                 return RedirectToPage("/Error");
@@ -84,7 +84,7 @@ namespace PortalKulinarny.Pages.Recipes
             {
                 await _voteService.DownVote(recipeVoted, userVoting);
             }
-            catch (Exception)
+            catch
             {
                 //todo better exception handling??
                 return RedirectToPage("/Error");
@@ -105,7 +105,7 @@ namespace PortalKulinarny.Pages.Recipes
             {
                 await _favouritiesService.AddRemoveFav(recipeAdded, userAdding);
             }
-            catch (Exception e)
+            catch
             {
                 //todo better exception handling??
                 return RedirectToPage("/Error");

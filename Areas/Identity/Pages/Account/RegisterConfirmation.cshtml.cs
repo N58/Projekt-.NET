@@ -68,13 +68,16 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
             {
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = Url.Page(
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var EmailConfirmationUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(email, "Confirm your account",
-                   $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                await _emailSender.SendEmailAsync(
+                    email, 
+                    "Confirm your account",
+                    $"Please confirm your account by clicking this link: <a href='{EmailConfirmationUrl}'>link</a>");
             }
 
             return Page();
