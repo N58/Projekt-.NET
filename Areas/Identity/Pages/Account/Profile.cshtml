@@ -28,6 +28,10 @@
         <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
             <div class="container mt-4">
                 <div class="row justify-content-center">
+                    @if (Model.User.Recipes.Count == 0)
+                    {
+                        <h2 style="margin-bottom: 24px;">Użytkownik @Model.User.UserName nie dodał żadnego przepisu.</h2>
+                    }
                     @foreach (var recipe in Model.User.Recipes)
                     {
                         <div class="col-auto mb-3">
@@ -49,7 +53,11 @@
         </div>
         <div class="tab-pane fade" id="favourites" role="tabpanel" aria-labelledby="favourites-tab">
             <div class="container mt-4">
-                <div class="row ">
+                <div class="row justify-content-center">
+                    @if(Model.User.Favourites.Count == 0)
+                    {
+                        <h2 style="margin-bottom: 24px;">Użytkownik @Model.User.UserName nie ma ulubionych przepisów.</h2>
+                    }
                     @foreach (var favourite in Model.User.Favourites)
                     {
                         <div class="col-auto mb-3">
