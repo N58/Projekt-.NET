@@ -74,14 +74,14 @@ body {
     display: block;
     text-decoration: inherit;
     color: inherit;
-    transition: all ease-out .2s;
+    transition: all ease-out .1s;
 }
 
-    .a-card-link:hover {
-        display: block;
-        text-decoration: inherit;
-        color: inherit;
-        transform: scale(1.02, 1.02);
-        -webkit-box-shadow: 0px 0px 15px -5px #1194FF;
-        box-shadow: 0px 0px 15px -5px #1194FF;
-    }
+.a-card-link:hover {
+    display: block;
+    text-decoration: inherit;
+    color: inherit;
+    transform: scale(1.02, 1.02);
+    -webkit-box-shadow: 0px 0px 15px -5px #1194FF;
+    box-shadow: 0px 0px 15px -5px #1194FF;
+}

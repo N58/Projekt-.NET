@@ -77,6 +77,13 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            var isUsernameFound = await _userManager.FindByNameAsync(Input.Username);
+            if (isUsernameFound != null)
+            {
+                StatusMessage = "This username already exists in database.";
+                return RedirectToPage();
+            }
+
             await _userManager.SetUserNameAsync(user, Input.Username);
             user.FirstName = Input.FirstName;
             user.LastName = Input.LastName;
