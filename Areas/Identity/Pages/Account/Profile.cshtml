@@ -6,6 +6,7 @@
 <h3>Użytkownik: @Model.User.UserName</h3>
 <h6>Imię: @Model.User.FirstName</h6>
 <h6>Nazwisko: @Model.User.LastName</h6>
+<h6>Data dołączenia: @Model.User.DoJ.ToString("dd/MM/yyyy")</h6>
 @if (User.FindFirst(ClaimTypes.NameIdentifier).Value == Model.User.Id)
 {
     <a asp-page="/Account/Manage/Index">Zarządzaj kontem</a>
