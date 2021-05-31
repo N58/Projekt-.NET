@@ -69,6 +69,9 @@ namespace PortalKulinarny
             services.AddTransient<FavouritiesService>();
             services.AddTransient<UserService>();
 
+            services.AddMemoryCache();
+            services.AddSession();
+
             services.AddRazorPages();
         }
 
@@ -94,6 +97,8 @@ namespace PortalKulinarny
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
