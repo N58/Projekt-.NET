@@ -48,7 +48,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
         {
             [Required]
             [StringLength(20)]
-            [Display(Name = "Nazwa Użytkownika")]
+            [Display(Name = "Nazwa użytkownika")]
             public string UserName { get; set; }
             [Required]
             [EmailAddress]
@@ -56,21 +56,21 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
             public string Email { get; set; }
             [PersonalData]
             [StringLength(20, ErrorMessage = "The {0} must be at max {1} characters long.")]
-            [Display(Name = "Imie")]
+            [Display(Name = "Imie*")]
             public string FirstName { get; set; }
             [PersonalData]
             [StringLength(20, ErrorMessage = "The {0} must be at max {1} characters long.")]
-            [Display(Name = "Nazwisko")]
+            [Display(Name = "Nazwisko*")]
             public string LastName { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Hasło")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
+            [Display(Name = "Potwierdź hasło")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
         }
