@@ -4,85 +4,70 @@
 @{
     ViewData["Title"] = "Details";
 }
-
-<h1>Details</h1>
-
 <div>
-    <h4>Recipe</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Recipe.UserId)
-        </dt>
-        <dd class="col-sm-10">
-            @await Model._utilsService.GetUserName(Model.Recipe.UserId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Recipe.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Recipe.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Recipe.Rating)
-        </dt>
-        <dt class="col-sm-10">
-            @Html.DisplayFor(model => model.Recipe.Rating)
-        </dt>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Recipe.Ingredients)
-        </dt>
-        <dd class="col-sm-10">
-            @foreach (var ingredient in Model.Recipe.Ingredients)
+    <div class="d-flex justify-content-between">
+        <div>
+            <h2 class="mr-3">@Html.DisplayFor(model => model.Recipe.Name)</h2>
+        </div>
+        <div>
+            <h2 class="mr-3 d-inline align-middle">@Html.DisplayNameFor(model => model.Recipe.Rating): @Html.DisplayFor(model => model.Recipe.Rating)</h2>
+            @if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId != Model.Recipe.UserId)
             {
-                <span>@ingredient.Name, </span>
+                <form class="mr-1 d-inline" method="post">
+                    <input type="submit" value="+" asp-page-handler="UpVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-success" />
+                </form>
+                <form class="mr-3 d-inline" method="post">
+                    <input type="submit" value="-" asp-page-handler="DownVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-danger" />
+                </form>
             }
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Recipe.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Recipe.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Recipe.DateTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Recipe.DateTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Recipe.ModificationDateTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Recipe.ModificationDateTime)
-        </dd>
-    </dl>
+            else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == Model.Recipe.UserId)
+            {
+                <a class="mr-1 d-inline btn btn-info" asp-page="./Edit" asp-route-id="@Model.Recipe.RecipeId">Edit</a>
+                <a class="mr-3 d-inline btn btn-danger" asp-page="./Delete" asp-route-id="@Model.Recipe.RecipeId">Delete</a>
+            }
+
+            @if (!String.IsNullOrWhiteSpace(Model.UserId))
+            {
+                <form class="d-inline" method="post">
+                    <input type="submit" value="Dodaj do ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
+                </form>
+            }
+        </div>
+    </div>
+    <hr />
+    <div class="d-flex justify-content-between">
+        <div>
+            <h4>
+                <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@Model.Recipe.UserId">
+                    @await Model._utilsService.GetUserName(Model.Recipe.UserId)
+                </a>
+            </h4>
+        </div>
+        <div>
+            <span>@Html.DisplayNameFor(model => model.Recipe.DateTime): @Html.DisplayFor(model => model.Recipe.DateTime)</span><br />
+            <span>@Html.DisplayNameFor(model => model.Recipe.ModificationDateTime): @Html.DisplayFor(model => model.Recipe.ModificationDateTime)</span>
+        </div>
+    </div>
+
+    <img class="rounded mx-auto d-block" style="margin: 20px; max-width: 100%;" src="https://ocdn.eu/pulscms-transforms/1/-E1k9kpTURBXy9jMzFlODhjYzk4YmMxNDhiODMyMzFiMzQ2ZGM2ZWI5My5qcGeTlQMAQs0ISc0EqZMFzQMUzQG8kwmmMjVhMjIxBoGhMAE/kotlet-schabowy.jpg" alt="Card image cap">
+    
+    <div class="container" style="margin: 20px;">
+        <div class="row">
+            <div class="col">
+                <h5>@Html.DisplayNameFor(model => model.Recipe.Ingredients)</h5>
+                <hr style="margin: 5px 0" />
+                @foreach (var ingredient in Model.Recipe.Ingredients)
+                {
+                    <span>@ingredient.Name</span><hr style="margin: 5px 0" />
+                }
+            </div>
+            <div class="col">
+                <h5>@Html.DisplayNameFor(model => model.Recipe.Description)</h5>
+                <span>@Html.DisplayFor(model => model.Recipe.Description)</span>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    @if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId != Model.Recipe.UserId)
-    {
-        <form method="post">
-            <input type="submit" value="+1" asp-page-handler="UpVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
-        </form>
-        <form method="post">
-            <input type="submit" value="-1" asp-page-handler="DownVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
-        </form>
-
-    }
-    @if (!String.IsNullOrWhiteSpace(Model.UserId))
-    {
-        <form method="post">
-            <input type="submit" value="Dodaj do ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
-        </form>
-    }
-</div>
-
-
-<div>
-    @if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == Model.Recipe.UserId)
-    {
-        <a asp-page="./Delete" asp-route-id="@Model.Recipe.RecipeId">Delete</a>
-        <a asp-page="./Edit" asp-route-id="@Model.Recipe.RecipeId">Edit</a>
-    }
-    <a asp-page="./Index">Back to List</a>
+<div class="d-flex justify-content-center" style="margin: 20px;">
+    <a class="btn btn-primary" asp-page="./Index">Powrót</a>
 </div>
