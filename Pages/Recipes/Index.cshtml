@@ -39,7 +39,7 @@
         {
             <tr>
                 <td>
-                    <a asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@item.UserId">@await Model._utilsService.GetUserName(item.UserId)</a>
+                    <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@item.UserId">@await Model._utilsService.GetUserName(item.UserId)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
@@ -57,7 +57,7 @@
                     @Html.DisplayFor(modelItem => item.ModificationDateTime)
                 </td>
                 <td>
-                    <a asp-page="./Details" asp-route-id="@item.RecipeId">Details</a>
+                    <a class="a-link" asp-page="./Details" asp-route-id="@item.RecipeId">Details</a>
                 </td>
             </tr>
         }
