@@ -3,83 +3,118 @@
 @using System.Security.Claims;
 @{
 }
-<h3>Użytkownik: @Model.AppUser.UserName</h3>
-<h6>Imię: @Model.AppUser.FirstName</h6>
-<h6>Nazwisko: @Model.AppUser.LastName</h6>
-<h6>Data dołączenia: @Model.AppUser.DoJ.ToString("dd/MM/yyyy")</h6>
-@if (User.FindFirst(ClaimTypes.NameIdentifier).Value == Model.AppUser.Id)
-{
-    <a asp-page="/Account/Manage/Index">Zarządzaj kontem</a>
-    <br />
-}
+<div class="row">
+    <div class="col">
+        @if (Model.IsOwner)
+        {
+            <h4>Witaj @Model.AppUser.UserName!</h4>
+        }
+        else
+        {
+            <h4>Użytkownik: @Model.AppUser.UserName</h4>
+        }
+        @if (String.IsNullOrWhiteSpace(@Model.AppUser.FirstName))
+        {
+            <h6>Imię: nie podano</h6>
+        }
+        else
+        {
+            <h6>Imie: @Model.AppUser.FirstName</h6>
+        }
+        @if (String.IsNullOrWhiteSpace(@Model.AppUser.LastName))
+        {
+            <h6>Nazwisko: nie podano</h6>
+        }
+        else
+        {
+            <h6>Nazwisko: @Model.AppUser.LastName</h6>
+        }
+        <h6>Użytkownik od: @Model.AppUser.DoJ.ToString("dd/MM/yyyy")</h6>
+    </div>
+    @if (Model.IsOwner)
+    {
+        <div class="col">
+            <button type="button" class="btn btn-primary float-right" asp-page="/Account/Manage/Index">Zarządzaj kontem</button>
+        </div>
+    }
+</div>
 <br />
 
-<div class="card text-center">
-    <div class="card-header">
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true">Przepisy</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="favourites-tab" data-toggle="tab" href="#favourites" role="tab" aria-controls="favourites" aria-selected="false">Ulubione</a>
-            </li>
-        </ul>
-    </div>
-    <div class="tab-content">
-        <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
-            <div class="container mt-4">
-                <div class="row justify-content-center">
-                    @if (Model.AppUser.Recipes.Count == 0)
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item">
+    <a class="nav-link active" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true">Przepisy</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" id="favourites-tab" data-toggle="tab" href="#favourites" role="tab" aria-controls="favourites" aria-selected="false">Ulubione</a>
+</li>
+    </ul>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                @if (Model.AppUser.Recipes.Count == 0)
+                {
+                    if (Model.IsOwner)
                     {
-                        <h2 style="margin-bottom: 24px;">Użytkownik @Model.AppUser.UserName nie dodał żadnego przepisu.</h2>
+                        <h4 style="margin-bottom: 24px;">Nie dodałeś jeszcze żadnego przepisu.</h4>
                     }
-                    @foreach (var recipe in Model.AppUser.Recipes)
+                    else
                     {
-                        <div class="col-auto mb-3">
-                            <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@recipe.RecipeId">
-                                <div class="card border-dark" style="width: 21rem; text-align: left;">
-                                    <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
-                                    <div class="card-body">
-                                        <h5 class="card-title">@recipe.Name</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Rating</h6>
-                                        <p class="card-text">@recipe.User.UserName</p>
-                                        <p class="card-text"><small class="text-muted">@recipe.DateTime</small></p>
-                                    </div>
+                        <h4 style="margin-bottom: 24px;">Użytkownik @Model.AppUser.UserName nie dodał żadnego przepisu.</h4>
+                    }
+                }
+                @foreach (var recipe in Model.AppUser.Recipes)
+                {
+                    <div class="col-auto mb-3">
+                        <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@recipe.RecipeId">
+                            <div class="card border-dark" style="width: 21rem; text-align: left;">
+                                <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                                <div class="card-body">
+                                    <h5 class="card-title">@recipe.Name</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Rating</h6>
+                                    <p class="card-text">@recipe.User.UserName</p>
+                                    <p class="card-text"><small class="text-muted">@recipe.DateTime</small></p>
                                 </div>
-                            </a>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="favourites" role="tabpanel" aria-labelledby="favourites-tab">
-            <div class="container mt-4">
-                <div class="row justify-content-center">
-                    @if(Model.AppUser.Favourites.Count == 0)
-                    {
-                        <h2 style="margin-bottom: 24px;">Użytkownik @Model.AppUser.UserName nie ma ulubionych przepisów.</h2>
-                    }
-                    @foreach (var favourite in Model.AppUser.Favourites)
-                    {
-                        <div class="col-auto mb-3">
-                            <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@favourite.RecipeId">
-                                <div class="card border-dark" style="width: 21rem; text-align: left;">
-                                    <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
-                                    <div class="card-body">
-                                        <h5 class="card-title">@favourite.Recipe.Name</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">Ocena: @favourite.Recipe.Rating</h6>
-                                        <p class="card-text">@favourite.User.UserName</p>
-                                        <p class="card-text"><small class="text-muted">@favourite.Recipe.DateTime</small></p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    }
-                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
             </div>
         </div>
     </div>
-    
+    <div class="tab-pane fade" id="favourites" role="tabpanel" aria-labelledby="favourites-tab">
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                @if (Model.AppUser.Favourites.Count == 0)
+                {
+                    if (Model.IsOwner)
+                    {
+                        <h4 style="margin-bottom: 24px;">Nie masz jeszcze ulubionych przepisów.</h4>
+                    }
+                    else
+                    {
+                        <h4 style="margin-bottom: 24px;">Użytkownik @Model.AppUser.UserName nie ma ulubionych przepisów.</h4>
+                    }
+                }
+                @foreach (var favourite in Model.AppUser.Favourites)
+                {
+                    <div class="col-auto mb-3">
+                        <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@favourite.RecipeId">
+                            <div class="card border-dark" style="width: 21rem; text-align: left;">
+                                <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                                <div class="card-body">
+                                    <h5 class="card-title">@favourite.Recipe.Name</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">Ocena: @favourite.Recipe.Rating</h6>
+                                    <p class="card-text">@favourite.User.UserName</p>
+                                    <p class="card-text"><small class="text-muted">@favourite.Recipe.DateTime</small></p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
 
 

@@ -75,7 +75,7 @@ namespace PortalKulinarny.Services
         }
 
         public async Task<IEnumerable<Favourite>> FindFavouritesByUserIdAsync(ApplicationUser userAdding)
-        {
+        {   
             var favourite = await _context.Favourites
                 .Include(r => r.Recipe)
                 .ThenInclude(v => v.Votes)

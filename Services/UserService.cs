@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PortalKulinarny.Areas.Identity.Data;
 using PortalKulinarny.Data;
 using System;
@@ -11,10 +12,21 @@ namespace PortalKulinarny.Services
     public class UserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public UserService(UserManager<ApplicationUser> userManager)
+        public UserService(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
+        }
+
+        public async Task<ApplicationUser> FindByIdAsync(string userId)
+        {
+            var user = await _context.Users
+                .Include(u => u.Favourites)
+                .Include(u => u.Recipes)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            return user;
         }
 
         public async Task<string> GetUserName(string userId)
