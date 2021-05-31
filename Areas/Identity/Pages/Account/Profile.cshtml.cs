@@ -26,7 +26,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
             _favouritiesService = favouritiesService;
         }
 
-        public ApplicationUser User { get; set; }
+        public ApplicationUser AppUser { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -42,9 +42,9 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
 
         private async Task LoadAsync(ApplicationUser user)
         {
-            User = user;
-            User.Recipes = (ICollection<Recipe>)await _recipesService.FindByUserIdAsync(user);
-            User.Favourites = (ICollection<Favourite>)await _favouritiesService.FindFavouritesByUserIdAsync(user);
+            AppUser = user;
+            AppUser.Recipes = (ICollection<Recipe>)await _recipesService.FindByUserIdAsync(user);
+            AppUser.Favourites = (ICollection<Favourite>)await _favouritiesService.FindFavouritesByUserIdAsync(user);
         }
     }
 }
