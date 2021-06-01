@@ -39,7 +39,7 @@ namespace PortalKulinarny.Services
                 throw new NullReferenceException();
             }
 
-            var favourite = await FindFavouriteAsync(recipeAdded, userAdding);
+            var favourite = await FindFavouriteAsync(recipeAdded.RecipeId, userAdding.Id);
            
             if (favourite == null)
             {
@@ -68,9 +68,9 @@ namespace PortalKulinarny.Services
             await _userManager.UpdateAsync(userAdding);
         }
 
-        public async Task<Favourite> FindFavouriteAsync(Recipe recipeAdded, ApplicationUser userAdding)
+        public async Task<Favourite> FindFavouriteAsync(int recipeId, string userId)
         {
-            var favourite = await _context.Favourites.FirstOrDefaultAsync(v => v.UserId == userAdding.Id && v.RecipeId == recipeAdded.RecipeId);
+            var favourite = await _context.Favourites.FirstOrDefaultAsync(v => v.UserId == userId && v.RecipeId == recipeId);
             return favourite;
         }
 

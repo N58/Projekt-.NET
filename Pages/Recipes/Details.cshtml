@@ -28,9 +28,19 @@
 
             @if (!String.IsNullOrWhiteSpace(Model.UserId))
             {
-                <form class="d-inline" method="post">
-                    <input type="submit" value="Dodaj do ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
-                </form>
+                @if (await Model._favouritiesService.FindFavouriteAsync(Model.Recipe.RecipeId, Model.UserId) == null)
+                {
+                    <form class="d-inline" method="post">
+                        <input type="submit" value="Dodaj do ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
+                    </form>
+                }
+                else
+                {
+                    <form class="d-inline" method="post">
+                        <input type="submit" value="Usuń z ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
+                    </form>
+                }
+
             }
         </div>
     </div>
@@ -39,7 +49,7 @@
         <div>
             <h4>
                 <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@Model.Recipe.UserId">
-                    @await Model._utilsService.GetUserName(Model.Recipe.UserId)
+                    @await Model._userService.GetUserName(Model.Recipe.UserId)
                 </a>
             </h4>
         </div>
