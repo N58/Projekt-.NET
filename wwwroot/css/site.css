@@ -137,8 +137,17 @@ body {
     padding: 0;
     border: none;
     background-color: inherit;
-    line-height: normal;
+    line-height: 0;
     height: 1em;
     width: 1em;
     font-size: 26px;
+}
+
+.btn-icon:active, .btn-icon:focus {
+    outline: 0;
+    border: none;
+}
+
+.btn-icon:hover {
+    color: black;
 }
