@@ -20,6 +20,14 @@ namespace PortalKulinarny.Services
             _context = context;
         }
 
+        public async Task<IEnumerable<ApplicationUser>> GetUsersAsync()
+        {
+            var users = await _context.Users
+                .Include(u => u.Recipes)
+                .ToListAsync();
+            return users;
+        }
+
         public async Task<ApplicationUser> FindByIdAsync(string userId)
         {
             var user = await _context.Users

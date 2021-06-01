@@ -29,7 +29,7 @@ namespace PortalKulinarny.Models
         [Display(Name = "Składniki")]
         public ICollection<Ingredient> Ingredients { get; set; }
         public ApplicationUser User { get; set;}
-        [Display(Name = "Użytkownik")]
+        [Display(Name = "Autor")]
         public string UserId { get; set; }
 
         public int GetRating()

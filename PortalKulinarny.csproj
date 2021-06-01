@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210601181430_snapshot5.cs" />
+    <Compile Remove="Migrations\20210601181430_snapshot5.Designer.cs" />
+    <Compile Remove="Migrations\20210601182933_snapshot6.cs" />
+    <Compile Remove="Migrations\20210601182933_snapshot6.Designer.cs" />
+    <Compile Remove="Migrations\20210601183044_snapshot5.cs" />
+    <Compile Remove="Migrations\20210601183044_snapshot5.Designer.cs" />
+    <Compile Remove="Migrations\20210601183142_snapshot5.cs" />
+    <Compile Remove="Migrations\20210601183142_snapshot5.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.15" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.15" />

@@ -24,7 +24,13 @@ namespace PortalKulinarny.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-           
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany<Recipe>(u => u.Recipes)
+                .WithOne(r => r.User)
+                .HasForeignKey(r => r.UserId);
+                //.OnDelete(DeleteBehavior.Cascade);
+            
             modelBuilder.Entity<Vote>()
                 .HasKey(v => new { v.UserId, v.RecipeId });
             modelBuilder.Entity<Vote>()
@@ -36,7 +42,7 @@ namespace PortalKulinarny.Data
                 .HasOne(v => v.User)
                 .WithMany(v => v.Likes)
                 .HasForeignKey(v => v.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Favourite>()
                 .HasKey(f => new { f.UserId, f.RecipeId });

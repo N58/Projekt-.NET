@@ -10,56 +10,130 @@
 <p>
     <a class="btn btn-success" asp-page="Create">Dodaj przepis</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipes[0].UserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipes[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipes[0].Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipes[0].Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipes[0].DateTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipes[0].ModificationDateTime)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Recipes)
-        {
-            <tr>
-                <td>
-                    <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@item.UserId">@await Model._utilsService.GetUserName(item.UserId)</a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Rating)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ModificationDateTime)
-                </td>
-                <td>
-                    <a class="a-link" asp-page="./Details" asp-route-id="@item.RecipeId">Details</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true">Przepisy (@Model.Recipes.Count)</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">Użytkownicy (@Model.Users.Count())</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
+        <div class="container mt-4">
+            @foreach (var item in Model.Recipes)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-1">
+                                obrazek
+                            </div>
+                            <div class="col">
+                                <h4><a class="a-link" asp-page="./Details" asp-route-id="@item.RecipeId">@Html.DisplayFor(modelItem => item.Name)</a></h4>
+                                <h6>@Html.DisplayNameFor(model => model.Recipes[0].UserId): <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@item.UserId">@await Model._userService.GetUserName(item.UserId)</a></h6>
+                                <h8>@Html.DisplayNameFor(model => model.Recipes[0].DateTime): @Html.DisplayFor(modelItem => item.DateTime)</h8>
+                            </div>
+                            <div class="col-auto float-right">
+                                <div>
+                                    @if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId != item.UserId)
+                                    {
+                                        var vote = Model._voteService.FindVoteAsync(item.RecipeId, Model.UserId).Result;
+                                        if (vote == null || vote.Value == -1)
+                                        {
+                                            // Empty Like
+                                            <form class="mr-1 d-inline" method="post">
+                                                <button class="btn-icon gray" type="submit" asp-page-handler="UpVote" asp-route-id="@item.RecipeId"><i class="far fa-thumbs-up"></i></button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            // Filled like
+                                            <form class="mr-1 d-inline" method="post">
+                                                <button class="btn-icon green" type="submit" asp-page-handler="UpVote" asp-route-id="@item.RecipeId"><i class="fas fa-thumbs-up"></i></button>
+                                            </form>
+                                        }
+
+                                        if (vote == null || vote.Value == 1)
+                                        {
+                                            // Empty dislike
+                                            <form class="mr-3 d-inline" method="post">
+                                                <button class="btn-icon gray" type="submit" asp-page-handler="DownVote" asp-route-id="@item.RecipeId"><i class="far fa-thumbs-down"></i></button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            // Filled dislike
+                                            <form class="mr-3 d-inline" method="post">
+                                                <button class="btn-icon red" type="submit" asp-page-handler="DownVote" asp-route-id="@item.RecipeId"><i class="fas fa-thumbs-down"></i></button>
+                                            </form>
+                                        }
+                                    }
+                                    else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == item.UserId)
+                                    {
+                                        // Edit button
+                                        <a class="mr-1 d-inline btn-icon blue" asp-page="./Edit" asp-route-id="@item.RecipeId"><i class="fas fa-pen"></i></a>
+                                        // Delete button
+                                        //<button class="mr-3 d-inline btn-icon red" type="button" data-toggle="modal" data-id="@item.RecipeId" data-target="#deleteModal"><i class="fas fa-trash-alt"></i></button>
+                                    }
+
+                                    @if (!String.IsNullOrWhiteSpace(Model.UserId))
+                                    {
+                                        @if (await Model._favouritiesService.FindFavouriteAsync(item.RecipeId, Model.UserId) == null)
+                                        {
+                                            <form class="d-inline" method="post">
+                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-id="@item.RecipeId"><i class="far fa-heart"></i></button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form class="d-inline" method="post">
+                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-id="@item.RecipeId"><i class="fas fa-heart"></i></button>
+                                            </form>
+                                        }
+
+                                    }
+                                </div>
+                                <h6 class="mr-3 d-inline align-middle">@Html.DisplayNameFor(model => item.Rating): @Html.DisplayFor(model => item.Rating)</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+    <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="favourites-tab">
+        <div class="container mt-4">
+            @foreach (var user in Model.Users)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-2">
+                                <h4><a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@user.Id">@await Model._userService.GetUserName(user.Id)</a></h4>
+                            </div>
+                            <div class="col">
+                                @if (!String.IsNullOrWhiteSpace(user.FirstName) || !String.IsNullOrWhiteSpace(user.LastName))
+                                {
+                                    <h8>@user.FirstName @user.LastName</h8>
+                                    <br />
+                                }
+                                <h8 class="text-muted">Użytkownik od: @Html.DisplayFor(modelUser => user.DoJ)</h8>
+                            </div>
+                            <div class="col-auto float-right">
+                                <h6>Dodanych przepisów: @user.Recipes.Count</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+</div>
+
+
+
