@@ -5,6 +5,7 @@
     ViewData["Title"] = "Details";
 }
 <div>
+    <!-- Top segment -->
     <div class="col">
         <div class="row d-flex justify-content-between">
             <div>
@@ -46,9 +47,10 @@
                 }
                 else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == Model.Recipe.UserId)
                 {
+                    // Edit button
                     <a class="mr-1 d-inline btn-icon blue" asp-page="./Edit" asp-route-id="@Model.Recipe.RecipeId"><i class="fas fa-pen"></i></a>
-                    
-                    <a class="mr-3 d-inline btn-icon red" asp-page="./Delete" asp-route-id="@Model.Recipe.RecipeId"><i class="fas fa-trash-alt"></i></a>
+                    // Delete button
+                    <button class="mr-3 d-inline btn-icon red" type="button" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-trash-alt"></i></button>
                 }
 
                 @if (!String.IsNullOrWhiteSpace(Model.UserId))
@@ -80,7 +82,7 @@
     <div class="d-flex justify-content-between">
         <div>
             <h4>
-                Autor: 
+                Autor:
                 <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@Model.Recipe.UserId">
                     @await Model._userService.GetUserName(Model.Recipe.UserId)
                 </a>
@@ -88,7 +90,7 @@
         </div>
         <div>
             <span><b>@Html.DisplayNameFor(model => model.Recipe.DateTime):</b> @Html.DisplayFor(model => model.Recipe.DateTime)</span>
-            @{  
+            @{
                 // Ignoring miliseconds
                 var d1 = Model.Recipe.DateTime;
                 var d2 = Model.Recipe.ModificationDateTime;
@@ -103,8 +105,10 @@
         </div>
     </div>
 
+    <!-- Image segment -->
     <img class="rounded mx-auto d-block" style="margin: 20px; max-width: 100%;" src="https://ocdn.eu/pulscms-transforms/1/-E1k9kpTURBXy9jMzFlODhjYzk4YmMxNDhiODMyMzFiMzQ2ZGM2ZWI5My5qcGeTlQMAQs0ISc0EqZMFzQMUzQG8kwmmMjVhMjIxBoGhMAE/kotlet-schabowy.jpg" alt="Card image cap">
-    
+
+    <!-- Content segment -->
     <div class="container" style="margin: 20px;">
         <div class="row">
             <div class="col" style="max-width: 40%">
@@ -123,5 +127,32 @@
     </div>
 </div>
 <div class="d-flex justify-content-center" style="margin: 20px;">
-    <a class="btn btn-primary" href="javascript:history.go(-1)" >Powrót</a>
+    <a class="btn btn-primary" href="javascript:history.go(-1)">Powrót</a>
 </div>
+
+<!-- Modal popup -->
+@if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == Model.Recipe.UserId)
+{
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLongTitle">Usuń</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Czy jesteś pewny(a), że chcesz usunąć przepis "@Model.Recipe.Name"?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+                    <form method="post">
+                        <button type="submit" class="btn btn-danger" asp-page-handler="Delete" asp-route-id="@Model.Recipe.RecipeId">Usuń</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

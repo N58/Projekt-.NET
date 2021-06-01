@@ -115,6 +115,29 @@ namespace PortalKulinarny.Pages.Recipes
             return Page();
 
         }
+        
+        public async Task<IActionResult> OnPostDeleteAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var recipe = await _context.Recipes.FindAsync(id);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (recipe.UserId == null || recipe.UserId != userId)
+                return RedirectToPage("./Index");
+
+            _context.Recipes.Remove(recipe);
+            await _context.SaveChangesAsync();
+            return RedirectToPage("./Index");
+        }
 
         public async Task LoadAsync(int? id)
         {
