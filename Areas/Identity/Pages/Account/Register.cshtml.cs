@@ -46,32 +46,32 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "{0} jest wymagana.")]
             [StringLength(20)]
             [Display(Name = "Nazwa użytkownika")]
             public string UserName { get; set; }
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "{0} jest wymagany.")]
+            [EmailAddress(ErrorMessage = "Niepoprawny format adresu email.")]
             [Display(Name = "Email")]
             public string Email { get; set; }
             [PersonalData]
-            [StringLength(20, ErrorMessage = "The {0} must be at max {1} characters long.")]
+            [StringLength(20, ErrorMessage = "{0} może mieć maksymalnie {1} znaków.")]
             [Display(Name = "Imie*")]
             public string FirstName { get; set; }
             [PersonalData]
-            [StringLength(20, ErrorMessage = "The {0} must be at max {1} characters long.")]
+            [StringLength(20, ErrorMessage = "{0} może mieć maksymalnie {1} znaków.")]
             [Display(Name = "Nazwisko*")]
             public string LastName { get; set; }
 
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+            [Required(ErrorMessage = "{0} jest wymagane.")]
+            [StringLength(100, ErrorMessage = "{0} musi mieć od {2} do {1} znaków.", MinimumLength = 3)]
             [DataType(DataType.Password)]
             [Display(Name = "Hasło")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
             [Display(Name = "Potwierdź hasło")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Wpisane hasła nie są takie same.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -93,17 +93,6 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

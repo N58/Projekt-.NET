@@ -156,7 +156,7 @@ namespace PortalKulinarny.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Recipe",
+                name: "Recipes",
                 columns: table => new
                 {
                     RecipeId = table.Column<int>(nullable: false)
@@ -165,14 +165,13 @@ namespace PortalKulinarny.Migrations
                     Description = table.Column<string>(nullable: false),
                     DateTime = table.Column<DateTime>(nullable: false),
                     ModificationDateTime = table.Column<DateTime>(nullable: false),
-                    Rating = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Recipe", x => x.RecipeId);
+                    table.PrimaryKey("PK_Recipes", x => x.RecipeId);
                     table.ForeignKey(
-                        name: "FK_Recipe_AspNetUsers_UserId",
+                        name: "FK_Recipes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -180,7 +179,32 @@ namespace PortalKulinarny.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Favourite",
+                name: "Categories",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    RecipeId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => new { x.UserId, x.RecipeId });
+                    table.ForeignKey(
+                        name: "FK_Categories_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "RecipeId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Categories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Favourites",
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
@@ -188,15 +212,15 @@ namespace PortalKulinarny.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Favourite", x => new { x.UserId, x.RecipeId });
+                    table.PrimaryKey("PK_Favourites", x => new { x.UserId, x.RecipeId });
                     table.ForeignKey(
-                        name: "FK_Favourite_Recipe_RecipeId",
+                        name: "FK_Favourites_Recipes_RecipeId",
                         column: x => x.RecipeId,
-                        principalTable: "Recipe",
+                        principalTable: "Recipes",
                         principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Favourite_AspNetUsers_UserId",
+                        name: "FK_Favourites_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -216,32 +240,32 @@ namespace PortalKulinarny.Migrations
                 {
                     table.PrimaryKey("PK_Ingredients", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Ingredients_Recipe_RecipeID",
+                        name: "FK_Ingredients_Recipes_RecipeID",
                         column: x => x.RecipeID,
-                        principalTable: "Recipe",
+                        principalTable: "Recipes",
                         principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Likes",
+                name: "Votes",
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
                     RecipeId = table.Column<int>(nullable: false),
-                    Value = table.Column<byte>(nullable: false)
+                    Value = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => new { x.UserId, x.RecipeId });
+                    table.PrimaryKey("PK_Votes", x => new { x.UserId, x.RecipeId });
                     table.ForeignKey(
-                        name: "FK_Likes_Recipe_RecipeId",
+                        name: "FK_Votes_Recipes_RecipeId",
                         column: x => x.RecipeId,
-                        principalTable: "Recipe",
+                        principalTable: "Recipes",
                         principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Likes_AspNetUsers_UserId",
+                        name: "FK_Votes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -288,8 +312,13 @@ namespace PortalKulinarny.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Favourite_RecipeId",
-                table: "Favourite",
+                name: "IX_Categories_RecipeId",
+                table: "Categories",
+                column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Favourites_RecipeId",
+                table: "Favourites",
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
@@ -298,14 +327,14 @@ namespace PortalKulinarny.Migrations
                 column: "RecipeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_RecipeId",
-                table: "Likes",
-                column: "RecipeId");
+                name: "IX_Recipes_UserId",
+                table: "Recipes",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Recipe_UserId",
-                table: "Recipe",
-                column: "UserId");
+                name: "IX_Votes_RecipeId",
+                table: "Votes",
+                column: "RecipeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -326,19 +355,22 @@ namespace PortalKulinarny.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Favourite");
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Favourites");
 
             migrationBuilder.DropTable(
                 name: "Ingredients");
 
             migrationBuilder.DropTable(
-                name: "Likes");
+                name: "Votes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Recipe");
+                name: "Recipes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

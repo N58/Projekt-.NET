@@ -10,8 +10,8 @@ using PortalKulinarny.Data;
 namespace PortalKulinarny.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210528100330_categoryModel")]
-    partial class categoryModel
+    [Migration("20210601053818_initialSchema")]
+    partial class initialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -262,7 +262,7 @@ namespace PortalKulinarny.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("Favourite");
+                    b.ToTable("Favourites");
                 });
 
             modelBuilder.Entity("PortalKulinarny.Models.Ingredient", b =>
@@ -306,9 +306,6 @@ namespace PortalKulinarny.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -316,7 +313,7 @@ namespace PortalKulinarny.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Recipe");
+                    b.ToTable("Recipes");
                 });
 
             modelBuilder.Entity("PortalKulinarny.Models.Vote", b =>
