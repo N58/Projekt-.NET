@@ -24,7 +24,10 @@ namespace PortalKulinarny.Services
         {
             var user = await _context.Users
                 .Include(u => u.Favourites)
+                .ThenInclude(f => f.Recipe)
+                .ThenInclude(r => r.Votes)
                 .Include(u => u.Recipes)
+                .ThenInclude(r => r.Votes)
                 .FirstOrDefaultAsync(u => u.Id == userId);
             return user;
         }
