@@ -10,15 +10,39 @@
             <h2 class="mr-3">@Html.DisplayFor(model => model.Recipe.Name)</h2>
         </div>
         <div>
-            <h4 class="mr-3 d-inline align-middle">@Html.DisplayNameFor(model => model.Recipe.Rating): @Html.DisplayFor(model => model.Recipe.Rating)</h4>
+            <h6 class="mr-3 d-inline align-middle">@Html.DisplayNameFor(model => model.Recipe.Rating): @Html.DisplayFor(model => model.Recipe.Rating)</h6>
             @if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId != Model.Recipe.UserId)
             {
-                <form class="mr-1 d-inline" method="post">
-                    <input type="submit" value="+" asp-page-handler="UpVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-success" />
-                </form>
-                <form class="mr-3 d-inline" method="post">
-                    <input type="submit" value="-" asp-page-handler="DownVote" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-danger" />
-                </form>
+                var vote = Model._voteService.FindVoteAsync(Model.Recipe.RecipeId, Model.UserId).Result;
+                if (vote == null || vote.Value == -1)
+                {
+                    // Empty Like
+                    <form class="mr-1 d-inline" method="post">
+                        <button class="btn-icon gray" type="submit" asp-page-handler="UpVote" asp-route-id="@Model.Recipe.RecipeId"><i class="far fa-thumbs-up"></i></button>
+                    </form>
+                }
+                else
+                {
+                    // Filled like
+                    <form class="mr-1 d-inline" method="post">
+                        <button class="btn-icon green" type="submit" asp-page-handler="UpVote" asp-route-id="@Model.Recipe.RecipeId"><i class="fas fa-thumbs-up"></i></button>
+                    </form>
+                }
+
+                if (vote == null || vote.Value == 1)
+                {
+                    // Empty dislike
+                    <form class="mr-3 d-inline" method="post">
+                        <button class="btn-icon gray" type="submit" asp-page-handler="DownVote" asp-route-id="@Model.Recipe.RecipeId"><i class="far fa-thumbs-down"></i></button>
+                    </form>
+                }
+                else
+                {
+                    // Filled dislike
+                    <form class="mr-3 d-inline" method="post">
+                        <button class="btn-icon red" type="submit" asp-page-handler="DownVote" asp-route-id="@Model.Recipe.RecipeId"><i class="fas fa-thumbs-down"></i></button>
+                    </form>
+                }
             }
             else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == Model.Recipe.UserId)
             {
@@ -31,13 +55,13 @@
                 @if (await Model._favouritiesService.FindFavouriteAsync(Model.Recipe.RecipeId, Model.UserId) == null)
                 {
                     <form class="d-inline" method="post">
-                        <input type="submit" value="Dodaj do ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
+                        <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId"><i class="far fa-heart"></i></button>
                     </form>
                 }
                 else
                 {
                     <form class="d-inline" method="post">
-                        <input type="submit" value="Usuń z ulubionych" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId" class="btn btn-primary" />
+                        <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-id="@Model.Recipe.RecipeId"><i class="fas fa-heart"></i></button>
                     </form>
                 }
 

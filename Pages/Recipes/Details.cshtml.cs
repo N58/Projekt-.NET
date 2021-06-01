@@ -19,7 +19,7 @@ namespace PortalKulinarny.Pages.Recipes
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly DatabaseRecipesService _recipesService;
-        private readonly VoteService _voteService;
+        public readonly VoteService _voteService;
         public readonly FavouritiesService _favouritiesService;
         public readonly UserService _userService;
 

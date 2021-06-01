@@ -55,7 +55,7 @@ namespace PortalKulinarny.Services
                 throw new InvalidOperationException();
             }
 
-            var vote = await FindVoteAsync(recipeVoted, userVoting);
+            var vote = await FindVoteAsync(recipeVoted.RecipeId, userVoting.Id);
             if (vote == null)
             {
                 await CreateVote(recipeVoted, userVoting, voteValue);
@@ -101,9 +101,9 @@ namespace PortalKulinarny.Services
             await _recipesService.Update(recipeVoted);
         }
 
-        public async Task<Vote> FindVoteAsync(Recipe recipeVoted, ApplicationUser userVoting)
+        public async Task<Vote> FindVoteAsync(int recipeId, string userId)
         {
-            var vote =  await _context.Votes.FirstOrDefaultAsync(v => v.UserId == userVoting.Id && v.RecipeId == recipeVoted.RecipeId);
+            var vote =  await _context.Votes.FirstOrDefaultAsync(v => v.UserId == userId && v.RecipeId == recipeId);
             return vote;
         }
     }

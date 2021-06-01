@@ -115,3 +115,30 @@ body {
         background-color: #1194FF;
     }
 }
+
+.red {
+    color: #dc3545;
+}
+
+.green {
+    color: #28a745;
+}
+
+.blue {
+    color: #007bff;
+}
+
+.gray {
+    color: gray;
+}
+
+.btn-icon {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: inherit;
+    line-height: normal;
+    height: 1em;
+    width: 1em;
+    font-size: 26px;
+}
