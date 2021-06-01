@@ -56,9 +56,17 @@
         </div>
         <div>
             <span><b>@Html.DisplayNameFor(model => model.Recipe.DateTime):</b> @Html.DisplayFor(model => model.Recipe.DateTime)</span>
-            @if (DateTime.Compare(Model.Recipe.DateTime, Model.Recipe.ModificationDateTime) != 0)
-            {
-                <br /><span><b>@Html.DisplayNameFor(model => model.Recipe.ModificationDateTime):</b> @Html.DisplayFor(model => model.Recipe.ModificationDateTime)</span>
+            @{  
+                // Ignoring miliseconds
+                var d1 = Model.Recipe.DateTime;
+                var d2 = Model.Recipe.ModificationDateTime;
+                d1 = new DateTime(d1.Year, d1.Month, d1.Day, d1.Hour, d1.Minute, d1.Second, 0);
+                d2 = new DateTime(d2.Year, d2.Month, d2.Day, d2.Hour, d2.Minute, d2.Second, 0);
+                // Compare
+                if (DateTime.Compare(d1, d2) != 0)
+                {
+                    <br /><span><b>@Html.DisplayNameFor(model => model.Recipe.ModificationDateTime):</b> @Html.DisplayFor(model => model.Recipe.ModificationDateTime)</span>
+                }
             }
         </div>
     </div>
