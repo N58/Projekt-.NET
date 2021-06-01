@@ -151,3 +151,13 @@ body {
 .btn-icon:hover {
     color: black;
 }
+
+.carousel-static {
+    height: 60vh;
+    width: 80%;
+}
+
+.carousel-img {
+    object-fit: cover;
+    height: 60vh; /* only if you want fixed height */
+}
