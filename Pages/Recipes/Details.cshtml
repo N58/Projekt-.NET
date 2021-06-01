@@ -10,7 +10,7 @@
             <h2 class="mr-3">@Html.DisplayFor(model => model.Recipe.Name)</h2>
         </div>
         <div>
-            <h2 class="mr-3 d-inline align-middle">@Html.DisplayNameFor(model => model.Recipe.Rating): @Html.DisplayFor(model => model.Recipe.Rating)</h2>
+            <h4 class="mr-3 d-inline align-middle">@Html.DisplayNameFor(model => model.Recipe.Rating): @Html.DisplayFor(model => model.Recipe.Rating)</h4>
             @if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId != Model.Recipe.UserId)
             {
                 <form class="mr-1 d-inline" method="post">
@@ -48,14 +48,18 @@
     <div class="d-flex justify-content-between">
         <div>
             <h4>
+                Autor: 
                 <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@Model.Recipe.UserId">
                     @await Model._userService.GetUserName(Model.Recipe.UserId)
                 </a>
             </h4>
         </div>
         <div>
-            <span>@Html.DisplayNameFor(model => model.Recipe.DateTime): @Html.DisplayFor(model => model.Recipe.DateTime)</span><br />
-            <span>@Html.DisplayNameFor(model => model.Recipe.ModificationDateTime): @Html.DisplayFor(model => model.Recipe.ModificationDateTime)</span>
+            <span><b>@Html.DisplayNameFor(model => model.Recipe.DateTime):</b> @Html.DisplayFor(model => model.Recipe.DateTime)</span>
+            @if (DateTime.Compare(Model.Recipe.DateTime, Model.Recipe.ModificationDateTime) != 0)
+            {
+                <br /><span><b>@Html.DisplayNameFor(model => model.Recipe.ModificationDateTime):</b> @Html.DisplayFor(model => model.Recipe.ModificationDateTime)</span>
+            }
         </div>
     </div>
 
@@ -63,7 +67,7 @@
     
     <div class="container" style="margin: 20px;">
         <div class="row">
-            <div class="col">
+            <div class="col" style="max-width: 40%">
                 <h5>@Html.DisplayNameFor(model => model.Recipe.Ingredients)</h5>
                 <hr style="margin: 5px 0" />
                 @foreach (var ingredient in Model.Recipe.Ingredients)
@@ -71,7 +75,7 @@
                     <span>@ingredient.Name</span><hr style="margin: 5px 0" />
                 }
             </div>
-            <div class="col">
+            <div class="col" style="max-width: 60%">
                 <h5>@Html.DisplayNameFor(model => model.Recipe.Description)</h5>
                 <span>@Html.DisplayFor(model => model.Recipe.Description)</span>
             </div>

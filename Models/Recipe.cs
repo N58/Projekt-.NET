@@ -19,7 +19,7 @@ namespace PortalKulinarny.Models
         [Display(Name = "Opis wykonania")]
         public string Description { get; set; }
 
-        [Display(Name = "Data")]
+        [Display(Name = "Data dodania")]
         public DateTime DateTime { get; set; }
         [Display(Name = "Data ostatniej modyfikacji")]
         public DateTime ModificationDateTime { get; set; }
