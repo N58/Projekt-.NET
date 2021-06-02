@@ -20,6 +20,7 @@ namespace PortalKulinarny.Data
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Favourite> Favourites { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<CategoryRecipe> CategoryRecipes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,7 +41,7 @@ namespace PortalKulinarny.Data
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Vote>()
                 .HasOne(v => v.User)
-                .WithMany(v => v.Likes)
+                .WithMany(v => v.Votes)
                 .HasForeignKey(v => v.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -57,20 +58,18 @@ namespace PortalKulinarny.Data
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
-            modelBuilder.Entity<Category>()
-                .HasKey(c => new { c.UserId, c.RecipeId });
-            modelBuilder.Entity<Category>()
+            modelBuilder.Entity<CategoryRecipe>()
+                .HasKey(c => new { c.CategoryId, c.RecipeId });
+            modelBuilder.Entity<CategoryRecipe>()
+                .HasOne(c => c.Category)
+                .WithMany(c => c.CategoryRecipes)
+                .HasForeignKey(c => c.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<CategoryRecipe>()
                 .HasOne(c => c.Recipe)
-                .WithMany(c => c.Categories)
+                .WithMany(c => c.CategoryRecipes)
                 .HasForeignKey(c => c.RecipeId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Category>()
-                .HasOne(c => c.User)
-                .WithMany(c => c.Categories)
-                .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }

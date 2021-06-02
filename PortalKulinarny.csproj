@@ -14,6 +14,10 @@
     <Compile Remove="Migrations\20210601183044_snapshot5.Designer.cs" />
     <Compile Remove="Migrations\20210601183142_snapshot5.cs" />
     <Compile Remove="Migrations\20210601183142_snapshot5.Designer.cs" />
+    <Compile Remove="Migrations\20210601183456_snapshot5.cs" />
+    <Compile Remove="Migrations\20210601183456_snapshot5.Designer.cs" />
+    <Compile Remove="Migrations\20210602103816_snapshot6.cs" />
+    <Compile Remove="Migrations\20210602103816_snapshot6.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

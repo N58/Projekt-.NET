@@ -232,20 +232,37 @@ namespace PortalKulinarny.Migrations
 
             modelBuilder.Entity("PortalKulinarny.Models.Category", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId", "RecipeId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("PortalKulinarny.Models.CategoryRecipe", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryId", "RecipeId");
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("CategoryRecipes");
                 });
 
             modelBuilder.Entity("PortalKulinarny.Models.Favourite", b =>
@@ -385,16 +402,23 @@ namespace PortalKulinarny.Migrations
 
             modelBuilder.Entity("PortalKulinarny.Models.Category", b =>
                 {
-                    b.HasOne("PortalKulinarny.Models.Recipe", "Recipe")
-                        .WithMany("Categories")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("PortalKulinarny.Areas.Identity.Data.ApplicationUser", "User")
                         .WithMany("Categories")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("PortalKulinarny.Models.CategoryRecipe", b =>
+                {
+                    b.HasOne("PortalKulinarny.Models.Category", "Category")
+                        .WithMany("CategoryRecipes")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PortalKulinarny.Models.Recipe", "Recipe")
+                        .WithMany("CategoryRecipes")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -438,7 +462,7 @@ namespace PortalKulinarny.Migrations
                         .IsRequired();
 
                     b.HasOne("PortalKulinarny.Areas.Identity.Data.ApplicationUser", "User")
-                        .WithMany("Likes")
+                        .WithMany("Votes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
