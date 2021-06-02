@@ -73,7 +73,7 @@
                                     else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == item.UserId)
                                     {
                                         // Edit button
-                                        <a class="mr-1 d-inline btn-icon blue" asp-page="./Edit" asp-route-id="@item.RecipeId"><i class="fas fa-pen"></i></a>
+                                        <a class="mr-3 d-inline btn-icon blue" asp-page="./Edit" asp-route-id="@item.RecipeId"><i class="fas fa-pen"></i></a>
                                         // Delete button
                                         //<button class="mr-3 d-inline btn-icon red" type="button" data-toggle="modal" data-id="@item.RecipeId" data-target="#deleteModal"><i class="fas fa-trash-alt"></i></button>
                                     }
