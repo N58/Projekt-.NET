@@ -48,6 +48,7 @@ namespace PortalKulinarny.Services
         public async Task<IEnumerable<Category>> GetAsync()
         {
             var categories = await _context.Categories
+                .Include(c => c.CategoryRecipes)
                 .ToListAsync();
             return categories;
         }

@@ -75,7 +75,7 @@
             <div>
                 @foreach (var category in Model.Recipe.CategoryRecipes)
                 {
-                    @Html.Raw($"#{category.Category.Name}, ");
+                    <a href="#" class="badge badge-pill badge-primary">#@category.Category.Name</a>
                 }
             </div>
             <div>

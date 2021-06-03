@@ -22,11 +22,10 @@ namespace PortalKulinarny.Pages.Recipes
         public readonly VoteService _voteService;
         public readonly FavouritiesService _favouritiesService;
         public readonly UserService _userService;
-
-        
+        public readonly CategoryService _categoryService;
 
         public IndexModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
-            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UserService utilsService)
+            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UserService utilsService, CategoryService categoryService)
         {
             _context = context;
             _userManager = userManager;
@@ -34,6 +33,7 @@ namespace PortalKulinarny.Pages.Recipes
             _voteService = voteService;
             _favouritiesService = favouritiesService;
             _userService = utilsService;
+            _categoryService = categoryService;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -41,6 +41,7 @@ namespace PortalKulinarny.Pages.Recipes
         public IList<Recipe> Recipes { get; set; }
         public string UserId { get; set; }
         public IEnumerable<ApplicationUser> Users { get; set; }
+        public IEnumerable<Category> Categories { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -150,6 +151,8 @@ namespace PortalKulinarny.Pages.Recipes
             Recipes = recipes.ToList();
             Users = users.ToList();
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Categories = await _categoryService.GetAsync();
         }
     }
 }
