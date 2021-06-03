@@ -86,7 +86,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            Recipe.ModificationDateTime = DateTime.Now;
+            recipeToUpdate.ModificationDateTime = DateTime.Now;
 
             if (await TryUpdateModelAsync<Recipe>(recipeToUpdate, "Recipe",
                 r => r.Name, r => r.Description, r => r.ModificationDateTime, r => r.CategoryRecipes))
