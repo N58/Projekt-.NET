@@ -35,7 +35,7 @@
                 <input asp-for="NewIngredient.Name" class="form-control" />
                 <span asp-validation-for="NewIngredient.Name" class="text-danger"></span>
             </div>
-            <button asp-page-handler="AddIngredient">Dodaj składnik</button>
+            <button asp-page-handler="AddIngredient" formnovalidate >Dodaj składnik</button>
             <div class="form-group">
                 <input type="submit" asp-page-handler="" value="Create" class="btn btn-primary" />
             </div>

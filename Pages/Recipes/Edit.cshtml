@@ -25,14 +25,14 @@
                 <span asp-validation-for="Recipe.Description" class="text-danger"></span>
             </div>
             @{
-                if (Model.Recipe != null && Model.Recipe.CategoryRecipes != null)
+                if (Model.Recipe != null && Model.Categories != null)
                 {
-                    foreach (var item in Model.Recipe.CategoryRecipes)
+                    foreach (var item in Model.Categories)
                     {
                         <p>
-                            @item.Category.Name
+                            @item.Name
 
-                            <button class="btn-icon red" type="submit" asp-page-handler="Delete" asp-route-id="@item.CategoryId">
+                            <button class="btn-icon red" type="submit" asp-page-handler="Delete" asp-route-id="@item.Id">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </p>
@@ -54,7 +54,7 @@
 </div>
 
 <div>
-    <a href="javascript:history.go(-1)">Back to List</a>
+    <a href="javascript:history.go(-1)">DISKARD CZENCZYSZ</a>
 </div>
 
 @section Scripts {

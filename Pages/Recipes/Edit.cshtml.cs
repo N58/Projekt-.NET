@@ -34,25 +34,33 @@ namespace PortalKulinarny.Pages.Recipes
 
         [BindProperty]
         public Recipe Recipe { get; set; }
-        
+
+        public List<Category> Categories { get; set; }
+
         [BindProperty]
         public int CategoryId { get; set; }
-        private string recipeSessionName = "RecipeEdit";
+        private string categoriesSesionName = "categoriesSesion";
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            _utilsService.RemoveSession(HttpContext, recipeSessionName);
+            _utilsService.RemoveSession(HttpContext, categoriesSesionName);
+
+            Recipe = await _context.Recipes
+                .Include(r => r.CategoryRecipes)
+                .ThenInclude(c => c.Category)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.RecipeId == id);
+
+            var categories = new List<int>();
 
             if (id == null)
             {
                 return NotFound();
             }
 
-            Recipe = await _context.Recipes
-                .Include(r => r.CategoryRecipes)
-                .ThenInclude(c => c.Category)
-                .FirstOrDefaultAsync(r => r.RecipeId == id);
-            _utilsService.SetSession(HttpContext, recipeSessionName, Recipe);
+            Recipe.CategoryRecipes.ToList().ForEach(c => categories.Add(c.CategoryId));
+            
+            _utilsService.SetSession(HttpContext, categoriesSesionName, categories);
 
             if (Recipe == null)
             {
@@ -63,6 +71,7 @@ namespace PortalKulinarny.Pages.Recipes
             if (Recipe.UserId == null || Recipe.UserId != userId)
                 return RedirectToPage("./Index");
 
+            await ReloadAsync(id);
             return Page();
         }
 
@@ -70,63 +79,98 @@ namespace PortalKulinarny.Pages.Recipes
         // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            var recipe = _utilsService.GetSession<Recipe>(HttpContext, recipeSessionName);
-
-            var recipeToUpdate = await _context.Recipes.FindAsync(Recipe.RecipeId);
+            var recipeToUpdate = await _context.Recipes.Include(r => r.CategoryRecipes).FirstOrDefaultAsync(r => r.RecipeId == Recipe.RecipeId);
 
             if (recipeToUpdate == null)
             {
                 return NotFound();
             }
 
-            recipeToUpdate.ModificationDateTime = DateTime.Now;
-            recipeToUpdate.CategoryRecipes = recipe.CategoryRecipes;
+            Recipe.ModificationDateTime = DateTime.Now;
 
-            if (await TryUpdateModelAsync(recipeToUpdate, "Recipe",
+            if (await TryUpdateModelAsync<Recipe>(recipeToUpdate, "Recipe",
                 r => r.Name, r => r.Description, r => r.ModificationDateTime, r => r.CategoryRecipes))
             {
+                UpdateCategories(recipeToUpdate);
+
                 await _context.SaveChangesAsync();
                 return RedirectToPage("./Index");
             }
-
             return RedirectToPage("./Index");
         }
 
-        public async Task<IActionResult> OnPostAddCategoryAsync()
+        public void UpdateCategories(Recipe recipeToUpdate)
         {
-            Recipe = _utilsService.GetSession<Recipe>(HttpContext, recipeSessionName);
-            var Category = await _categoryService.FindAsync(CategoryId);
-            var cat = new CategoryRecipe()
+            var categories = _utilsService.GetSession<List<int>>(HttpContext, categoriesSesionName);
+            if(categories != null)
             {
-                CategoryId = Category.Id,
-                Category = Category,
-                RecipeId = Recipe.RecipeId,
-                Recipe = Recipe
-            };
+                foreach(var categoryId in categories)
+                {
+                    if (recipeToUpdate.CategoryRecipes.FirstOrDefault(c => c.CategoryId == categoryId) == null)
+                    {
+                        recipeToUpdate.CategoryRecipes.Add(new CategoryRecipe { CategoryId = categoryId, RecipeId = recipeToUpdate.RecipeId });
+                    }
+                }
+                foreach (var category in recipeToUpdate.CategoryRecipes)
+                {
+                    if (!categories.Contains(category.CategoryId))
+                    {
+                        CategoryRecipe categoryToRemove = recipeToUpdate.CategoryRecipes.FirstOrDefault(c => c.CategoryId == category.CategoryId);
+                        _context.CategoryRecipes.Remove(categoryToRemove);
+                    }
+                }
+            }
+        }
 
-            if (Recipe.CategoryRecipes == null)
-                Recipe.CategoryRecipes = new List<CategoryRecipe>();
+        public async Task<IActionResult> OnPostAddCategory()
+        {
+            var categories = _utilsService.GetSession<List<int>>(HttpContext, categoriesSesionName);
+            
+            if (categories == null)
+                categories = new List<int>();
 
-            if (Recipe.CategoryRecipes.FirstOrDefault(c => c.CategoryId == cat.CategoryId) == null)
-                Recipe.CategoryRecipes.Add(cat);
+            if (!categories.Contains(CategoryId))
+            {
+                categories.Add(CategoryId);
+            }
 
-            _utilsService.SetSession(HttpContext, recipeSessionName, Recipe);
+            _utilsService.SetSession(HttpContext, categoriesSesionName, categories);
 
+            await ReloadAsync(Recipe.RecipeId);
             return Page(); // reloading page without OnGet()
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            Recipe = _utilsService.GetSession<Recipe>(HttpContext, recipeSessionName);
+            var categories = _utilsService.GetSession<List<int>>(HttpContext, categoriesSesionName);
 
-            var cat = Recipe.CategoryRecipes.FirstOrDefault(c => c.CategoryId == id);
-            if (cat != null)
+            if (categories == null)
+                categories = new List<int>();
+
+            if (categories.Contains(id))
             {
-                Recipe.CategoryRecipes.Remove(cat);
-                _utilsService.SetSession(HttpContext, recipeSessionName, Recipe);
+                categories.Remove(id);
             }
 
+            _utilsService.SetSession(HttpContext, categoriesSesionName, categories);
+
+            await ReloadAsync(Recipe.RecipeId);
             return Page(); // reloading page without OnGet()
+        }
+
+        public async Task ReloadAsync(int? id)
+        {
+            var categories = _utilsService.GetSession<List<int>>(HttpContext, categoriesSesionName);
+
+            Recipe = await _context.Recipes
+                .Include(r => r.CategoryRecipes)
+                .ThenInclude(c => c.Category)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.RecipeId == id);
+
+            Categories = await _context.Categories
+                .Where(c => categories.Contains(c.Id))
+                .ToListAsync();
         }
     }
 }
