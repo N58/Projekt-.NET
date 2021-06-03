@@ -1,0 +1,39 @@
+﻿@page
+@model PortalKulinarny.Areas.Identity.Pages.Account.CategoriesModel
+@{
+}
+<div class="text-center">
+    <form method="post">
+        <input type="text" asp-for="Category.Name" class="form-control w-25" style="margin:auto;" /><br />
+        <input type="submit" value="Dodaj" class="btn btn-primary" />
+    </form>
+</div>
+
+<br />
+
+@foreach (var category in Model.Categories)
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h4>@category.Name</h4>
+                </div>
+                <div class="col-auto float-right">
+                    <div class="row">
+                        <form method="post" class="d-inline">
+                            <button class="btn-icon red" type="submit" asp-page-handler="Delete" asp-route-id="@category.Id">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <h6 class="mr-3 d-inline align-middle">Przepisy: @category.CategoryRecipes.Count</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <br />
+}

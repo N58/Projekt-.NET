@@ -22,7 +22,8 @@ namespace PortalKulinarny.Services
             var Recipe = await _context.Recipes
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
-                //.Include(r => r.Categories)
+                .Include(r => r.CategoryRecipes)
+                .ThenInclude(c => c.Category)
                 .FirstOrDefaultAsync(m => m.RecipeId == id);
             return Recipe;
         }
@@ -32,7 +33,7 @@ namespace PortalKulinarny.Services
             var Recipes = await _context.Recipes
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
-                //.Include(r => r.Categories)
+                .Include(r => r.CategoryRecipes)
                 .Where(m => m.UserId == user.Id)
                 .ToListAsync();
             return Recipes;
@@ -55,7 +56,7 @@ namespace PortalKulinarny.Services
             var recipes = await _context.Recipes
                 .Include(r => r.Ingredients)
                 .Include(r => r.Votes)
-                //.Include(r => r.Categories)
+                .Include(r => r.CategoryRecipes)
                 .Include(r => r.User)
                 .ToListAsync();
             return recipes;

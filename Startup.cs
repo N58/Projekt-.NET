@@ -16,7 +16,8 @@ using System.Threading.Tasks;
 using PortalKulinarny.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PortalKulinarny.Configuration;
-
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace PortalKulinarny
 {
@@ -68,6 +69,8 @@ namespace PortalKulinarny
             services.AddTransient<VoteService>();
             services.AddTransient<FavouritiesService>();
             services.AddTransient<UserService>();
+            services.AddTransient<CategoryService>();
+            services.AddTransient<UtilsService>();
 
             services.AddMemoryCache();
             services.AddSession();

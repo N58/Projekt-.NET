@@ -33,9 +33,14 @@
     </div>
     @if (Model.IsOwner)
     {
-        <div class="col">
-            <a button class="btn btn-primary float-right" role="button" aria-pressed="true" asp-page="/Account/Manage/Index">Zarządzaj kontem</a>
+    <div class="col">
+        <div class="row mb-2 justify-content-end">
+            <a button class="btn btn-primary" role="button" aria-pressed="true" asp-page="/Account/Manage/Index">Zarządzaj kontem</a>
         </div>
+        <div class="row justify-content-end">
+            <a button class="btn btn-primary" role="button" aria-pressed="true" asp-page="/Account/Categories">Zarządzaj kategoriami</a>
+        </div>
+    </div>
     }
 </div>
 <br />

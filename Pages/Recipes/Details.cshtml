@@ -72,7 +72,12 @@
             </div>
         </div>
         <div class="row d-flex justify-content-between">
-            <div>tag1</div>
+            <div>
+                @foreach (var category in Model.Recipe.CategoryRecipes)
+                {
+                    @Html.Raw($"#{category.Category.Name}, ");
+                }
+            </div>
             <div>
                 <h6 class="mr-3 d-inline align-middle">@Html.DisplayNameFor(model => model.Recipe.Rating): @Html.DisplayFor(model => model.Recipe.Rating)</h6>
             </div>

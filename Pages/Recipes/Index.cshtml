@@ -13,10 +13,10 @@
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
-        <a class="nav-link active" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true">Przepisy (@Model.Recipes.Count)</a>
+        <a class="nav-link active" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true">Przepisy <span class="badge bg-primary rounded-pill" style="color: white;">@Model.Recipes.Count</span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">Użytkownicy (@Model.Users.Count())</a>
+        <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">Użytkownicy <span class="badge bg-primary rounded-pill" style="color: white;">@Model.Users.Count()</span></a>
     </li>
 </ul>
 <div class="tab-content">

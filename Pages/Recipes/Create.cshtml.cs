@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using PortalKulinarny.Data;
 using PortalKulinarny.Models;
+using PortalKulinarny.Services;
 
 namespace PortalKulinarny.Pages.Recipes
 {
@@ -19,15 +20,17 @@ namespace PortalKulinarny.Pages.Recipes
     public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly UtilsService _utilsService;
 
-        public CreateModel(ApplicationDbContext context)
+        public CreateModel(ApplicationDbContext context, UtilsService utilsService)
         {
             _context = context;
+            _utilsService = utilsService;
         }
 
         public IActionResult OnGet()
         {
-            RemoveSession(recipeSessionName); // Clearing session when page is new
+            _utilsService.RemoveSession(HttpContext, recipeSessionName); // Clearing session when page is new
             return Page();
         }
 
@@ -43,7 +46,7 @@ namespace PortalKulinarny.Pages.Recipes
         {
             if (ModelState.IsValid)
             {
-                Recipe = GetSession<Recipe>(recipeSessionName);
+                Recipe = _utilsService.GetSession<Recipe>(HttpContext, recipeSessionName);
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 Recipe.UserId = userId;
                 Recipe.DateTime = DateTime.Now;
@@ -56,46 +59,22 @@ namespace PortalKulinarny.Pages.Recipes
                 {
                     _context.Recipes.Add(Recipe);
                     await _context.SaveChangesAsync();
-                    RemoveSession(recipeSessionName);
                     return RedirectToPage("./Index");
                 }
-
-                RemoveSession(recipeSessionName);
                 return RedirectToPage("./Index");
             }
-
-            RemoveSession(recipeSessionName);
             return RedirectToPage("./Index");
         }
 
         public IActionResult OnPostAddIngredient()
         {
-            Recipe = GetSession<Recipe>(recipeSessionName);
+            Recipe = _utilsService.GetSession<Recipe>(HttpContext, recipeSessionName);
             if (Recipe.Ingredients == null)
                 Recipe.Ingredients = new List<Ingredient>();
             Recipe.Ingredients.Add(NewIngredient);
-            SetSession(recipeSessionName, Recipe);
+            _utilsService.SetSession(HttpContext, recipeSessionName, Recipe);
 
             return Page(); // reloading page without OnGet()
-        }
-
-        private T GetSession<T>(string name) where T : new()
-        {
-            var jsonSession = HttpContext.Session.GetString(name);
-            if (jsonSession != null)
-                return JsonConvert.DeserializeObject<T>(jsonSession);
-            else
-                return new T();
-        }
-
-        private void SetSession(string name, object obj)
-        {
-            HttpContext.Session.SetString(name, JsonConvert.SerializeObject(obj));
-        }
-
-        private void RemoveSession(string name)
-        {
-            HttpContext.Session.Remove(name);
         }
     }
 }

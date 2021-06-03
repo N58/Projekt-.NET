@@ -1,6 +1,6 @@
 ﻿@page
 @model PortalKulinarny.Pages.Recipes.EditModel
-
+@using PortalKulinarny.Models;
 @{
     ViewData["Title"] = "Edit";
 }
@@ -24,8 +24,30 @@
                 <input asp-for="Recipe.Description" class="form-control" />
                 <span asp-validation-for="Recipe.Description" class="text-danger"></span>
             </div>
+            @{
+                if (Model.Recipe != null && Model.Recipe.CategoryRecipes != null)
+                {
+                    foreach (var item in Model.Recipe.CategoryRecipes)
+                    {
+                        <p>
+                            @item.Category.Name
+
+                            <button class="btn-icon red" type="submit" asp-page-handler="Delete" asp-route-id="@item.CategoryId">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </p>
+                    }
+                }
+
+            }
+            @{
+                var SelectList = new SelectList(await Model._categoryService.GetAsync(), "Id", "Name");
+            }
+            <select asp-for="CategoryId" asp-items="@SelectList">
+            </select>
+            <button class="btn btn-primary" asp-page-handler="AddCategory">Dodaj kategorię</button>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" asp-page-handler="" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
