@@ -17,6 +17,7 @@ namespace PortalKulinarny.Models
 
         [Required(ErrorMessage = "Musisz podać opis wykonania!")]
         [Display(Name = "Opis wykonania")]
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
         [Display(Name = "Data dodania")]

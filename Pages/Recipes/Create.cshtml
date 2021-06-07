@@ -13,6 +13,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.EditorFor(model => model.Recipe.Description, new { htmlAttributes = new { rows = "10" } })
             <div class="form-group">
                 <label asp-for="Recipe.Name" class="control-label"></label>
                 <input asp-for="Recipe.Name" class="form-control" />
@@ -20,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Recipe.Description" class="control-label"></label>
-                <input asp-for="Recipe.Description" class="form-control" />
+                <textarea asp-for="Recipe.Description" class="form-control" ></textarea>
                 <span asp-validation-for="Recipe.Description" class="text-danger"></span>
             </div>
             @if (Model.Recipe != null && Model.Recipe.Ingredients != null)
@@ -35,7 +36,7 @@
                 <input asp-for="NewIngredient.Name" class="form-control" />
                 <span asp-validation-for="NewIngredient.Name" class="text-danger"></span>
             </div>
-            <button class="btn btn-primary mb-4" asp-page-handler="AddIngredient" formnovalidate >Dodaj składnik</button>
+            <button class="btn btn-primary mb-4" asp-page-handler="AddIngredient" formnovalidate>Dodaj składnik</button>
             <div class="form-group">
                 <input type="submit" asp-page-handler="" value="Create" class="btn btn-primary" />
             </div>
