@@ -44,5 +44,6 @@ namespace PortalKulinarny.Models
         public ICollection<Favourite> Favourites { get; set; }
         public ICollection<Vote> Votes { get; set; }
         public ICollection<CategoryRecipe> CategoryRecipes { get; set; }
+        public ICollection<Image> Images { get; set; }
     }
 }
