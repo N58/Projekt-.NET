@@ -19,5 +19,13 @@ namespace PortalKulinarny.Models
         public IFormFile ImageFile { get; set; }
         public int RecipeId { get; set; }
         public Recipe Recipe { get; set; }
+
+        [NotMapped]
+        public string URL { get => GetUrl(); }
+
+        public string GetUrl()
+        {
+            return "~/Images/" + Name;
+        }
     }
 }

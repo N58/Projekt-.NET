@@ -11,9 +11,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @Html.EditorFor(model => model.Recipe.Description, new { htmlAttributes = new { rows = "10" } })
             <div class="form-group">
                 <label asp-for="Recipe.Name" class="control-label"></label>
                 <input asp-for="Recipe.Name" class="form-control" />
@@ -21,25 +20,60 @@
             </div>
             <div class="form-group">
                 <label asp-for="Recipe.Description" class="control-label"></label>
-                <textarea asp-for="Recipe.Description" class="form-control" ></textarea>
+                <textarea asp-for="Recipe.Description" class="form-control"></textarea>
                 <span asp-validation-for="Recipe.Description" class="text-danger"></span>
             </div>
-            @if (Model.Recipe != null && Model.Recipe.Ingredients != null)
+            @if (Model.Ingredients != null)
             {
-                @foreach (var item in Model.Recipe.Ingredients)
+                @foreach (var item in Model.Ingredients)
                 {
-                    <p>@item.Name id: @item.Id</p>
+                    <p>
+                        @item
+
+                        <button class="btn-icon red" type="submit" asp-page-handler="DeleteIngredient" asp-route-name="@item" formnovalidate>
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </p>
                 }
             }
             <div class="form-group">
-                <label asp-for="NewIngredient.Name" class="control-label"></label>
-                <input asp-for="NewIngredient.Name" class="form-control" />
-                <span asp-validation-for="NewIngredient.Name" class="text-danger"></span>
+                <label asp-for="NewIngredient" class="control-label"></label>
+                <input asp-for="NewIngredient" class="form-control" />
             </div>
-            <button class="btn btn-primary mb-4" asp-page-handler="AddIngredient" formnovalidate>Dodaj składnik</button>
-            <div class="form-group">
-                <input type="submit" asp-page-handler="" value="Create" class="btn btn-primary" />
+            <div>
+                <button class="btn btn-primary mb-4" asp-page-handler="AddIngredient" formnovalidate>Dodaj składnik</button>
+                <div>
+                    @if (Model.CategoriesId != null)
+                    {
+                        foreach (var item in Model.Categories)
+                        {
+                            <p>
+                                @item.Name
+
+                                <button class="btn-icon red" type="submit" formnovalidate asp-page-handler="DeleteCategory" asp-route-id="@item.Id">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>*
+                            </p>
+                        }
+                    }
+                    @{
+                        var SelectList = new SelectList(await Model._categoryService.GetAsync(), "Id", "Name");
+                    }
+                </div>
+                <select asp-for="NewCategory" asp-items="@SelectList">
+                </select>
+                <button class="btn btn-primary" asp-page-handler="AddCategory" formnovalidate>Dodaj kategorię</button>
+                <div class="form-group">
+                    <input type="submit" asp-page-handler="" value="Create" class="btn btn-primary" />
+                </div>
+
+                <div>
+                    <label asp-for="@Model.Recipe.Gallery" class="control-label"></label>
+                    <input asp-for="@Model.Recipe.Gallery" accept="image/png, image/jpg">
+                    <span asp-validation-for="@Model.Recipe.Gallery" class="text-danger"></span>
+                </div>
             </div>
+
         </form>
     </div>
 </div>

@@ -119,6 +119,7 @@
             <li data-target="#carouselImages" data-slide-to="3"></li>
         </ol>
         <div class="carousel-inner">
+
             <div class="carousel-item active">
                 <img class="carousel-img rounded d-block w-100" src="https://ocdn.eu/pulscms-transforms/1/-E1k9kpTURBXy9jMzFlODhjYzk4YmMxNDhiODMyMzFiMzQ2ZGM2ZWI5My5qcGeTlQMAQs0ISc0EqZMFzQMUzQG8kwmmMjVhMjIxBoGhMAE/kotlet-schabowy.jpg">
             </div>
@@ -141,6 +142,12 @@
             <span class="sr-only">Następny</span>
         </a>
     </div>
+    @foreach (var image in Model.Recipe.Images)
+    {
+        <div>
+            <img class="carousel-img rounded d-block w-100" src="@image.URL" asp-append-version="true">
+        </div>
+    }
     <!--<img class="rounded  " style="margin: 20px; max-width: 100%;" src="" alt="Card image cap">-->
     <!-- Content segment -->
     <div class="container" style="margin: 20px;">

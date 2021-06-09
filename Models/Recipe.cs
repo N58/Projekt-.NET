@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using PortalKulinarny.Areas.Identity.Data;
 
 namespace PortalKulinarny.Models
@@ -45,5 +46,7 @@ namespace PortalKulinarny.Models
         public ICollection<Vote> Votes { get; set; }
         public ICollection<CategoryRecipe> CategoryRecipes { get; set; }
         public ICollection<Image> Images { get; set; }
+        [NotMapped]
+        public IFormFileCollection Gallery { get; set; }
     }
 }
