@@ -7,6 +7,7 @@ using PortalKulinarny.Data;
 using PortalKulinarny.Models;
 using PortalKulinarny.Services;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -17,6 +18,7 @@ namespace PortalKulinarny.Pages.Recipes
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly UtilsService _utilsService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly DatabaseRecipesService _recipesService;
         public readonly VoteService _voteService;
@@ -24,27 +26,35 @@ namespace PortalKulinarny.Pages.Recipes
         public readonly UserService _userService;
         public readonly CategoryService _categoryService;
 
-        public IndexModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
-            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UserService utilsService, CategoryService categoryService)
+        public IndexModel(ApplicationDbContext context,
+            UtilsService utilsService, UserManager<ApplicationUser> userManager,
+            DatabaseRecipesService recipesService, VoteService voteService, 
+            FavouritiesService favouritiesService, UserService userService,
+            CategoryService categoryService)
         {
             _context = context;
+            _utilsService = utilsService;
             _userManager = userManager;
             _recipesService = recipesService;
             _voteService = voteService;
             _favouritiesService = favouritiesService;
-            _userService = utilsService;
+            _userService = userService;
             _categoryService = categoryService;
         }
 
         [BindProperty(SupportsGet = true)]
+        [Display(Name = "Szukajka")]
         public string Search { get; set; }
         public IList<Recipe> Recipes { get; set; }
         public string UserId { get; set; }
         public IEnumerable<ApplicationUser> Users { get; set; }
         public IEnumerable<Category> Categories { get; set; }
 
+        private string SearchSession = "SearchSession";
+
         public async Task OnGetAsync()
         {
+            _utilsService.SetSession(HttpContext, SearchSession, Search);
             await LoadAsync();
         }
 
@@ -133,27 +143,44 @@ namespace PortalKulinarny.Pages.Recipes
             return RedirectToPage("./Index");
         }
 
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                return RedirectToPage("./Index", new { Search = Search });
+            }
+            await LoadAsync();
+            return Page();
+        }
+
         public async Task LoadAsync()
         {
             CultureInfo culture = CultureInfo.CurrentCulture;
+
+            Search = _utilsService.GetSessionString(HttpContext, SearchSession);
+
             var recipes = from n in await _recipesService.GetRecipesAsync()
                           select n;
 
             var users = from u in await _userService.GetUsersAsync()
                         select u;
 
+            var categories = from c in await _categoryService.GetAsync()
+                            select c;
+
             if (!string.IsNullOrWhiteSpace(Search))
             {
                 recipes = recipes.Where(s => (culture.CompareInfo.IndexOf(s.Name, Search, CompareOptions.IgnoreCase) >= 0));
                 users = users.Where(s => (culture.CompareInfo.IndexOf(s.UserName, Search, CompareOptions.IgnoreCase) >= 0));
+                categories = categories.Where(s => (culture.CompareInfo.IndexOf(s.Name, Search, CompareOptions.IgnoreCase) >= 0));
             }
 
             Recipes = recipes.OrderByDescending(r => r.DateTime).ToList();
             Users = users.OrderBy(u => u.UserName).ToList();
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            Categories = await _categoryService.GetAsync();
-            Categories.OrderBy(c => c.Name);
+            Categories = categories.OrderBy(c => c.Name);
+
         }
     }
 }

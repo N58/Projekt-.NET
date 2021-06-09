@@ -27,6 +27,19 @@ namespace PortalKulinarny.Services
                 return new T();
         }
 
+        public string GetSessionString(HttpContext ctx, string name)
+        {
+            var jsonSession = ctx.Session.GetString(name);
+            if (jsonSession != null)
+                return JsonConvert.DeserializeObject<string>(jsonSession, new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }
+                );
+            else
+                return null;
+        }
+
         public void SetSession(HttpContext ctx,  string name, object obj)
         {
             ctx.Session.SetString(name, JsonConvert.SerializeObject(obj, new JsonSerializerSettings()

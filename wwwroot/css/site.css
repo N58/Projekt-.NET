@@ -236,6 +236,14 @@ a.badge-red:focus, a.badge-red:hover {
     color: white;
 }
 
+.search2 {
+    background: none;
+    border: none;
+    border-bottom: .1em solid #dc3545;
+    color: black;
+}
+
+
     .search::placeholder {
         color: white;
         opacity: 0.5;
