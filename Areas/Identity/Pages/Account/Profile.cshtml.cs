@@ -23,6 +23,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
         }
 
         public ApplicationUser AppUser { get; set; }
+        public List<Recipe> Recipes { get; set; }
         public bool IsOwner { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -42,7 +43,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
 
             AppUser = user;
 
-            AppUser.Recipes.OrderByDescending(r => r.DateTime);
+            Recipes = AppUser.Recipes.OrderByDescending(r => r.DateTime).ToList();
 
             return Page();
         }

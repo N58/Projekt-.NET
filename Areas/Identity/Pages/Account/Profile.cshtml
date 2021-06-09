@@ -68,7 +68,7 @@
                         <h4 style="margin-bottom: 24px;">Użytkownik @Model.AppUser.UserName nie dodał żadnego przepisu.</h4>
                     }
                 }
-                @foreach (var recipe in Model.AppUser.Recipes)
+                @foreach (var recipe in Model.Recipes)
                 {
                     <div class="col-auto mb-3">
                         <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@recipe.RecipeId">

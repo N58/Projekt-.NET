@@ -184,8 +184,9 @@ namespace PortalKulinarny.Pages.Recipes
             {
                 foreach(var image in NewImages)
                 {
-                    recipeToUpdate.Images.Add(new Image { Name = image.FileName });
-                    await _imagesService.UploadImage(image, recipeToUpdate.Name);
+                    var name = await _imagesService.UploadImage(image, recipeToUpdate.Name);
+                    recipeToUpdate.Images.Add(new Image { Name = name });
+                    
                 }
             }
         }
