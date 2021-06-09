@@ -59,9 +59,6 @@ namespace PortalKulinarny.Pages.Recipes
         }
 
         
-
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)
@@ -86,7 +83,7 @@ namespace PortalKulinarny.Pages.Recipes
                     _context.Recipes.Add(Recipe);
                     await AddListsToDb();
                     await _context.SaveChangesAsync();
-                    return RedirectToPage("./Index");
+                    return RedirectToPage("./Details", new { id = Recipe.RecipeId});
                 }
                 return RedirectToPage("./Index");
             }

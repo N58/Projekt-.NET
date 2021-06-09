@@ -33,6 +33,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
                 return NotFound($"Unable to load user with ID '{id}'.");
             }
 
+
             if (id == User.FindFirstValue(ClaimTypes.NameIdentifier))
             {
                 IsOwner = true;
@@ -40,6 +41,9 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
             else IsOwner = false;
 
             AppUser = user;
+
+            AppUser.Recipes.OrderByDescending(r => r.DateTime);
+
             return Page();
         }
     }

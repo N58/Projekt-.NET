@@ -52,8 +52,6 @@ namespace PortalKulinarny.Pages.Recipes
         [BindProperty]
         public IFormFileCollection NewImages { get; set; }
 
-        public int RecipeId { get; set; }
-
         private string IngredientsSession = "ingredientSession";
         private string CategoriesSession = "categoriesSession";
         private string ImagesSession = "imagesSession";
@@ -90,12 +88,12 @@ namespace PortalKulinarny.Pages.Recipes
 
             Images = new List<Image>(Recipe.Images);
 
-            RecipeId = Recipe.RecipeId;
+            var recipeId = Recipe.RecipeId;
 
             _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
             _utilsService.SetSession(HttpContext, ImagesSession, Images);
             _utilsService.SetSession(HttpContext, IngredientsSession, Ingredients);
-            _utilsService.SetSession(HttpContext, RecipeIdSession, RecipeId);
+            _utilsService.SetSession(HttpContext, RecipeIdSession, recipeId);
 
             await RefreshCategoriesAsync();
             return Page();
@@ -124,7 +122,7 @@ namespace PortalKulinarny.Pages.Recipes
                 await UpdateLists(recipeToUpdate);
                 recipeToUpdate.ModificationDateTime = DateTime.Now;
                 await _context.SaveChangesAsync();
-                return RedirectToPage("./Index");
+                return RedirectToPage("./Details", new { id = recipeId });
             }
             return RedirectToPage("./Index");
         }
@@ -268,7 +266,7 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, ImagesSession, Images);
 
             await RefreshPageModelsAsync();
-            return Page(); // reloading page without OnGet()
+            return Page();
         }
 
         public async Task RefreshPageModelsAsync()
@@ -277,7 +275,6 @@ namespace PortalKulinarny.Pages.Recipes
             Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientsSession);
             Images = _utilsService.GetSession<List<Image>>(HttpContext, ImagesSession);
 
-            //Recipe = await _recipeService.FindByIdAsync(id);
             await RefreshCategoriesAsync();
         }
 
