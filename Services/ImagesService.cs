@@ -16,12 +16,12 @@ namespace PortalKulinarny.Services
         {
             _hostEnvironment = hostEnvironmen;
         }
-        public async Task<string> UploadImage(IFormFile file, string Name)
+        public async Task<string> UploadImage(IFormFile file, string recipeName)
         {
             string wwwRootPath = _hostEnvironment.WebRootPath;
             string fileName = Path.GetFileNameWithoutExtension(file.FileName);
             string extension = Path.GetExtension(file.FileName);
-            var filenameCombined = Name + "_" + fileName + "_" + DateTime.Now.ToString("yymmssfff") + extension;
+            var filenameCombined = recipeName + "_" + fileName + "_" + DateTime.Now.ToString("yymmssfff") + extension;
             var path = Path.Combine(wwwRootPath + "/Images/", filenameCombined);
 
             using (var fileStream = new FileStream(path, FileMode.Create))
