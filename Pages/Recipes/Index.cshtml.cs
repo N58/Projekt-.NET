@@ -148,11 +148,12 @@ namespace PortalKulinarny.Pages.Recipes
                 users = users.Where(s => (culture.CompareInfo.IndexOf(s.UserName, Search, CompareOptions.IgnoreCase) >= 0));
             }
 
-            Recipes = recipes.ToList();
-            Users = users.ToList();
+            Recipes = recipes.OrderByDescending(r => r.DateTime).ToList();
+            Users = users.OrderBy(u => u.UserName).ToList();
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             Categories = await _categoryService.GetAsync();
+            Categories.OrderBy(c => c.Name);
         }
     }
 }
