@@ -73,7 +73,14 @@
                     <div class="col-auto mb-3">
                         <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@recipe.RecipeId">
                             <div class="card border-dark" style="width: 21rem; text-align: left;">
-                                <img class="card-img-top card-img-c" src="https://www.pyszne.pl/foodwiki/uploads/sites/7/2018/03/kebab-2.jpg">
+                                @if (recipe.Images.Count <= 0)
+                                {
+                                    <img class="card-img-top card-img-c" src="~/imagePlaceholder.jpg" asp-append-version="true" />
+                                }
+                                else
+                                {
+                                    <img class="card-img-top card-img-c" src="@recipe.Images.FirstOrDefault().URL" asp-append-version="true" />
+                                }
                                 <div class="card-body">
                                     <h5 class="card-title">@recipe.Name</h5>
                                     <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Rating</h6>
@@ -106,7 +113,14 @@
                     <div class="col-auto mb-3">
                         <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@favourite.RecipeId">
                             <div class="card border-dark" style="width: 21rem; text-align: left;">
-                                <img class="card-img-top card-img-c" src="https://ocdn.eu/pulscms-transforms/1/_3gk9kpTURBXy82NWMxYTJhYTgzOTRiNmU0ZjIwMDIzYmQ2NjViNDA0Ni5qcGeTlQMAzL_NF-vNDXSTBc0DFM0BvJMJpjRlODNmNQaBoTAB/kebab.jpg">
+                                @if (favourite.Recipe.Images.Count <= 0)
+                                {
+                                    <img class="card-img-top card-img-c" src="~/imagePlaceholder.jpg" asp-append-version="true" />
+                                }
+                                else
+                                {
+                                    <img class="card-img-top card-img-c" src="@favourite.Recipe.Images.FirstOrDefault().URL" asp-append-version="true" />
+                                }
                                 <div class="card-body">
                                     <h5 class="card-title">@favourite.Recipe.Name</h5>
                                     <h6 class="card-subtitle mb-2 text-muted">Ocena: @favourite.Recipe.Rating</h6>

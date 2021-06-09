@@ -70,11 +70,11 @@
                     <button class="btn btn-red" asp-page-handler="AddCategory" formnovalidate>Dodaj kategorię</button>
                 </div>
             </div>
-            <div>
+            <div class="row">
                 @foreach (var image in Model.Images)
                 {
-                    <div style="position:relative">
-                        <img src="@image.URL" asp-append-version="true" alt="Preview">
+                    <div class="col-auto mb-3 custom-div-image">
+                        <img class="custom-image" src="@image.URL" asp-append-version="true" alt="Preview">
                         <button class="remove-image" type="submit" formnovalidate asp-page-handler="DeleteImage" asp-route-id="@image.ImageId" style="display:inline;">&#215;</button>
                     </div>
                 }

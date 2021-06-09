@@ -36,9 +36,14 @@ namespace PortalKulinarny.Services
                 .ThenInclude(r => r.User)
                 .Include(u => u.Favourites)
                 .ThenInclude(f => f.Recipe)
+                .ThenInclude(r => r.Images)
+                .Include(u => u.Favourites)
+                .ThenInclude(f => f.Recipe)
                 .ThenInclude(r => r.Votes)
                 .Include(u => u.Recipes)
                 .ThenInclude(r => r.Votes)
+                .Include(u => u.Recipes)
+                .ThenInclude(r => r.Images)
                 .FirstOrDefaultAsync(u => u.Id == userId);
             return user;
         }

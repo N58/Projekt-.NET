@@ -5,6 +5,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using PortalKulinarny.Data;
 using PortalKulinarny.Models;
 using PortalKulinarny.Services;
 
@@ -12,15 +14,17 @@ namespace PortalKulinarny.Pages
 {
     public class TagsModel : PageModel
     {
+        private readonly ApplicationDbContext _context;
         private readonly DatabaseRecipesService _recipesService;
         public readonly VoteService _voteService;
         public readonly UserService _userService;
         public readonly FavouritiesService _favouritiesService;
         public readonly CategoryService _categoryService;
 
-        public TagsModel(DatabaseRecipesService recipesService, VoteService voteService, UserService userService,
+        public TagsModel(ApplicationDbContext context, DatabaseRecipesService recipesService, VoteService voteService, UserService userService,
             FavouritiesService favouritiesService, CategoryService categoryService)
         {
+            _context = context;
             _recipesService = recipesService;
             _voteService = voteService;
             _userService = userService;
@@ -42,6 +46,28 @@ namespace PortalKulinarny.Pages
             await LoadAsync(id);
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostFavouritiesAsync(int id, int favid)
+        {
+            var recipeAdded = await _recipesService.FindByIdAsync(favid);
+
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userAdding = await _context.Users.Include(u => u.Favourites).FirstOrDefaultAsync(u => u.Id == userID);
+
+            try
+            {
+                await _favouritiesService.AddRemoveFav(recipeAdded, userAdding);
+            }
+            catch
+            {
+                //todo better exception handling??
+                return RedirectToPage("/Error");
+            }
+
+            await LoadAsync(id);
+            return Page();
+
         }
 
         public async Task LoadAsync(int? id)

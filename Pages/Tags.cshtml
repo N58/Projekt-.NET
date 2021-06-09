@@ -21,7 +21,7 @@
                                 obrazek
                             </div>
                             <div class="col">
-                                <h4><a class="a-link" asp-page="./Details" asp-route-id="@item.RecipeId">@Html.DisplayFor(modelItem => item.Name)</a></h4>
+                                <h4><a class="a-link" asp-page="./Recipes/Details" asp-route-id="@item.RecipeId">@Html.DisplayFor(modelItem => item.Name)</a></h4>
                                 <h6>@Html.DisplayNameFor(model => model.Recipes[0].UserId): <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@item.UserId">@await Model._userService.GetUserName(item.UserId)</a></h6>
                                 <h8>@Html.DisplayNameFor(model => model.Recipes[0].DateTime): @Html.DisplayFor(modelItem => item.DateTime)</h8>
                             </div>
@@ -60,26 +60,28 @@
                                             </form>
                                         }
                                     }
+                                    @*
                                     else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == item.UserId)
                                     {
                                         // Edit button
-                                        <a class="mr-3 d-inline btn-icon blue" asp-page="./Edit" asp-route-id="@item.RecipeId"><i class="fas fa-pen"></i></a>
+                                        <a class="mr-3 d-inline btn-icon blue" asp-page="./Recipes/Edit" asp-route-id="@item.RecipeId"><i class="fas fa-pen"></i></a>
                                         // Delete button
                                         //<button class="mr-3 d-inline btn-icon red" type="button" data-toggle="modal" data-id="@item.RecipeId" data-target="#deleteModal"><i class="fas fa-trash-alt"></i></button>
                                     }
+                                    *@
 
                                     @if (!String.IsNullOrWhiteSpace(Model.UserId))
                                     {
                                         @if (await Model._favouritiesService.FindFavouriteAsync(item.RecipeId, Model.UserId) == null)
                                         {
                                             <form class="d-inline" method="post">
-                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-id="@item.RecipeId"><i class="far fa-heart"></i></button>
+                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-favid="@item.RecipeId"><i class="far fa-heart"></i></button>
                                             </form>
                                         }
                                         else
                                         {
                                             <form class="d-inline" method="post">
-                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-id="@item.RecipeId"><i class="fas fa-heart"></i></button>
+                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-favid="@item.RecipeId"><i class="fas fa-heart"></i></button>
                                             </form>
                                         }
 

@@ -30,7 +30,14 @@
             <div class="col-auto mb-3">
                 <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@recipe.RecipeId">
                     <div class="card border-dark" style="width: 21rem;">
-                        <img class="card-img-top card-img-c" src="https://restaumatic.imgix.net/uploads/accounts/36075/media_library/69ce8185-a3e7-4622-b8cf-4e49134d591e.jpg?auto=compress&blur=0&crop=focalpoint&fit=max&fp-x=0.5&fp-y=0.5&h=1080&rect=0%2C0%2C2000%2C1049&w=1920">
+                        @if (recipe.Images.Count <= 0)
+                        {
+                            <img class="card-img-top card-img-c" src="~/imagePlaceholder.jpg" asp-append-version="true" />
+                        }
+                        else
+                        {
+                            <img class="card-img-top card-img-c" src="@recipe.Images.FirstOrDefault().URL" asp-append-version="true" />
+                        }
                         <div class="card-body">
                             <h5 class="card-title">@recipe.Name</h5>
                             <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Rating</h6>
