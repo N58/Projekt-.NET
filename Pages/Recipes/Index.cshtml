@@ -35,7 +35,13 @@
                             <div class="col">
                                 <h4><a class="a-link" asp-page="./Details" asp-route-id="@item.RecipeId">@Html.DisplayFor(modelItem => item.Name)</a></h4>
                                 <h6>@Html.DisplayNameFor(model => model.Recipes[0].UserId): <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@item.UserId">@await Model._userService.GetUserName(item.UserId)</a></h6>
-                                <h8>@Html.DisplayNameFor(model => model.Recipes[0].DateTime): @Html.DisplayFor(modelItem => item.DateTime)</h8>
+                                <h8>@Html.DisplayNameFor(model => model.Recipes[0].DateTime): @Html.DisplayFor(modelItem => item.DateTime)</h8><br />
+                                <div>
+                                    @foreach (var category in item.CategoryRecipes)
+                                    {
+                                        <a class="badge badge-pill badge-red" asp-page="../Tags" asp-route-id="@category.CategoryId">#@category.Category.Name</a>
+                                    }
+                                </div>
                             </div>
                             <div class="col-auto float-right">
                                 <div>

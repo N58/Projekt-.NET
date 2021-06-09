@@ -103,13 +103,8 @@
 
 <script>
     $('#inputfile').on('change', function (e) {
-        var files = [];
-        for (var i = 0; i < $(this)[0].files.length; i++) {
-            files.push($(this)[0].files[i].name);
-        }
-        if ($(this)[0].files.length == 0)
-            files = "Wybierz zdjęcie...";
-        $(this).next('.custom-file-label').html(files.join(', '));
+        var fileName = $(this).val().replace('C:\\fakepath\\', " ");;
+        $(this).next('.custom-file-label').html(fileName);
     })
 </script>
 
