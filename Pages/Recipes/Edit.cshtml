@@ -81,7 +81,7 @@
             </div>
             <div class="form-group" style="max-width: 30%">
                 <div class="custom-file">
-                    <input asp-for="NewImages" id="inputfile" class="custom-file-input" accept="image/png, image/jpg" />
+                    <input asp-for="NewImages" id="inputfile" class="custom-file-input" accept="image/*" />
                     <label asp-for="NewImages" class="custom-file-label"></label>
                     <span asp-validation-for="NewImages" class="invalid-feedback"></span>
                 </div>
