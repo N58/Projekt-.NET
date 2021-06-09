@@ -25,6 +25,7 @@
                             <button class="btn-icon red" type="submit" asp-page-handler="Delete" asp-route-id="@category.Id">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
+                            <a class="mr-3 d-inline btn-icon blue" asp-page="./EditCategory" asp-route-id="@category.Id"><i class="fas fa-pen"></i></a>
                         </form>
                     </div>
                     <div class="row">
