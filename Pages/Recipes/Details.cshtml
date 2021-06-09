@@ -75,7 +75,7 @@
             <div>
                 @foreach (var category in Model.Recipe.CategoryRecipes)
                 {
-                    <a href="#" class="badge badge-pill badge-red">#@category.Category.Name</a>
+                    <a class="badge badge-pill badge-red" asp-page="../Tags" asp-route-id="@category.CategoryId">#@category.Category.Name</a>
                 }
             </div>
             <div>
@@ -113,25 +113,50 @@
     <!-- Image segment -->
     <div id="carouselImages" class="carousel-static carousel slide mx-auto d-block" data-ride="carousel" style="margin: 20px;">
         <ol class="carousel-indicators">
-            <li data-target="#carouselImages" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselImages" data-slide-to="1"></li>
-            <li data-target="#carouselImages" data-slide-to="2"></li>
-            <li data-target="#carouselImages" data-slide-to="3"></li>
+            @if (Model.Recipe.Images.Count > 0)
+            {
+                @for (int i = 0; i < Model.Recipe.Images.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        <li data-target="#carouselImages" data-slide-to="@i" class="active"></li>
+                    }
+                    else
+                    {
+                        <li data-target="#carouselImages" data-slide-to="@i"></li>
+                    }
+                }
+            }
+            else
+            {
+                <li data-target="#carouselImages" data-slide-to="0" class="active"></li>
+            }
         </ol>
         <div class="carousel-inner">
-
-            <div class="carousel-item active">
-                <img class="carousel-img rounded d-block w-100" src="https://ocdn.eu/pulscms-transforms/1/-E1k9kpTURBXy9jMzFlODhjYzk4YmMxNDhiODMyMzFiMzQ2ZGM2ZWI5My5qcGeTlQMAQs0ISc0EqZMFzQMUzQG8kwmmMjVhMjIxBoGhMAE/kotlet-schabowy.jpg">
-            </div>
-            <div class="carousel-item">
-                <img class="carousel-img rounded d-block w-100" src="https://restaumatic.imgix.net/uploads/accounts/36075/media_library/69ce8185-a3e7-4622-b8cf-4e49134d591e.jpg?auto=compress&blur=0&crop=focalpoint&fit=max&fp-x=0.5&fp-y=0.5&h=1080&rect=0%2C0%2C2000%2C1049&w=1920">
-            </div>
-            <div class="carousel-item">
-                <img class="carousel-img rounded d-block w-100" src="https://ocdn.eu/pulscms-transforms/1/_3gk9kpTURBXy82NWMxYTJhYTgzOTRiNmU0ZjIwMDIzYmQ2NjViNDA0Ni5qcGeTlQMAzL_NF-vNDXSTBc0DFM0BvJMJpjRlODNmNQaBoTAB/kebab.jpg">
-            </div>
-            <div class="carousel-item">
-                <img class="carousel-img rounded d-block w-100" src="https://www.pyszne.pl/foodwiki/uploads/sites/7/2018/03/kebab-2.jpg">
-            </div>
+            @if (Model.Recipe.Images.Count > 0)
+            {
+                @foreach (var item in Model.Recipe.Images.Select((value, i) => new { i, value }))
+                {
+                    if (item.i == 0)
+                    {
+                        <div class="carousel-item active">
+                            <img class="carousel-img rounded d-block w-100" src="@item.value.URL" asp-append-version="true">
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="carousel-item">
+                            <img class="carousel-img rounded d-block w-100" src="@item.value.URL" asp-append-version="true">
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                <div class="carousel-item active">
+                    <img class="carousel-img rounded d-block w-100" src="~/imagePlaceholder.jpg" asp-append-version="true">
+                </div>
+            }
         </div>
         <a class="carousel-control-prev" href="#carouselImages" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -142,18 +167,20 @@
             <span class="sr-only">Następny</span>
         </a>
     </div>
-    @foreach (var image in Model.Recipe.Images)
-    {
-        <div>
-            <img class="carousel-img rounded d-block w-100" src="@image.URL" asp-append-version="true">
-        </div>
-    }
-    @if (Model.Recipe.Images.Count == 0)
-    {
-        <div>
-            <img class="carousel-img rounded d-block w-100" src="~/imagePlaceholder.jpg" asp-append-version="true">
-        </div>
-    }
+    @*
+        @foreach (var image in Model.Recipe.Images)
+        {
+            <div>
+                <img class="carousel-img rounded d-block w-100" src="@image.URL" asp-append-version="true">
+            </div>
+        }
+        @if (Model.Recipe.Images.Count == 0)
+        {
+            <div>
+                <img class="carousel-img rounded d-block w-100" src="~/imagePlaceholder.jpg" asp-append-version="true">
+            </div>
+        }
+    *@
     <!--<img class="rounded  " style="margin: 20px; max-width: 100%;" src="" alt="Card image cap">-->
     <!-- Content segment -->
     <div class="container" style="margin: 20px;">

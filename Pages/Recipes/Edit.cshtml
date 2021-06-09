@@ -74,7 +74,7 @@
                 @foreach (var image in Model.Images)
                 {
                     <div class="col-auto mb-3 custom-div-image">
-                        <img class="custom-image" src="@image.URL" asp-append-version="true" alt="Preview">
+                        <img class="custom-image rounded" src="@image.URL" asp-append-version="true" alt="Preview">
                         <button class="remove-image" type="submit" formnovalidate asp-page-handler="DeleteImage" asp-route-id="@image.ImageId" style="display:inline;">&#215;</button>
                     </div>
                 }

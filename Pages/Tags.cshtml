@@ -75,13 +75,13 @@
                                         @if (await Model._favouritiesService.FindFavouriteAsync(item.RecipeId, Model.UserId) == null)
                                         {
                                             <form class="d-inline" method="post">
-                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-favid="@item.RecipeId"><i class="far fa-heart"></i></button>
+                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-id="@Model.Category.Id" asp-route-favid="@item.RecipeId"><i class="far fa-heart"></i></button>
                                             </form>
                                         }
                                         else
                                         {
                                             <form class="d-inline" method="post">
-                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-favid="@item.RecipeId"><i class="fas fa-heart"></i></button>
+                                                <button class="btn-icon red" type="submit" asp-page-handler="Favourities" asp-route-id="@Model.Category.Id" asp-route-favid="@item.RecipeId"><i class="fas fa-heart"></i></button>
                                             </form>
                                         }
 
