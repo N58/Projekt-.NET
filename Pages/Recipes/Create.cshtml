@@ -23,6 +23,7 @@
             </div>
             <div class="row" style="max-width: 60%">
                 <div class="col">
+                    <label asp-for="NewIngredient" class="control-label"></label>
                     <hr style="margin: 5px 0" />
                     @if (Model.Ingredients != null)
                     {
@@ -38,12 +39,12 @@
                         }
                     }
                     <div class="form-group">
-                        <label asp-for="NewIngredient" class="control-label"></label>
                         <input asp-for="NewIngredient" class="form-control" />
                     </div>
                     <button class="btn btn-red mb-4" asp-page-handler="AddIngredient" formnovalidate>Dodaj składnik</button>
                 </div>
                 <div class="col">
+                    <label asp-for="NewCategory" class="control-label"></label>
                     <hr style="margin: 5px 0" />
                     @if (Model.CategoriesId != null)
                     {
@@ -54,7 +55,7 @@
 
                                 <button class="col btn-icon red text-right mr-3" type="submit" formnovalidate asp-page-handler="DeleteCategory" asp-route-id="@item.Id">
                                     <i class="fas fa-trash-alt"></i>
-                                </button>*
+                                </button>
                             </div><hr style="margin: 5px 0" />
                         }
                     }
@@ -62,7 +63,6 @@
                         var SelectList = new SelectList(await Model._categoryService.GetAsync(), "Id", "Name");
                     }
                     <div class="form-group">
-                        <label asp-for="NewCategory" class="control-label"></label>
                         <select class="custom-select" asp-for="NewCategory" asp-items="@SelectList">
                             <option selected value="">Wybierz kategorię</option>
                         </select>

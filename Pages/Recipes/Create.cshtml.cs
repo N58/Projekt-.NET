@@ -36,6 +36,7 @@ namespace PortalKulinarny.Pages.Recipes
         [BindProperty]
         [Display(Name = "Składniki")]
         public string NewIngredient { get; set; }
+        [BindProperty]
         [Display(Name = "Kategorie")]
         public int? NewCategory { get; set; }
 

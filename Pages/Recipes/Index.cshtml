@@ -72,6 +72,7 @@
                                             </form>
                                         }
                                     }
+                                    @*
                                     else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == item.UserId)
                                     {
                                         // Edit button
@@ -79,6 +80,7 @@
                                         // Delete button
                                         //<button class="mr-3 d-inline btn-icon red" type="button" data-toggle="modal" data-id="@item.RecipeId" data-target="#deleteModal"><i class="fas fa-trash-alt"></i></button>
                                     }
+                                    *@
 
                                     @if (!String.IsNullOrWhiteSpace(Model.UserId))
                                     {
