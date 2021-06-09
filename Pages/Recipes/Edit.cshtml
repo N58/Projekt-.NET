@@ -2,60 +2,116 @@
 @model PortalKulinarny.Pages.Recipes.EditModel
 @using PortalKulinarny.Models;
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edytuj";
 }
 
-<h1>Edit</h1>
-
-<h4>Recipe</h4>
+<h1>Edytuj przepis</h1>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form method="post">
+    <div class="col">
+        <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Recipe.RecipeId" />
             <div class="form-group">
                 <label asp-for="Recipe.Name" class="control-label"></label>
-                <input asp-for="Recipe.Name" class="form-control" />
+                <input asp-for="Recipe.Name" class="form-control w-25" />
                 <span asp-validation-for="Recipe.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Recipe.Description" class="control-label"></label>
-                <input asp-for="Recipe.Description" class="form-control" />
+                <textarea asp-for="Recipe.Description" class="form-control" style="width: 60%" rows="6" style="resize: none;"></textarea>
                 <span asp-validation-for="Recipe.Description" class="text-danger"></span>
             </div>
-            @{
-                if (Model.Recipe != null && Model.Categories != null)
-                {
-                    foreach (var item in Model.Categories)
+            <div class="row" style="max-width: 60%">
+                <div class="col">
+                    <label asp-for="NewIngredient" class="control-label"></label>
+                    <hr style="margin: 5px 0" />
+                    @if (Model.Ingredients != null)
                     {
-                        <p>
-                            @item.Name
+                        @foreach (var item in Model.Ingredients)
+                        {
+                            <div class="align-items-center row">
+                                <div class="col">@item</div>
 
-                            <button class="btn-icon red" type="submit" asp-page-handler="Delete" asp-route-id="@item.Id">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </p>
+                                <button class="col btn-icon red text-right mr-3" type="submit" asp-page-handler="DeleteIngredient" asp-route-name="@item" formnovalidate>
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div><hr style="margin: 5px 0" />
+                        }
                     }
-                }
+                    <div class="form-group">
+                        <input asp-for="NewIngredient" class="form-control" />
+                    </div>
+                    <button class="btn btn-red mb-4" asp-page-handler="AddIngredient" formnovalidate>Dodaj składnik</button>
+                </div>
+                <div class="col">
+                    <label asp-for="NewCategory" class="control-label"></label>
+                    <hr style="margin: 5px 0" />
+                    @if (Model.CategoriesId != null)
+                    {
+                        foreach (var item in Model.Categories)
+                        {
+                            <div class="align-items-center row">
+                                <div class="col">@item.Name</div>
 
-            }
-            @{
-                var SelectList = new SelectList(await Model._categoryService.GetAsync(), "Id", "Name");
-            }
-            <select asp-for="CategoryId" asp-items="@SelectList">
-            </select>
-            <button class="btn btn-primary" asp-page-handler="AddCategory">Dodaj kategorię</button>
-            <div class="form-group">
-                <input type="submit" asp-page-handler="" value="Save" class="btn btn-primary" />
+                                <button class="col btn-icon red text-right mr-3" type="submit" formnovalidate asp-page-handler="DeleteCategory" asp-route-id="@item.Id">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div><hr style="margin: 5px 0" />
+                        }
+                    }
+                    @{
+                        var SelectList = new SelectList(await Model._categoryService.GetAsync(), "Id", "Name");
+                    }
+                    <div class="form-group">
+                        <select class="custom-select" asp-for="NewCategory" asp-items="@SelectList">
+                            <option selected value="">Wybierz kategorię</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-red" asp-page-handler="AddCategory" formnovalidate>Dodaj kategorię</button>
+                </div>
             </div>
+            <div>
+                @foreach (var image in Model.Images)
+                {
+                    <div style="position:relative">
+                        <img src="@image.URL" asp-append-version="true" alt="Preview">
+                        <button class="remove-image" type="submit" formnovalidate asp-page-handler="DeleteImage" asp-route-id="@image.ImageId" style="display:inline;">&#215;</button>
+                    </div>
+                }
+            </div>
+            <div class="form-group" style="max-width: 30%">
+                <div class="custom-file">
+                    <input asp-for="NewImages" id="inputfile" class="custom-file-input" accept="image/png, image/jpg" />
+                    <label asp-for="NewImages" class="custom-file-label"></label>
+                    <span asp-validation-for="NewImages" class="invalid-feedback"></span>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-group">
+                    <input type="submit" asp-page-handler="" value="Zapisz" class="btn btn-red" />
+                </div>
+            </div>
+
         </form>
     </div>
 </div>
 
 <div>
-    <a href="javascript:history.go(-1)">DISKARD CZENCZYSZ</a>
+    <a asp-page="Index">Wróć</a>
 </div>
+
+<script>
+    $('#inputfile').on('change', function (e) {
+        var files = [];
+        for (var i = 0; i < $(this)[0].files.length; i++) {
+            files.push($(this)[0].files[i].name);
+        }
+        if ($(this)[0].files.length == 0)
+            files = "Wybierz zdjęcie...";
+        $(this).next('.custom-file-label').html(files.join(', '));
+    })
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

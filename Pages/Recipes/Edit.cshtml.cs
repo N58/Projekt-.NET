@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -34,33 +36,35 @@ namespace PortalKulinarny.Pages.Recipes
 
         [BindProperty]
         public Recipe Recipe { get; set; }
-
+        public List<string> Ingredients { get; set; }
         public List<Category> Categories { get; set; }
-
+        public List<int> CategoriesId { get; set; }
+        public List<Image> Images { get; set; }
         [BindProperty]
-        public int CategoryId { get; set; }
-        private string categoriesSesionName = "categoriesSesion";
+        [Display(Name = "Składniki")]
+        public string NewIngredient { get; set; }
+        [BindProperty]
+        [Display(Name = "Kategorie")]
+        public int? NewCategory { get; set; }
+        [BindProperty]
+        public IFormFileCollection NewImages { get; set; }
+
+        private string IngredientsSession = "ingredientSession";
+        private string CategoriesSession = "categoriesSession";
+        private string ImagesSession = "imagesSession";
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            _utilsService.RemoveSession(HttpContext, categoriesSesionName);
-
-            Recipe = await _context.Recipes
-                .Include(r => r.CategoryRecipes)
-                .ThenInclude(c => c.Category)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.RecipeId == id);
-
-            var categories = new List<int>();
+            _utilsService.RemoveSession(HttpContext, IngredientsSession);
+            _utilsService.RemoveSession(HttpContext, CategoriesSession);
+            _utilsService.RemoveSession(HttpContext, ImagesSession);
 
             if (id == null)
             {
                 return NotFound();
             }
 
-            Recipe.CategoryRecipes.ToList().ForEach(c => categories.Add(c.CategoryId));
-            
-            _utilsService.SetSession(HttpContext, categoriesSesionName, categories);
+            Recipe = await _recipeService.FindByIdAsync(id);
 
             if (Recipe == null)
             {
@@ -71,7 +75,19 @@ namespace PortalKulinarny.Pages.Recipes
             if (Recipe.UserId == null || Recipe.UserId != userId)
                 return RedirectToPage("./Index");
 
-            await ReloadAsync(id);
+            CategoriesId = new List<int>();
+            Recipe.CategoryRecipes.ToList().ForEach(c => CategoriesId.Add(c.CategoryId));
+
+            Ingredients = new List<string>();
+            Recipe.Ingredients.ToList().ForEach(i => Ingredients.Add(i.Name));
+
+            Images = new List<Image>(Recipe.Images);
+
+            await RefreshCategories();
+            _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
+            _utilsService.SetSession(HttpContext, ImagesSession, Images);
+            _utilsService.SetSession(HttpContext, IngredientsSession, Ingredients);
+
             return Page();
         }
 
@@ -101,7 +117,7 @@ namespace PortalKulinarny.Pages.Recipes
 
         public void UpdateCategories(Recipe recipeToUpdate)
         {
-            var categories = _utilsService.GetSession<List<int>>(HttpContext, categoriesSesionName);
+            var categories = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
             if(categories != null)
             {
                 foreach(var categoryId in categories)
@@ -122,54 +138,100 @@ namespace PortalKulinarny.Pages.Recipes
             }
         }
 
+        public async Task<IActionResult> OnPostAddIngredient()
+        {
+            Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientsSession);
+            if (Ingredients == null)
+                Ingredients = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(NewIngredient) && !Ingredients.Contains(NewIngredient))
+                Ingredients.Add(NewIngredient);
+
+            _utilsService.SetSession(HttpContext, IngredientsSession, Ingredients);
+
+            await RefreshPageModels(Recipe.RecipeId);
+            return Page(); // reloading page without OnGet()
+        }
+
+        public async Task<IActionResult> OnPostDeleteIngredient(String name)
+        {
+            Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientsSession);
+
+            if (Ingredients == null)
+                Ingredients = new List<string>();
+
+            if (Ingredients.Contains(name))
+                Ingredients.Remove(name);
+
+            _utilsService.SetSession(HttpContext, IngredientsSession, Ingredients);
+
+            await RefreshPageModels(Recipe.RecipeId);
+            return Page();
+        }
+
         public async Task<IActionResult> OnPostAddCategory()
         {
-            var categories = _utilsService.GetSession<List<int>>(HttpContext, categoriesSesionName);
-            
-            if (categories == null)
-                categories = new List<int>();
+            CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
 
-            if (!categories.Contains(CategoryId))
-            {
-                categories.Add(CategoryId);
-            }
+            if (CategoriesId == null)
+                CategoriesId = new List<int>();
 
-            _utilsService.SetSession(HttpContext, categoriesSesionName, categories);
+            if (!CategoriesId.Contains((int)NewCategory))
+                CategoriesId.Add((int)NewCategory);
 
-            await ReloadAsync(Recipe.RecipeId);
+            _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
+
+            await RefreshPageModels(Recipe.RecipeId);
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteCategory(int id)
+        {
+            CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
+
+            if (CategoriesId == null)
+                CategoriesId = new List<int>();
+
+            if (CategoriesId.Contains(id))
+                CategoriesId.Remove(id);
+
+            _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
+
+            await RefreshPageModels(Recipe.RecipeId);
             return Page(); // reloading page without OnGet()
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        public async Task<IActionResult> OnPostDeleteImage(int id)
         {
-            var categories = _utilsService.GetSession<List<int>>(HttpContext, categoriesSesionName);
+            Images = _utilsService.GetSession<List<Image>>(HttpContext, ImagesSession);
 
-            if (categories == null)
-                categories = new List<int>();
+            if (Images == null)
+                Images = new List<Image>();
 
-            if (categories.Contains(id))
-            {
-                categories.Remove(id);
-            }
+            if (Images.Exists(i => i.ImageId == id))
+                Images.Remove(Images.First(i => i.ImageId == id));
 
-            _utilsService.SetSession(HttpContext, categoriesSesionName, categories);
+            _utilsService.SetSession(HttpContext, ImagesSession, Images);
 
-            await ReloadAsync(Recipe.RecipeId);
+            await RefreshPageModels(Recipe.RecipeId);
             return Page(); // reloading page without OnGet()
         }
 
-        public async Task ReloadAsync(int? id)
+        public async Task RefreshPageModels(int? id)
         {
-            var categories = _utilsService.GetSession<List<int>>(HttpContext, categoriesSesionName);
+            CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
+            Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientsSession);
+            Images = _utilsService.GetSession<List<Image>>(HttpContext, ImagesSession);
 
-            Recipe = await _context.Recipes
-                .Include(r => r.CategoryRecipes)
-                .ThenInclude(c => c.Category)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.RecipeId == id);
+            Recipe = await _recipeService.FindByIdAsync(id);
+            await RefreshCategories();
+        }
 
-            Categories = await _context.Categories
-                .Where(c => categories.Contains(c.Id))
+        public async Task RefreshCategories()
+        {
+            Categories = await _context
+                .Categories
+                .Where(c => CategoriesId.Contains(c.Id))
                 .ToListAsync();
         }
     }
