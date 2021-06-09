@@ -35,10 +35,10 @@
     {
     <div class="col">
         <div class="row mb-2 justify-content-end">
-            <a button class="btn btn-primary" role="button" aria-pressed="true" asp-page="/Account/Manage/Index">Zarządzaj kontem</a>
+            <a button class="btn btn-red" role="button" aria-pressed="true" asp-page="/Account/Manage/Index">Zarządzaj kontem</a>
         </div>
         <div class="row justify-content-end">
-            <a button class="btn btn-primary" role="button" aria-pressed="true" asp-page="/Account/Categories">Zarządzaj kategoriami</a>
+            <a button class="btn btn-red" role="button" aria-pressed="true" asp-page="/Account/Categories">Zarządzaj kategoriami</a>
         </div>
     </div>
     }
@@ -73,7 +73,7 @@
                     <div class="col-auto mb-3">
                         <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@recipe.RecipeId">
                             <div class="card border-dark" style="width: 21rem; text-align: left;">
-                                <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                                <img class="card-img-top card-img-c" src="https://www.pyszne.pl/foodwiki/uploads/sites/7/2018/03/kebab-2.jpg">
                                 <div class="card-body">
                                     <h5 class="card-title">@recipe.Name</h5>
                                     <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Rating</h6>
@@ -106,7 +106,7 @@
                     <div class="col-auto mb-3">
                         <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@favourite.RecipeId">
                             <div class="card border-dark" style="width: 21rem; text-align: left;">
-                                <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+                                <img class="card-img-top card-img-c" src="https://ocdn.eu/pulscms-transforms/1/_3gk9kpTURBXy82NWMxYTJhYTgzOTRiNmU0ZjIwMDIzYmQ2NjViNDA0Ni5qcGeTlQMAzL_NF-vNDXSTBc0DFM0BvJMJpjRlODNmNQaBoTAB/kebab.jpg">
                                 <div class="card-body">
                                     <h5 class="card-title">@favourite.Recipe.Name</h5>
                                     <h6 class="card-subtitle mb-2 text-muted">Ocena: @favourite.Recipe.Rating</h6>

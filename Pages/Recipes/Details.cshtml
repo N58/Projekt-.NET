@@ -75,7 +75,7 @@
             <div>
                 @foreach (var category in Model.Recipe.CategoryRecipes)
                 {
-                    <a href="#" class="badge badge-pill badge-primary">#@category.Category.Name</a>
+                    <a href="#" class="badge badge-pill badge-red">#@category.Category.Name</a>
                 }
             </div>
             <div>
@@ -168,7 +168,7 @@
     </div>
 </div>
 <div class="d-flex justify-content-center" style="margin: 20px;">
-    <a class="btn btn-primary" href="javascript:history.go(-1)">Powrót</a>
+    <a class="btn btn-red" href="javascript:history.go(-1)">Powrót</a>
 </div>
 
 <!-- Modal popup -->
@@ -190,7 +190,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
                     <form method="post">
-                        <button type="submit" class="btn btn-danger" asp-page-handler="Delete" asp-route-id="@Model.Recipe.RecipeId">Usuń</button>
+                        <button type="submit" class="btn btn-red" asp-page-handler="Delete" asp-route-id="@Model.Recipe.RecipeId">Usuń</button>
                     </form>
                 </div>
             </div>

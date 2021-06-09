@@ -11,34 +11,33 @@
     <br />
     <form method="post" style="margin-left: 8em;">
         <div class="container row align-items-center">
-            <input asp-for="Search" placeholder="Szukaj..." class="form-control" style="font-size: 30px; width: 40%" />
-            <button type="submit" class="btn-icon ml-2" style="font-size: 30px;"><i class="fas fa-search"></i></button>
-            <p class="font-weight-bold">
-                <span asp-validation-for="Search" class="text-danger" font></span>
-            </p>
-
+            <input asp-for="Search" placeholder="Szukaj..." class="search" style="font-size: 30px; width: 40%" />
+            <button type="submit" class="btn-icon ml-2" style="font-size: 30px; color: white"><i class="fas fa-search"></i></button>
         </div>
+        <p class="font-weight-bold">
+            <span asp-validation-for="Search" class="text-warning" font></span>
+        </p>
         <div style="clear: both;"></div>
     </form>
 </div>
 
 <br />
 
-<div class="container" style="margin-top: 10em;">
+<div class="container" style="margin-top: 6em;">
     <div class="row justify-content-center">
         @foreach (var recipe in Model.Recipes)
         {
             <div class="col-auto mb-3">
                 <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@recipe.RecipeId">
-                <div class="card border-dark" style="width: 21rem;">
-                    <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
-                    <div class="card-body">
-                        <h5 class="card-title">@recipe.Name</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Rating</h6>
-                        <p class="card-text">@recipe.User.UserName</p>
-                        <p class="card-text"><small class="text-muted">@recipe.DateTime</small></p>
+                    <div class="card border-dark" style="width: 21rem;">
+                        <img class="card-img-top card-img-c" src="https://restaumatic.imgix.net/uploads/accounts/36075/media_library/69ce8185-a3e7-4622-b8cf-4e49134d591e.jpg?auto=compress&blur=0&crop=focalpoint&fit=max&fp-x=0.5&fp-y=0.5&h=1080&rect=0%2C0%2C2000%2C1049&w=1920">
+                        <div class="card-body">
+                            <h5 class="card-title">@recipe.Name</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Rating</h6>
+                            <p class="card-text">@recipe.User.UserName</p>
+                            <p class="card-text"><small class="text-muted">@recipe.DateTime</small></p>
+                        </div>
                     </div>
-                </div>
                 </a>
             </div>
         }

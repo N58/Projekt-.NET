@@ -11,25 +11,21 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white box-shadow mb-3 text-white">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Portal Kulinarny</a>
+                <a class="navbar-brand text-white" asp-area="" asp-page="/Index">Portal Kulinarny</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
-                    <form class="form-inline mr-lg-5 float-right">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <button type="submit" class="btn-icon gray"><i class="fas fa-search"></i></button>
-                    </form>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Recipes/Index">Przeglądaj</a>
+                            <a class="nav-link text-white" asp-area="" asp-page="/Recipes/Index">Przeglądaj</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark float-right" asp-area="" asp-page="/Recipes/Create">Dodaj przepis</a>
+                            <a class="nav-link text-white float-right" asp-area="" asp-page="/Recipes/Create">Dodaj przepis</a>
                         </li>
                     </ul>
                 </div>
@@ -44,8 +40,8 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - PortalKulinarny - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        <div class="container text-white">
+            &copy; 2021 - Portal Kulinarny
         </div>
     </footer>
 
