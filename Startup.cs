@@ -71,6 +71,7 @@ namespace PortalKulinarny
             services.AddTransient<UserService>();
             services.AddTransient<CategoryService>();
             services.AddTransient<UtilsService>();
+            services.AddTransient<ImagesService>();
 
             services.AddMemoryCache();
             services.AddSession();

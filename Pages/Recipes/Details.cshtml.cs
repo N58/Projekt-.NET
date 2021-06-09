@@ -22,9 +22,11 @@ namespace PortalKulinarny.Pages.Recipes
         public readonly VoteService _voteService;
         public readonly FavouritiesService _favouritiesService;
         public readonly UserService _userService;
+        private readonly ImagesService _imagesService;
 
         public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
-            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UserService utilsService)
+            DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UserService utilsService,
+            ImagesService imagesService)
         {
             _context = context;
             _userManager = userManager;
@@ -32,6 +34,7 @@ namespace PortalKulinarny.Pages.Recipes
             _voteService = voteService;
             _favouritiesService = favouritiesService;
             _userService = utilsService;
+            _imagesService = imagesService;
         }
         public Recipe Recipe { get; set; }
         public string UserId { get; set; }
@@ -123,7 +126,7 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
 
-            var recipe = await _context.Recipes.FindAsync(id);
+            var recipe = await _context.Recipes.Include(r => r.Images).FirstOrDefaultAsync(r => r.RecipeId == id);
 
             if (recipe == null)
             {
@@ -133,6 +136,9 @@ namespace PortalKulinarny.Pages.Recipes
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (recipe.UserId == null || recipe.UserId != userId)
                 return RedirectToPage("./Index");
+
+            foreach (var image in recipe.Images)
+                _imagesService.DeleteImage(image.Name);
 
             _context.Recipes.Remove(recipe);
             await _context.SaveChangesAsync();

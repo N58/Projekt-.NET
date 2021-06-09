@@ -70,7 +70,7 @@ namespace PortalKulinarny.Data
                 .HasOne(c => c.Recipe)
                 .WithMany(c => c.CategoryRecipes)
                 .HasForeignKey(c => c.RecipeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
