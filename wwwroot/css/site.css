@@ -230,6 +230,7 @@ a.badge-red:focus, a.badge-red:hover {
     background: none;
     border: none;
     border-bottom: .1em solid white;
+    color: white;
 }
 
 .search::placeholder {

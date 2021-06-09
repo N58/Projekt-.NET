@@ -46,7 +46,7 @@ namespace PortalKulinarny.Models
         public ICollection<Vote> Votes { get; set; }
         public ICollection<CategoryRecipe> CategoryRecipes { get; set; }
         public ICollection<Image> Images { get; set; }
-        [NotMapped]
+        [NotMapped, Display(Name = "Wybierz zdjęcie...")]
         public IFormFileCollection Gallery { get; set; }
     }
 }

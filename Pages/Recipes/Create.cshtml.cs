@@ -16,6 +16,7 @@ using PortalKulinarny.Models;
 using PortalKulinarny.Services;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using System.ComponentModel.DataAnnotations;
 
 namespace PortalKulinarny.Pages.Recipes
 {
@@ -33,11 +34,10 @@ namespace PortalKulinarny.Pages.Recipes
         public List<int> CategoriesId { get; set; }
         public List<Category> Categories { get; set; }
         [BindProperty]
+        [Display(Name = "Składniki")]
         public string NewIngredient { get; set; }
-        [BindProperty]
-        public int NewCategory { get; set; }
-        [BindProperty]
-        public Image Image { get; set; }
+        [Display(Name = "Kategorie")]
+        public int? NewCategory { get; set; }
 
         private string IngerdientSession = "ingerdientSession";
         private string CategoriesSession = "categoriesSession";
@@ -157,8 +157,8 @@ namespace PortalKulinarny.Pages.Recipes
             if (CategoriesId == null)
                 CategoriesId = new List<int>();
 
-            if (!CategoriesId.Contains(NewCategory))
-                CategoriesId.Add(NewCategory);
+            if (NewCategory != null && !CategoriesId.Contains((int)NewCategory))
+                CategoriesId.Add((int)NewCategory);
 
             _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
 

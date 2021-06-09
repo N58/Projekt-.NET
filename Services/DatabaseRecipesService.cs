@@ -40,6 +40,18 @@ namespace PortalKulinarny.Services
             return Recipes;
         }
 
+        public async Task<IEnumerable<Recipe>> FindByTagAsync(int? id)
+        {
+            var recipes = await _context.Recipes
+                .Include(r => r.Ingredients)
+                .Include(r => r.Votes)
+                .Include(r => r.CategoryRecipes)
+                .Include(r => r.User)
+                .Where(r => r.CategoryRecipes.FirstOrDefault(c => c.CategoryId == id) != null)
+                .ToListAsync();
+            return recipes;
+        }
+
         public async Task Update(Recipe recipe)
         {
             _context.Update(recipe);
