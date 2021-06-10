@@ -71,8 +71,8 @@
                 @foreach (var recipe in Model.Recipes)
                 {
                     <div class="col-auto mb-3">
-                        <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@recipe.RecipeId">
-                            <div class="card border-dark" style="width: 21rem; text-align: left;">
+                        <a class="a-card-link h-100" asp-page="/Recipes/Details" asp-route-id="@recipe.RecipeId">
+                            <div class="card border-dark h-100" style="width: 21rem; text-align: left;">
                                 @if (recipe.Images.Count <= 0)
                                 {
                                     <img class="card-img-top card-img-c" src="~/imagePlaceholder.jpg" asp-append-version="true" />
@@ -84,7 +84,13 @@
                                 <div class="card-body">
                                     <h5 class="card-title">@recipe.Name</h5>
                                     <h6 class="card-subtitle mb-2 text-muted">Ocena: @recipe.Rating</h6>
-                                    <p class="card-text">@recipe.User.UserName</p>
+                                    <div class="card-text">@recipe.User.UserName</div>
+                                    <div>
+                                        @foreach (var category in recipe.CategoryRecipes)
+                                        {
+                                            <span class="badge badge-pill badge-red" asp-page="../Tags" asp-route-id="@category.CategoryId">#@category.Category.Name</span>
+                                        }
+                                    </div>
                                     <p class="card-text"><small class="text-muted">@recipe.DateTime</small></p>
                                 </div>
                             </div>
@@ -111,8 +117,8 @@
                 @foreach (var favourite in Model.AppUser.Favourites)
                 {
                     <div class="col-auto mb-3">
-                        <a class="a-card-link" asp-page="/Recipes/Details" asp-route-id="@favourite.RecipeId">
-                            <div class="card border-dark" style="width: 21rem; text-align: left;">
+                        <a class="a-card-link h-100" asp-page="/Recipes/Details" asp-route-id="@favourite.RecipeId">
+                            <div class="card border-dark h-100" style="width: 21rem; text-align: left;">
                                 @if (favourite.Recipe.Images.Count <= 0)
                                 {
                                     <img class="card-img-top card-img-c" src="~/imagePlaceholder.jpg" asp-append-version="true" />
@@ -124,7 +130,13 @@
                                 <div class="card-body">
                                     <h5 class="card-title">@favourite.Recipe.Name</h5>
                                     <h6 class="card-subtitle mb-2 text-muted">Ocena: @favourite.Recipe.Rating</h6>
-                                    <p class="card-text">@favourite.Recipe.User.UserName</p>
+                                    <div class="card-text">@favourite.Recipe.User.UserName</div>
+                                    <div>
+                                        @foreach (var category in favourite.Recipe.CategoryRecipes)
+                                        {
+                                            <span class="badge badge-pill badge-red" asp-page="../Tags" asp-route-id="@category.CategoryId">#@category.Category.Name</span>
+                                        }
+                                    </div>
                                     <p class="card-text"><small class="text-muted">@favourite.Recipe.DateTime</small></p>
                                 </div>
                             </div>
