@@ -16,5 +16,6 @@ Newtonsoft.Json - Version: 13.0.1
 1. Pobrać projekt z https://github.com/mszczykowski/Projekt-.NET w ZIP.
 2. Wypakować projekt.
 3. Otworzyć projekt w Visual Studio.
+4. W folderze "wwwroot" utworzyć folder "Images"
 4. W Visual Studio w widoku Package Manager Console wpisać "Update-Database".
 5. Uruchomić projekt.
