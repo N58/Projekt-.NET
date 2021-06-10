@@ -2,10 +2,16 @@
 @model PortalKulinarny.Areas.Identity.Pages.Account.CategoriesModel
 @{
 }
+
+<h1>Moje kategorie</h1>
 <div>
-    <form method="post">
-        <input type="text" asp-for="Category.Name" class="form-control w-25" placeholder="Nazwa kategorii" /><br />
-        <input type="submit" value="Dodaj kategorię" class="btn btn-primary" />
+    <form method="post" class="row">
+        <div class="col-3">
+            <input type="text" asp-for="Category.Name" class="form-control" placeholder="Nazwa kategorii" />
+        </div>
+        <div class="col">
+            <input type="submit" value="Dodaj kategorię" class="btn btn-primary" />
+        </div>
     </form>
 </div>
 
