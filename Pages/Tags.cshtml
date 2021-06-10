@@ -41,14 +41,14 @@
                                         {
                                             // Empty Like
                                             <form class="mr-1 d-inline" method="post">
-                                                <button class="btn-icon gray" type="submit" asp-page-handler="UpVote" asp-route-id="@item.RecipeId"><i class="far fa-thumbs-up"></i></button>
+                                                <button class="btn-icon gray" type="submit" asp-page-handler="UpVote" asp-route-catid="@Model.Category.Id" asp-route-id="@item.RecipeId"><i class="far fa-thumbs-up"></i></button>
                                             </form>
                                         }
                                         else
                                         {
                                             // Filled like
                                             <form class="mr-1 d-inline" method="post">
-                                                <button class="btn-icon green" type="submit" asp-page-handler="UpVote" asp-route-id="@item.RecipeId"><i class="fas fa-thumbs-up"></i></button>
+                                                <button class="btn-icon green" type="submit" asp-page-handler="UpVote" asp-route-catid="@Model.Category.Id" asp-route-id="@item.RecipeId"><i class="fas fa-thumbs-up"></i></button>
                                             </form>
                                         }
 
@@ -56,14 +56,14 @@
                                         {
                                             // Empty dislike
                                             <form class="mr-3 d-inline" method="post">
-                                                <button class="btn-icon gray" type="submit" asp-page-handler="DownVote" asp-route-id="@item.RecipeId"><i class="far fa-thumbs-down"></i></button>
+                                                <button class="btn-icon gray" type="submit" asp-page-handler="DownVote" asp-route-catid="@Model.Category.Id" asp-route-id="@item.RecipeId"><i class="far fa-thumbs-down"></i></button>
                                             </form>
                                         }
                                         else
                                         {
                                             // Filled dislike
                                             <form class="mr-3 d-inline" method="post">
-                                                <button class="btn-icon red" type="submit" asp-page-handler="DownVote" asp-route-id="@item.RecipeId"><i class="fas fa-thumbs-down"></i></button>
+                                                <button class="btn-icon red" type="submit" asp-page-handler="DownVote" asp-route-catid="@Model.Category.Id" asp-route-id="@item.RecipeId"><i class="fas fa-thumbs-down"></i></button>
                                             </form>
                                         }
                                     }
