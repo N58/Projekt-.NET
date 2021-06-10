@@ -4,11 +4,29 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Przepisy</h1>
+@if (string.IsNullOrWhiteSpace(Model.Search))
+{
+    <h1>Przeglądaj</h1>
+}
+else
+{
+    <h1>Wyniki wyszukiwania dla: @Model.Search</h1>
+}
 
-<p>
-    <a class="btn btn-success" asp-page="Create">Dodaj przepis</a>
-</p>
+
+<div>
+    <br />
+    <form method="post" style="margin-left: 8em;">
+        <div class="container row align-items-center">
+            <input asp-for="Search" placeholder="Szukaj..." class="search2" style="font-size: 30px; width: 40%" />
+            <button type="submit" asp-page-handler="" class="btn-icon ml-2" style="font-size: 30px; color: #dc3545"><i class="fas fa-search"></i></button>
+        </div>
+        <p class="font-weight-bold">
+            <span asp-validation-for="Search" class="text-warning" font></span>
+        </p>
+        <div style="clear: both;"></div>
+    </form>
+</div>
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
@@ -86,13 +104,13 @@
                                         }
                                     }
                                     @*
-                                    else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == item.UserId)
-                                    {
-                                        // Edit button
-                                        <a class="mr-3 d-inline btn-icon blue" asp-page="./Edit" asp-route-id="@item.RecipeId"><i class="fas fa-pen"></i></a>
-                                        // Delete button
-                                        //<button class="mr-3 d-inline btn-icon red" type="button" data-toggle="modal" data-id="@item.RecipeId" data-target="#deleteModal"><i class="fas fa-trash-alt"></i></button>
-                                    }
+                                        else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == item.UserId)
+                                        {
+                                            // Edit button
+                                            <a class="mr-3 d-inline btn-icon blue" asp-page="./Edit" asp-route-id="@item.RecipeId"><i class="fas fa-pen"></i></a>
+                                            // Delete button
+                                            //<button class="mr-3 d-inline btn-icon red" type="button" data-toggle="modal" data-id="@item.RecipeId" data-target="#deleteModal"><i class="fas fa-trash-alt"></i></button>
+                                        }
                                     *@
 
                                     @if (!String.IsNullOrWhiteSpace(Model.UserId))
