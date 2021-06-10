@@ -44,12 +44,12 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account
             var result = await _userManager.ChangeEmailAsync(user, email, code);
             if (!result.Succeeded)
             {
-                StatusMessage = "Error changing email.";
+                StatusMessage = "Bład przy zmianie adresu e-mail.";
                 return Page();
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Thank you for confirming your email change.";
+            StatusMessage = "Dziękujemy za potwierdzenie zmiany adresu e-mail.";
             return Page();
         }
     }

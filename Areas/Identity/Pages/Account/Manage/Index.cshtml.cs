@@ -31,7 +31,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Display(Name = "Użytkownik")]
+            [Display(Name = "Nazwa użytkownika")]
             public string Username { get; set; }
             [Display(Name = "Imię")]
             public string FirstName { get; set; }
@@ -80,7 +80,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
             var isUsernameFound = await _userManager.FindByNameAsync(Input.Username);
             if (isUsernameFound != null)
             {
-                StatusMessage = "This username already exists in database.";
+                StatusMessage = "Nazwa użytkownika jest zajęta.";
                 return RedirectToPage();
             }
 
@@ -90,7 +90,7 @@ namespace PortalKulinarny.Areas.Identity.Pages.Account.Manage
 
             await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Twój profil jest zaktualizowany";
             return RedirectToPage();
         }
     }
