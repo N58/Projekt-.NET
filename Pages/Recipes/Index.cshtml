@@ -48,8 +48,15 @@ else
                 <div class="card">
                     <div class="card-body">
                         <div class="row align-items-center">
-                            <div class="col-1">
-                                obrazek
+                            <div class="col" style="max-width: fit-content; max-height: fit-content">
+                                @if (item.Images.Count <= 0)
+                                {
+                                    <img class="card-img-top card-img-c rounded" style="width: 15vh; height: 15vh" src="~/imagePlaceholder.jpg" asp-append-version="true" />
+                                }
+                                else
+                                {
+                                    <img class="card-img-top card-img-c rounded" style="width: 15vh; height: 15vh" src="@item.Images.FirstOrDefault().URL" asp-append-version="true" />
+                                }
                             </div>
                             <div class="col">
                                 <h4><a class="a-link" asp-page="./Details" asp-route-id="@item.RecipeId">@Html.DisplayFor(modelItem => item.Name)</a></h4>
