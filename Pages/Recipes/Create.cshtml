@@ -92,13 +92,6 @@
     <a asp-page="Index">Wróć</a>
 </div>
 
-<script>
-    $('#inputfile').on('change', function (e) {
-        var fileName = $(this).val().replace('C:\\fakepath\\', " ");;
-        $(this).next('.custom-file-label').html(fileName);
-    })
-</script>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

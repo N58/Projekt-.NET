@@ -47,6 +47,7 @@ namespace PortalKulinarny.Services
                 .Include(r => r.Votes)
                 .Include(r => r.CategoryRecipes)
                 .Include(r => r.User)
+                .Include(r => r.Images)
                 .Where(r => r.CategoryRecipes.FirstOrDefault(c => c.CategoryId == id) != null)
                 .ToListAsync();
             return recipes;
