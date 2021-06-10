@@ -10,8 +10,8 @@ using PortalKulinarny.Data;
 namespace PortalKulinarny.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210607182250_addedImageModel")]
-    partial class addedImageModel
+    [Migration("20210610070702_initialSchema")]
+    partial class initialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -441,7 +441,7 @@ namespace PortalKulinarny.Migrations
                     b.HasOne("PortalKulinarny.Models.Recipe", "Recipe")
                         .WithMany("CategoryRecipes")
                         .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
