@@ -49,7 +49,7 @@ namespace PortalKulinarny.Pages.Recipes
         [BindProperty]
         [Display(Name = "Kategorie")]
         public int? NewCategory { get; set; }
-        [BindProperty]
+        [BindProperty, Display(Name = "Wybierz zdjęcie...")]
         public IFormFileCollection NewImages { get; set; }
 
         private string IngredientsSession = "ingredientSession";
