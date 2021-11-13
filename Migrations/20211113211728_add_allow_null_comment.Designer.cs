@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PortalKulinarny.Data;
 
 namespace PortalKulinarny.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211113211728_add_allow_null_comment")]
+    partial class add_allow_null_comment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -487,15 +489,14 @@ namespace PortalKulinarny.Migrations
             modelBuilder.Entity("PortalKulinarny.Models.Comment", b =>
                 {
                     b.HasOne("PortalKulinarny.Models.Recipe", "recipe")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PortalKulinarny.Areas.Identity.Data.ApplicationUser", "user")
                         .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("PortalKulinarny.Models.CommentLike", b =>
@@ -509,7 +510,8 @@ namespace PortalKulinarny.Migrations
                     b.HasOne("PortalKulinarny.Areas.Identity.Data.ApplicationUser", "user")
                         .WithMany("commentsLikes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PortalKulinarny.Models.Favourite", b =>

@@ -22,6 +22,8 @@ namespace PortalKulinarny.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategoryRecipe> CategoryRecipes { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<CommentLike> CommentsLikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,8 +33,8 @@ namespace PortalKulinarny.Data
                 .HasMany<Recipe>(u => u.Recipes)
                 .WithOne(r => r.User)
                 .HasForeignKey(r => r.UserId);
-                //.OnDelete(DeleteBehavior.Cascade);
-            
+            //.OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Vote>()
                 .HasKey(v => new { v.UserId, v.RecipeId });
             modelBuilder.Entity<Vote>()
@@ -71,6 +73,35 @@ namespace PortalKulinarny.Data
                 .WithMany(c => c.CategoryRecipes)
                 .HasForeignKey(c => c.RecipeId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CommentLike>()
+                .HasKey(e => new { e.UserId, e.CommentId });
+            modelBuilder.Entity<CommentLike>()
+                .HasOne<ApplicationUser>(e => e.user)
+                .WithMany(e => e.commentsLikes)
+                .HasForeignKey(e => e.UserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CommentLike>()
+                .HasOne<Comment>(e => e.comment)
+                .WithMany(e => e.commentsLikes)
+                .HasForeignKey(e => e.CommentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(e => e.Comments)
+                .WithOne(e => e.user)
+                .HasForeignKey(e => e.UserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Recipe>()
+                .HasMany(e => e.Comments)
+                .WithOne(e => e.recipe)
+                .HasForeignKey(e => e.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }
