@@ -20,6 +20,9 @@ namespace PortalKulinarny.Models
         public int RecipeId { get; set; }
         public Recipe recipe { get; set; }
 
+        public DateTime createdAt { get; set; }
+        public DateTime modificationDate { get; set; }
+
         public ICollection<CommentLike> commentsLikes { get; set; }
     }
 }
