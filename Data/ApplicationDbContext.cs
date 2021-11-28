@@ -79,15 +79,12 @@ namespace PortalKulinarny.Data
             modelBuilder.Entity<CommentLike>()
                 .HasOne<ApplicationUser>(e => e.user)
                 .WithMany(e => e.commentsLikes)
-                .HasForeignKey(e => e.UserId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<CommentLike>()
-                .HasOne<Comment>(e => e.comment)
-                .WithMany(e => e.commentsLikes)
-                .HasForeignKey(e => e.CommentId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+                .HasForeignKey(e => e.UserId);
+           modelBuilder.Entity<CommentLike>()
+              .HasOne<Comment>(e => e.comment)
+              .WithMany(e => e.commentsLikes)
+              .HasForeignKey(e => e.CommentId);
+            
             modelBuilder.Entity<ApplicationUser>()
                 .HasMany(e => e.Comments)
                 .WithOne(e => e.user)

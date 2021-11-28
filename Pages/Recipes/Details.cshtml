@@ -73,10 +73,11 @@
         </div>
         <div class="row d-flex justify-content-between">
             <div>
-                @foreach (var category in Model.Recipe.CategoryRecipes)
-                {
-                    <a class="badge badge-pill badge-red" asp-page="../Tags" asp-route-id="@category.CategoryId">#@category.Category.Name</a>
-                }
+                @if (Model.Recipe != null)
+                    @foreach (var category in Model.Recipe.CategoryRecipes)
+                    {
+                        <a class="badge badge-pill badge-red" asp-page="../Tags" asp-route-id="@category.CategoryId">#@category.Category.Name</a>
+                    }
             </div>
             <div>
                 <h6 class="mr-3 d-inline align-middle">@Html.DisplayNameFor(model => model.Recipe.Rating): @Html.DisplayFor(model => model.Recipe.Rating)</h6>
@@ -202,6 +203,57 @@
 </div>
 <div class="d-flex justify-content-center" style="margin: 20px;">
     <a class="btn btn-red" href="javascript:history.go(-1)">Powrót</a>
+</div>
+
+<div>
+    <h3>Komentarze</h3>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="comment-form">
+            <form method="post" asp-route-id="@Model.Recipe.RecipeId">
+                <label asp-for="NewComment.comment"></label>
+                <textarea asp-for="NewComment.comment"></textarea>
+                <div>
+                    <button type="submit" class="btn btn-light">Dodaj komentarz</button>
+                </div>
+            </form>
+        </div>
+    }
+
+    @if (Model.comments != null)
+    {
+        @foreach (var comment in Model.comments)
+        {
+            <div>
+                <h6>@comment.user.UserName</h6>
+                <p>@comment.comment</p>
+                <p>@comment.modificationDate </p>
+                <p>Likes: @comment.commentsLikes.Count()</p>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @if (Model.UserId == comment.UserId)
+                    {
+                        <button>Edit</button>
+                    }
+                    else if (comment.commentsLikes.FirstOrDefault(e=> e.UserId == Model.UserId && e.CommentId == comment.id ) != null)
+                    {
+                        <form method="post" asp-page-handler="Unlike" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                            <button type="submit">Unlike</button>
+                        </form>
+
+                    }
+                    else
+                    {
+
+                        <form method="post" asp-page-handler="Like" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                            <button type="submit">Like</button>
+                        </form>
+                    }
+                }
+            </div>
+        }
+    }
+
 </div>
 
 <!-- Modal popup -->

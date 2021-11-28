@@ -6,8 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20211113213522_add_relations.cs" />
+    <Compile Remove="Migrations\20211113213522_add_relations.Designer.cs" />
     <Compile Remove="Migrations\20211113214032_setnull.cs" />
     <Compile Remove="Migrations\20211113214032_setnull.Designer.cs" />
+    <Compile Remove="Migrations\20211128161332_commnts.cs" />
+    <Compile Remove="Migrations\20211128161332_commnts.Designer.cs" />
+    <Compile Remove="Migrations\20211128163746_fix cmm.cs" />
+    <Compile Remove="Migrations\20211128163746_fix cmm.Designer.cs" />
+    <Compile Remove="Migrations\20211128165221_s.cs" />
+    <Compile Remove="Migrations\20211128165221_s.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -23,6 +23,8 @@ namespace PortalKulinarny.Pages.Recipes
         public readonly FavouritiesService _favouritiesService;
         public readonly UserService _userService;
         private readonly ImagesService _imagesService;
+        [BindProperty]
+        public Comment NewComment { get; set; }
 
         public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
             DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UserService utilsService,
@@ -38,6 +40,7 @@ namespace PortalKulinarny.Pages.Recipes
         }
         public Recipe Recipe { get; set; }
         public string UserId { get; set; }
+        public List<Comment> comments { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -52,10 +55,9 @@ namespace PortalKulinarny.Pages.Recipes
             {
                 return NotFound();
             }
-
             return Page();
         }
-        
+
 
         public async Task<IActionResult> OnPostUpVoteAsync(int? id)
         {
@@ -73,6 +75,22 @@ namespace PortalKulinarny.Pages.Recipes
                 return RedirectToPage("/Error");
             }
 
+            await LoadAsync(id);
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                NewComment.RecipeId = (int)id;
+                NewComment.UserId = userId;
+                NewComment.createdAt = DateTime.Now;
+                NewComment.modificationDate = DateTime.Now;
+                await _context.Comments.AddAsync(NewComment);
+                _context.SaveChanges();
+            }
             await LoadAsync(id);
             return Page();
         }
@@ -97,6 +115,37 @@ namespace PortalKulinarny.Pages.Recipes
             return Page();
         }
 
+        public async Task<IActionResult> OnPostLikeAsync(int id, int? recipe)
+        {
+            try
+            {
+                _context.CommentsLikes.Add(new CommentLike()
+                {
+                    CommentId = id,
+                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                });
+                _context.SaveChanges();
+            }catch(Exception e)
+            {
+
+            }
+            await LoadAsync(recipe);
+            return Page();
+        }
+
+
+        public async Task<IActionResult> OnPostUnlikeAsync(int id, int? recipe)
+        {
+            _context.CommentsLikes.Remove(new CommentLike()
+            {
+                CommentId = id,
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            });
+            _context.SaveChanges();
+            await LoadAsync(recipe);
+            return Page();
+        }
+
         public async Task<IActionResult> OnPostFavouritiesAsync(int id)
         {
             var recipeAdded = await _recipesService.FindByIdAsync(id);
@@ -118,7 +167,7 @@ namespace PortalKulinarny.Pages.Recipes
             return Page();
 
         }
-        
+
         public async Task<IActionResult> OnPostDeleteAsync(int? id)
         {
             if (id == null)
@@ -149,6 +198,13 @@ namespace PortalKulinarny.Pages.Recipes
         {
             Recipe = await _recipesService.FindByIdAsync(id);
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            comments = _context.Comments
+                .Where(e => e.RecipeId == id)
+                .Include(e => e.recipe)
+                .Include(e => e.user)
+                .Include(e => e.commentsLikes)
+                .OrderByDescending(e => e.modificationDate)
+                .ToList();
         }
     }
 }

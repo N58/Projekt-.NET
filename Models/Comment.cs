@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PortalKulinarny.Areas.Identity.Data;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PortalKulinarny.Models
 {
@@ -11,6 +13,7 @@ namespace PortalKulinarny.Models
     {
         public int id { get; set; }
         
+        [DisplayName("Komentarz")]
         [Required(ErrorMessage = "Zawartość jest wymagana!")]
         public string comment { get; set; }
 
