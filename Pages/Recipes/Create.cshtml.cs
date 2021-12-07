@@ -42,6 +42,7 @@ namespace PortalKulinarny.Pages.Recipes
 
         private string IngredientSession = "ingredientSession";
         private string CategoriesSession = "categoriesSession";
+        private string ImagesSession = "imagesSession";
 
         public CreateModel(ApplicationDbContext context, UtilsService utilsService, CategoryService categoryService, ImagesService imagesService)
         {
@@ -55,6 +56,7 @@ namespace PortalKulinarny.Pages.Recipes
         {
             _utilsService.RemoveSession(HttpContext, CategoriesSession);
             _utilsService.RemoveSession(HttpContext, IngredientSession);
+            _utilsService.RemoveSession(HttpContext, ImagesSession);
             return Page();
         }
 
@@ -64,6 +66,7 @@ namespace PortalKulinarny.Pages.Recipes
             if (ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Recipe.ViewCount = 0;
                 Recipe.UserId = userId;
                 Recipe.DateTime = DateTime.Now;
                 Recipe.ModificationDateTime = DateTime.Now;

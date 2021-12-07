@@ -49,5 +49,7 @@ namespace PortalKulinarny.Models
         [NotMapped, Display(Name = "Wybierz zdjęcie...")]
         public IFormFileCollection Gallery { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        [Display(Name = "Liczba wyświetleń")]
+        public int ViewCount { get; set; }
     }
 }

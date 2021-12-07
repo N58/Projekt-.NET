@@ -91,7 +91,14 @@
 <div>
     <a asp-page="Index">Wróć</a>
 </div>
-
+@{ 
+    List<string> ingredients = new List<string>();
+}
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ 
+        void updateIngredients ()
+        { 
+        }
+    }
 }

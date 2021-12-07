@@ -55,6 +55,15 @@ namespace PortalKulinarny.Pages.Recipes
             {
                 return NotFound();
             }
+            if(Object.Equals(Recipe.ViewCount, default(int)))
+            {
+                Recipe.ViewCount = 1;
+            }
+            else
+            {
+                Recipe.ViewCount++;
+            }
+            await _context.SaveChangesAsync();
             return Page();
         }
 
