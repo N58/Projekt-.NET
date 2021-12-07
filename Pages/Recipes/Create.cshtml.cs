@@ -106,7 +106,7 @@ namespace PortalKulinarny.Pages.Recipes
                 Categories.ForEach(c => Recipe.CategoryRecipes.Add(new CategoryRecipe { Category = c }));
         }
 
-        public async Task<IActionResult> OnPostAddIngredient()
+        public async void OnPostAddIngredient()
         {
 
             Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientSession);
@@ -121,10 +121,9 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, IngredientSession, Ingredients);
 
             await RefreshPageModels();
-            return Page(); // reloading page without OnGet()
         }
 
-        public async Task<IActionResult> OnPostDeleteIngredient(String name)
+        public async void OnPostDeleteIngredient(String name)
         {
             Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientSession);
 
@@ -137,10 +136,9 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, IngredientSession, Ingredients);
 
             await RefreshPageModels();
-            return Page(); // reloading page without OnGet()
         }
 
-        public async Task<IActionResult> OnPostAddCategory()
+        public async void OnPostAddCategory()
         {
             CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
 
@@ -153,11 +151,9 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
 
             await RefreshPageModels();
-
-            return Page();
         }
 
-        public async Task<IActionResult> OnPostDeleteCategory(int id)
+        public async void OnPostDeleteCategory(int id)
         {
             CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
 
@@ -170,7 +166,6 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
 
             await RefreshPageModels();
-            return Page(); // reloading page without OnGet()
         }
 
         public async Task RefreshPageModels()
