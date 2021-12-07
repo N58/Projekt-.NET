@@ -191,7 +191,7 @@ namespace PortalKulinarny.Pages.Recipes
             }
         }
 
-        public async Task<IActionResult> OnPostAddIngredient()
+        public async void OnPostAddIngredient()
         {
             Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientsSession);
             if (Ingredients == null)
@@ -203,10 +203,9 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, IngredientsSession, Ingredients);
 
             await RefreshPageModelsAsync();
-            return Page(); // reloading page without OnGet()
         }
 
-        public async Task<IActionResult> OnPostDeleteIngredient(String name)
+        public async void OnPostDeleteIngredient(String name)
         {
             Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientsSession);
 
@@ -219,10 +218,9 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, IngredientsSession, Ingredients);
 
             await RefreshPageModelsAsync();
-            return Page();
         }
 
-        public async Task<IActionResult> OnPostAddCategory(int id)
+        public async void OnPostAddCategory(int id)
         {
             CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
 
@@ -235,10 +233,9 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
 
             await RefreshPageModelsAsync();
-            return Page();
         }
 
-        public async Task<IActionResult> OnPostDeleteCategory(int id)
+        public async void OnPostDeleteCategory(int id)
         {
             CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
 
@@ -251,10 +248,9 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
 
             await RefreshPageModelsAsync();
-            return Page(); // reloading page without OnGet()
         }
 
-        public async Task<IActionResult> OnPostDeleteImage(int id)
+        public async void OnPostDeleteImage(int id)
         {
             Images = _utilsService.GetSession<List<Image>>(HttpContext, ImagesSession);
 
@@ -267,7 +263,6 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.SetSession(HttpContext, ImagesSession, Images);
 
             await RefreshPageModelsAsync();
-            return Page();
         }
 
         public async Task RefreshPageModelsAsync()

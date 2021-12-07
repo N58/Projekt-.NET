@@ -84,6 +84,13 @@ namespace PortalKulinarny.Pages.Recipes
                         }
                     }
                     _context.Recipes.Add(Recipe);
+                    if(Categories != null)
+                    {
+                        foreach(var cat in Categories)
+                        {
+                            _context.CategoryRecipes.Add(new CategoryRecipe() { CategoryId = cat.Id, RecipeId=Recipe.RecipeId});
+                        }
+                    }
                     await AddListsToDb();
                     await _context.SaveChangesAsync();
                     return RedirectToPage("./Details", new { id = Recipe.RecipeId});
