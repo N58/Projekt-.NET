@@ -43,6 +43,10 @@ else
 <div class="tab-content">
     <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
         <div class="container mt-4">
+            <form class="sort-form">
+                @Html.DropDownList("SortRecipes", Model.SortRecipesModes, new { onchange = "submit()", @class = "form-control" })
+            </form>
+            <br />
             @foreach (var item in Model.Recipes)
             {
                 <div class="card">
@@ -105,13 +109,13 @@ else
                                         }
                                     }
                                     @*
-                                        else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == item.UserId)
-                                        {
-                                            // Edit button
-                                            <a class="mr-3 d-inline btn-icon blue" asp-page="./Edit" asp-route-id="@item.RecipeId"><i class="fas fa-pen"></i></a>
-                                            // Delete button
-                                            //<button class="mr-3 d-inline btn-icon red" type="button" data-toggle="modal" data-id="@item.RecipeId" data-target="#deleteModal"><i class="fas fa-trash-alt"></i></button>
-                                        }
+                                else if (!String.IsNullOrWhiteSpace(Model.UserId) && Model.UserId == item.UserId)
+                                {
+                                    // Edit button
+                                    <a class="mr-3 d-inline btn-icon blue" asp-page="./Edit" asp-route-id="@item.RecipeId"><i class="fas fa-pen"></i></a>
+                                    // Delete button
+                                    //<button class="mr-3 d-inline btn-icon red" type="button" data-toggle="modal" data-id="@item.RecipeId" data-target="#deleteModal"><i class="fas fa-trash-alt"></i></button>
+                                }
                                     *@
 
                                     @if (!String.IsNullOrWhiteSpace(Model.UserId))
@@ -143,6 +147,10 @@ else
     </div>
     <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="favourites-tab">
         <div class="container mt-4">
+            <form class="sort-form">
+                @Html.DropDownList("SortUsers", Model.SortUsersModes, new { onchange = "submit()", @class = "form-control" })
+            </form>
+            <br />
             @foreach (var user in Model.Users)
             {
                 <div class="card">
@@ -171,6 +179,10 @@ else
     </div>
     <div class="tab-pane fade show" id="categories" role="tabpanel" aria-labelledby="categories-tab">
         <div class="container mt-4">
+            <form class="sort-form">
+                @Html.DropDownList("SortCategories", Model.SortCategoriesModes, new { onchange = "submit()", @class = "form-control" })
+            </form>
+            <br />
             @foreach (var category in Model.Categories)
             {
                 <div class="card">

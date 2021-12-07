@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PortalKulinarny.Areas.Identity.Data;
 using PortalKulinarny.Data;
@@ -40,21 +41,66 @@ namespace PortalKulinarny.Pages.Recipes
             _favouritiesService = favouritiesService;
             _userService = userService;
             _categoryService = categoryService;
+
+            SortRecipesModes = new List<SelectListItem>
+            {
+                new SelectListItem {Text = "Od najnowszego", Value = "newest", Selected = true },
+                new SelectListItem {Text = "Od najstarszego", Value = "oldest" },
+                new SelectListItem {Text = "Alfabetycznie", Value = "alphabetical" },
+            };
+
+            SortUsersModes = new List<SelectListItem>
+            {
+                new SelectListItem {Text = "Od najnowszego", Value = "newest", Selected = true },
+                new SelectListItem {Text = "Od najstarszego", Value = "oldest" },
+                new SelectListItem {Text = "Alfabetycznie", Value = "alphabetical" },
+            };
+
+            SortCategoriesModes = new List<SelectListItem>
+            {
+                new SelectListItem {Text = "Alfabetycznie", Value = "alphabetical", Selected = true }
+            };
         }
 
         [BindProperty(SupportsGet = true)]
         [Display(Name = "Szukajka")]
         public string Search { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string SortRecipes { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string SortUsers { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string SortCategories { get; set; }
+
+
         public IList<Recipe> Recipes { get; set; }
         public string UserId { get; set; }
         public IEnumerable<ApplicationUser> Users { get; set; }
         public IEnumerable<Category> Categories { get; set; }
 
+        public List<SelectListItem> SortRecipesModes { get; set; }
+        public List<SelectListItem> SortUsersModes { get; set; }
+        public List<SelectListItem> SortCategoriesModes { get; set; }
+
         private string SearchSession = "SearchSession";
+        private string SortRecipesSession = "SortRecipesSession";
+        private string SortUsersSession = "SortUsersSession";
+        private string SortCategoriesSession = "SortCategoriesSession";
 
         public async Task OnGetAsync()
         {
-            _utilsService.SetSession(HttpContext, SearchSession, Search);
+            if(!string.IsNullOrWhiteSpace(Search))
+                _utilsService.SetSession(HttpContext, SearchSession, Search);
+
+            if(!string.IsNullOrWhiteSpace(SortRecipes))
+                _utilsService.SetSession(HttpContext, SortRecipesSession, SortRecipes);
+
+            if (!string.IsNullOrWhiteSpace(SortUsers))
+                _utilsService.SetSession(HttpContext, SortUsersSession, SortUsers);
+
+            if (!string.IsNullOrWhiteSpace(SortCategories))
+                _utilsService.SetSession(HttpContext, SortCategoriesSession, SortCategories);
+
             await LoadAsync();
         }
 
@@ -147,7 +193,7 @@ namespace PortalKulinarny.Pages.Recipes
         {
             if (ModelState.IsValid)
             {
-                return RedirectToPage("./Index", new { Search = Search });
+                return RedirectToPage("./Index", "Search", new { Search = Search });
             }
             await LoadAsync();
             return Page();
@@ -158,6 +204,9 @@ namespace PortalKulinarny.Pages.Recipes
             CultureInfo culture = CultureInfo.CurrentCulture;
 
             Search = _utilsService.GetSessionString(HttpContext, SearchSession);
+            SortRecipes = _utilsService.GetSessionString(HttpContext, SortRecipesSession);
+            SortUsers = _utilsService.GetSessionString(HttpContext, SortUsersSession);
+            SortCategories = _utilsService.GetSessionString(HttpContext, SortCategoriesSession);
 
             var recipes = from n in await _recipesService.GetRecipesAsync()
                           select n;
@@ -175,12 +224,49 @@ namespace PortalKulinarny.Pages.Recipes
                 categories = categories.Where(s => (culture.CompareInfo.IndexOf(s.Name, Search, CompareOptions.IgnoreCase) >= 0));
             }
 
-            Recipes = recipes.OrderByDescending(r => r.DateTime).ToList();
-            Users = users.OrderBy(u => u.UserName).ToList();
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            Categories = categories.OrderBy(c => c.Name);
+            switch (SortRecipes)
+            {
+                case "newest":
+                    Recipes = recipes.OrderByDescending(r => r.DateTime).ToList();
+                    break;
+                case "oldest":
+                    Recipes = recipes.OrderBy(r => r.DateTime).ToList();
+                    break;
+                case "alphabetical":
+                    Recipes = recipes.OrderBy(r => r.Name).ToList();
+                    break;
+                default:
+                    Recipes = recipes.OrderByDescending(r => r.DateTime).ToList();
+                    break;
+            }
 
+            switch (SortUsers)
+            {
+                case "newest":
+                    Users = users.OrderByDescending(u => u.DoJ).ToList();
+                    break;
+                case "oldest":
+                    Users = users.OrderBy(u => u.DoJ).ToList();
+                    break;
+                case "alphabetical":
+                    Users = users.OrderBy(u => u.UserName).ToList();
+                    break;
+                default:
+                    Users = users.OrderByDescending(u => u.DoJ).ToList();
+                    break;
+            }
+
+            switch (SortCategories)
+            {
+                case "alphabetical":
+                    Categories = categories.OrderBy(c => c.Name);
+                    break;
+                default:
+                    Categories = categories.OrderBy(c => c.Name);
+                    break;
+            }
         }
     }
 }

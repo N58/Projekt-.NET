@@ -329,3 +329,7 @@ a.badge-red:focus, a.badge-red:hover {
     resize:vertical;
 }
 
+.sort-form .form-control {
+    width: 15vw !important;
+    margin-bottom
+}
