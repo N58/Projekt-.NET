@@ -26,8 +26,8 @@ namespace PortalKulinarny.Pages.Recipes
         public int? editCommentId;
         [BindProperty]
         public Comment NewComment { get; set; }
-        //[BindProperty]
-       // public Comment EditComment { get; set; }
+        [BindProperty]
+        public Comment EditComment { get; set; }
         [BindProperty]
         public Sort sortComments { get; set; }
 
@@ -105,16 +105,20 @@ namespace PortalKulinarny.Pages.Recipes
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (ModelState.IsValid)
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (NewComment.comment == null || NewComment.comment =="")
+                {
+                await LoadAsync(id);
+                return Page();
+        }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 NewComment.RecipeId = (int)id;
                 NewComment.UserId = userId;
                 NewComment.createdAt = DateTime.Now;
                 NewComment.modificationDate = DateTime.Now;
                 await _context.Comments.AddAsync(NewComment);
                 _context.SaveChanges();
-            }
+            
             return Redirect("~/Recipes/Details?id=" + id);
         }
 
@@ -171,9 +175,14 @@ namespace PortalKulinarny.Pages.Recipes
 
         public async Task<IActionResult> OnPostSaveEditAsync(int id,int recipe)
         {
+            if (EditComment.comment == null || EditComment.comment == "")
+            {
+                await LoadAsync(id);
+                return Page();
+            }
             NewComment = _context.Comments.FirstOrDefault(x=>x.id ==id);
             NewComment.modificationDate = DateTime.Now;
-      //      NewComment.comment = EditComment.comment;   
+            NewComment.comment = EditComment.comment;   
             _context.Update(NewComment);
                 _context.SaveChanges();
             return Redirect("~/Recipes/Details?id=" + recipe);
@@ -181,10 +190,12 @@ namespace PortalKulinarny.Pages.Recipes
 
         public async Task<IActionResult> OnPostEditAsync(int id, int? recipe)
         {
+           
             try
             {
-        //        EditComment = _context.Comments.FirstOrDefault(x => x.id == id);
-          //      editCommentId = EditComment.id;
+
+                EditComment = _context.Comments.FirstOrDefault(x => x.id == id);
+                editCommentId = EditComment.id;
             }
             catch (Exception e) { }
             await LoadAsync(recipe);
