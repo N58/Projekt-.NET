@@ -220,68 +220,76 @@
         </div>
     }
     <div>
-        <form method="POST" asp-page-handler="sort" asp-route-id="@Model.Recipe.RecipeId">
-            Sortuj po: <select asp-for="@Model.sortComments.sort">
+        <form method="POST" class="comment-sort-form" style="margin-top: 20px" asp-page-handler="sort" asp-route-id="@Model.Recipe.RecipeId">
+            Sortuj po: <select class="form-control" asp-for="@Model.sortComments.sort">
                 <option value="createAt">Data utworzenia</option>
                 <option value="modification">Data modyfikacji</option>
             </select>
-            <button type="submit" class="btn btn-light" >Sortuj</button>
+            <button type="submit" class="btn btn-light" style="margin-top: 10px;" >Sortuj</button>
         </form>
     </div>
 
     @if (Model.comments != null)
     {
-        @foreach (var comment in Model.comments)
-        {
-            <div class="comment-container">
-                <h6>@comment.user.UserName</h6>
-                @if (Model.editCommentId == comment.id)
-                {
-                    <div class="comment-form">
-                        <form method="post" asp-page-handler="SaveEdit" asp-route-id="@Model.EditComment.id" asp-route-recipe="@Model.Recipe.RecipeId" id="edit">
-                            <label asp-for="EditComment.comment"></label>
-                            <textarea asp-for="EditComment.comment"></textarea>
+        <div style="margin-top: 20px">
+            @foreach (var comment in Model.comments)
+            {
+                <div class="card card-comment">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4><a href="#" class="a-link">@comment.user.UserName</a></h4>
+                            @if (Model.editCommentId == comment.id)
+                            {
+                                <div class="comment-form">
+                                    <form method="post" asp-page-handler="SaveEdit" asp-route-id="@Model.EditComment.id" asp-route-recipe="@Model.Recipe.RecipeId" id="edit">
+                                        <label asp-for="EditComment.comment"></label>
+                                        <textarea asp-for="EditComment.comment"></textarea>
+                                        <div>
+                                            <button type="submit" class="btn btn-light">Aktualizuj</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <p>@comment.comment</p>
+                            }
+                            <span>@comment.modificationDate</span>
+                        </div>
+                        <div class="col-auto float-right">
                             <div>
-                                <button type="submit" class="btn btn-light">Aktualizuj</button>
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    @if (Model.UserId == comment.UserId)
+                                    {
+                                        <form class="mr-1 d-inline" method="post" asp-page-handler="Edit" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                                            <button class="btn-icon black" type="submit"><i class="fas fa-edit"></i></button>
+                                        </form>
+
+                                        <form class="mr-1 d-inline" method="post" asp-page-handler="CommentDelete" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                                            <button class="btn-icon red" type="submit"><i class="fas fa-trash-alt"></i></button>
+                                        </form>
+                                    }
+                                    else if (comment.commentsLikes.FirstOrDefault(e => e.UserId == Model.UserId && e.CommentId == comment.id) != null)
+                                    {
+                                        <form class="mr-1 d-inline" method="post" asp-page-handler="Unlike" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                                            <button class="btn-icon green" type="submit"><i class="fas fa-thumbs-up"></i></button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form class="mr-1 d-inline" method="post" asp-page-handler="Like" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                                            <button class="btn-icon gray" type="submit"><i class="far fa-thumbs-up"></i></button>
+                                        </form>
+                                    }
+                                }
                             </div>
-                        </form>
+                            <h6 class="mr-3 d-inline align-middle">Likes: @comment.commentsLikes.Count()</h6>
+                        </div>
                     </div>
-                }
-                else
-                {
-                    <p>@comment.comment</p>}
-                <div class="d-flex justify-content-between">
-                    <p>@comment.modificationDate </p>
-                    <p>Likes: @comment.commentsLikes.Count()</p>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        @if (Model.UserId == comment.UserId)
-                        {
-
-                            <form method="post" asp-page-handler="Edit" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
-                                <button class="mr-3 d-inline btn-icon black" type="submit"><i class="fas fa-edit"></i></button>
-                            </form>
-
-                            <form method="post" asp-page-handler="CommentDelete" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
-                                <button class="mr-3 d-inline btn-icon red" type="submit"><i class="fas fa-trash-alt"></i></button>
-                            </form> }
-                        else if (comment.commentsLikes.FirstOrDefault(e => e.UserId == Model.UserId && e.CommentId == comment.id) != null)
-                        {
-                            <form method="post" asp-page-handler="Unlike" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
-                                <button class="mr-3 d-inline btn-icon red" type="submit"><i class="fas fa-thumbs-down"></i></button>
-                            </form>
-
-                        }
-                        else
-                        {
-                            <form method="post" asp-page-handler="Like" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
-                                <button class="mr-3 d-inline btn-icon green" type="submit"><i class="fas fa-thumbs-up"></i></button>
-                            </form>
-                        }
-                    }
                 </div>
-            </div>
-        }
+            }
+        </div>
     }
 
 </div>
