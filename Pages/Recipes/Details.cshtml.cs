@@ -26,8 +26,8 @@ namespace PortalKulinarny.Pages.Recipes
         public int? editCommentId;
         [BindProperty]
         public Comment NewComment { get; set; }
-        [BindProperty]
-        public Comment EditComment { get; set; }
+        //[BindProperty]
+       // public Comment EditComment { get; set; }
         [BindProperty]
         public Sort sortComments { get; set; }
 
@@ -173,7 +173,7 @@ namespace PortalKulinarny.Pages.Recipes
         {
             NewComment = _context.Comments.FirstOrDefault(x=>x.id ==id);
             NewComment.modificationDate = DateTime.Now;
-            NewComment.comment = EditComment.comment;   
+      //      NewComment.comment = EditComment.comment;   
             _context.Update(NewComment);
                 _context.SaveChanges();
             return Redirect("~/Recipes/Details?id=" + recipe);
@@ -183,8 +183,8 @@ namespace PortalKulinarny.Pages.Recipes
         {
             try
             {
-                EditComment = _context.Comments.FirstOrDefault(x => x.id == id);
-                editCommentId = EditComment.id;
+        //        EditComment = _context.Comments.FirstOrDefault(x => x.id == id);
+          //      editCommentId = EditComment.id;
             }
             catch (Exception e) { }
             await LoadAsync(recipe);

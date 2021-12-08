@@ -237,15 +237,15 @@
                 <h6>@comment.user.UserName</h6>
                 @if (Model.editCommentId == comment.id)
                 {
-                    <div class="comment-form">
-                        <form method="post" asp-page-handler="SaveEdit" asp-route-id="@Model.EditComment.id" asp-route-recipe="@Model.Recipe.RecipeId">
-                            <label asp-for="EditComment.comment"></label>
-                            <textarea asp-for="EditComment.comment"></textarea>
-                            <div>
-                                <button type="submit" class="btn btn-light">Aktualizuj</button>
-                            </div>
-                        </form>
-                    </div>
+     //               <div class="comment-form">
+       //                 <form method="post" asp-page-handler="SaveEdit" asp-route-id="@Model.EditComment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+         //                   <label asp-for="EditComment.comment"></label>
+           //                 <textarea asp-for="EditComment.comment"></textarea>
+             //               <div>
+               //                 <button type="submit" class="btn btn-light">Aktualizuj</button>
+              //              </div>
+               //         </form>
+                //    </div>
                 }
                 else
                 {
