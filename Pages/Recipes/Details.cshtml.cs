@@ -23,8 +23,22 @@ namespace PortalKulinarny.Pages.Recipes
         public readonly FavouritiesService _favouritiesService;
         public readonly UserService _userService;
         private readonly ImagesService _imagesService;
+        public int? editCommentId;
         [BindProperty]
         public Comment NewComment { get; set; }
+        [BindProperty]
+        public Comment EditComment { get; set; }
+        [BindProperty]
+        public Sort sortComments { get; set; }
+
+        public class Sort
+        {
+            public string sort { get; set; }
+            public Sort()
+            {
+                sort = "createAt";
+            }
+        }
 
         public DetailsModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
             DatabaseRecipesService recipesService, VoteService voteService, FavouritiesService favouritiesService, UserService utilsService,
@@ -37,6 +51,8 @@ namespace PortalKulinarny.Pages.Recipes
             _favouritiesService = favouritiesService;
             _userService = utilsService;
             _imagesService = imagesService;
+
+            sortComments = new Sort();
         }
         public Recipe Recipe { get; set; }
         public string UserId { get; set; }
@@ -44,6 +60,7 @@ namespace PortalKulinarny.Pages.Recipes
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            this.sortComments = sortComments;
             if (id == null)
             {
                 return NotFound();
@@ -58,6 +75,12 @@ namespace PortalKulinarny.Pages.Recipes
             return Page();
         }
 
+
+        public async Task<IActionResult> OnPostSortAsync(int? id)
+        {
+            await LoadAsync(id);
+            return Page();
+        }
 
         public async Task<IActionResult> OnPostUpVoteAsync(int? id)
         {
@@ -76,23 +99,27 @@ namespace PortalKulinarny.Pages.Recipes
             }
 
             await LoadAsync(id);
-            return Page();
+            return Redirect("~/Recipes/Details?id=" + id);
+
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (ModelState.IsValid)
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (NewComment.comment == null || NewComment.comment =="")
+                {
+                await LoadAsync(id);
+                return Page();
+        }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 NewComment.RecipeId = (int)id;
                 NewComment.UserId = userId;
                 NewComment.createdAt = DateTime.Now;
                 NewComment.modificationDate = DateTime.Now;
                 await _context.Comments.AddAsync(NewComment);
                 _context.SaveChanges();
-            }
-            await LoadAsync(id);
-            return Page();
+            
+            return Redirect("~/Recipes/Details?id=" + id);
         }
 
         public async Task<IActionResult> OnPostDownVoteAsync(int? id, string value)
@@ -110,9 +137,8 @@ namespace PortalKulinarny.Pages.Recipes
                 //todo better exception handling??
                 return RedirectToPage("/Error");
             }
+            return Redirect("~/Recipes/Details?id=" + id);
 
-            await LoadAsync(id);
-            return Page();
         }
 
         public async Task<IActionResult> OnPostLikeAsync(int id, int? recipe)
@@ -125,7 +151,8 @@ namespace PortalKulinarny.Pages.Recipes
                     UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
                 });
                 _context.SaveChanges();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
 
             }
@@ -142,8 +169,49 @@ namespace PortalKulinarny.Pages.Recipes
                 UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
             });
             _context.SaveChanges();
+            return Redirect("~/Recipes/Details?id=" + recipe);
+
+        }
+
+        public async Task<IActionResult> OnPostSaveEditAsync(int id,int recipe)
+        {
+            if (EditComment.comment == null || EditComment.comment == "")
+            {
+                await LoadAsync(id);
+                return Page();
+            }
+            NewComment = _context.Comments.FirstOrDefault(x=>x.id ==id);
+            NewComment.modificationDate = DateTime.Now;
+            NewComment.comment = EditComment.comment;   
+            _context.Update(NewComment);
+                _context.SaveChanges();
+            return Redirect("~/Recipes/Details?id=" + recipe);
+        }
+
+        public async Task<IActionResult> OnPostEditAsync(int id, int? recipe)
+        {
+           
+            try
+            {
+
+                EditComment = _context.Comments.FirstOrDefault(x => x.id == id);
+                editCommentId = EditComment.id;
+            }
+            catch (Exception e) { }
             await LoadAsync(recipe);
             return Page();
+        }
+        public async Task<IActionResult> OnPostCommentDeleteAsync(int id, int? recipe)
+        {
+            try
+            {
+                var c = new Comment();
+                c.id = id;
+                _context.Comments.Remove(c);
+                _context.SaveChanges();
+            }
+            catch (Exception) { }
+            return Redirect("~/Recipes/Details?id=" + recipe);
         }
 
         public async Task<IActionResult> OnPostFavouritiesAsync(int id)
@@ -162,9 +230,8 @@ namespace PortalKulinarny.Pages.Recipes
                 //todo better exception handling??
                 return RedirectToPage("/Error");
             }
+            return Redirect("~/Recipes/Details?id=" + id);
 
-            await LoadAsync(id);
-            return Page();
 
         }
 
@@ -198,13 +265,25 @@ namespace PortalKulinarny.Pages.Recipes
         {
             Recipe = await _recipesService.FindByIdAsync(id);
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            comments = _context.Comments
+            var c = _context.Comments
                 .Where(e => e.RecipeId == id)
                 .Include(e => e.recipe)
                 .Include(e => e.user)
-                .Include(e => e.commentsLikes)
-                .OrderByDescending(e => e.modificationDate)
-                .ToList();
+                .Include(e => e.commentsLikes);
+
+            switch (sortComments.sort)
+            {
+                case "createAt":
+                    comments= c.OrderByDescending(x => x.createdAt).ToList();
+                    break;
+
+                case "modification":
+                    comments = c.OrderByDescending(x => x.modificationDate).ToList();
+                    break;
+            }
+
+            
+            
         }
     }
 }

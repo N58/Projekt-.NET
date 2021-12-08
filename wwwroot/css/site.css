@@ -329,7 +329,20 @@ a.badge-red:focus, a.badge-red:hover {
     resize:vertical;
 }
 
+sorting
 .sort-form .form-control {
     width: 15vw !important;
     margin-bottom
+}
+
+.comment-container {
+    background-color: #6610f299;
+    color:white;
+    padding: 20px;
+    margin-bottom:30px;
+}
+
+.comment-container h6 {
+    font-size: 24px;
+    color: #ff0065;
 }
