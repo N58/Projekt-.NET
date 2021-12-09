@@ -3,6 +3,25 @@
 @using PortalKulinarny.Models;
 @{
     ViewData["Title"] = "Edytuj";
+    <script type="text/javascript">
+        var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".gif", ".png"];
+        refresh = function () {
+            var sFileName = document.getElementById('FileUpload').value;
+            var valid = false;
+            if (sFileName.length > 0) {
+                for (var j = 0; j < _validFileExtensions.length; j++) {
+                    var sCurExtension = _validFileExtensions[j];
+                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                        valid = true;
+                        document.getElementById('UploadButton').click();
+                    }
+                }
+            }
+            if (valid === false) {
+                document.getElementById('errorname').innerHTML = "Uploaded file is not of a valid type!";
+            }
+        }
+    </script>
 }
 
 <h1>Edytuj przepis</h1>
@@ -18,7 +37,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Recipe.Description" class="control-label"></label>
-                <textarea asp-for="Recipe.Description" class="form-control" style="width: 60%" rows="6" style="resize: none;"></textarea>
+                <textarea asp-for="Recipe.Description" class="form-control" style="width: 60%; resize: none;" rows="6"></textarea>
                 <span asp-validation-for="Recipe.Description" class="text-danger"></span>
             </div>
             <div class="row" style="max-width: 60%">
@@ -32,7 +51,7 @@
                             <div class="align-items-center row">
                                 <div class="col">@item</div>
 
-                                <button class="col btn-icon red text-right mr-3" type="submit" asp-page-handler="DeleteIngredient" asp-route-name="@item" formnovalidate>
+                                <button class="col btn-icon red text-right mr-3" asp-page-handler="DeleteIngredient" asp-route-name="@item" formnovalidate>
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div><hr style="margin: 5px 0" />
@@ -48,12 +67,13 @@
                     <hr style="margin: 5px 0" />
                     @if (Model.CategoriesId != null)
                     {
-                        foreach (var item in Model.Categories)
+                        foreach (var id in Model.CategoriesId)
                         {
+                            var item = await Model._categoryService.FindAsync(id);
                             <div class="align-items-center row">
                                 <div class="col">@item.Name</div>
 
-                                <button class="col btn-icon red text-right mr-3" type="submit" formnovalidate asp-page-handler="DeleteCategory" asp-route-id="@item.Id">
+                                <button class="col btn-icon red text-right mr-3" formnovalidate asp-page-handler="DeleteCategory" asp-route-id="@item.Id">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div><hr style="margin: 5px 0" />
@@ -71,19 +91,21 @@
                 </div>
             </div>
             <div class="row">
-                @foreach (var image in Model.Images)
+                @for (int i = 0; i < Model.Images.Count; i++)
                 {
                     <div class="col-auto mb-3 custom-div-image">
-                        <img class="custom-image rounded" src="@image.URL" asp-append-version="true" alt="Preview">
-                        <button class="remove-image" type="submit" formnovalidate asp-page-handler="DeleteImage" asp-route-id="@image.ImageId" style="display:inline;">&#215;</button>
+                        <img class="custom-image rounded" src="@Model.Images[i].URL" asp-append-version="true" alt="Preview">
+                        <button class="remove-image" formnovalidate asp-page-handler="DeleteImage" asp-route-id="@i" style="display:inline;">&#215;</button>
                     </div>
                 }
             </div>
             <div class="form-group" style="max-width: 40%">
                 <div class="custom-file">
-                    <input asp-for="NewImages" id="inputfile" class="custom-file-input" accept="image/*" />
-                    <label asp-for="NewImages" class="custom-file-label"></label>
-                    <span asp-validation-for="NewImages" class="invalid-feedback"></span>
+                    <input asp-for="NewImage" id="FileUpload" onchange="refresh()" class="custom-file-input" accept="image/*" />
+                    <label asp-for="NewImage" class="custom-file-label"></label>
+                    <span asp-validation-for="NewImage" class="invalid-feedback"></span>
+                    <span id="errorname" style="color: red"></span>
+                    <button hidden id="UploadButton" asp-page-handler="AddImage" formnovalidate></button>
                 </div>
             </div>
 

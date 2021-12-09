@@ -17,6 +17,8 @@ using PortalKulinarny.Services;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+using System.Text;
 
 namespace PortalKulinarny.Pages.Recipes
 {
@@ -27,12 +29,17 @@ namespace PortalKulinarny.Pages.Recipes
         private readonly UtilsService _utilsService;
         public readonly CategoryService _categoryService;
         private readonly ImagesService _imagesService;
+        private readonly IHttpContextAccessor _accessor;
 
         [BindProperty]
         public Recipe Recipe { get; set; }
+        [Display(Name = "Dodaj zdjęcie...")]
+        public IFormFile NewFile { get; set; }
+        [BindProperty]
+        public BindingList<IFormFile> FilesAdded { get; set; }
         public List<string> Ingredients { get; set; }
         public List<int> CategoriesId { get; set; }
-        public List<Category> Categories { get; set; }
+        public List<Image> Images { get; set; }
         [BindProperty]
         [Display(Name = "Składniki")]
         public string NewIngredient { get; set; }
@@ -43,20 +50,24 @@ namespace PortalKulinarny.Pages.Recipes
         private string IngredientSession = "ingredientSession";
         private string CategoriesSession = "categoriesSession";
         private string ImagesSession = "imagesSession";
+        private string FileSession = "fileSession";
 
-        public CreateModel(ApplicationDbContext context, UtilsService utilsService, CategoryService categoryService, ImagesService imagesService)
+        public CreateModel(ApplicationDbContext context, UtilsService utilsService, CategoryService categoryService, ImagesService imagesService, IHttpContextAccessor contextAccessor)
         {
             _context = context;
             _utilsService = utilsService;
             _categoryService = categoryService;
             _imagesService = imagesService;
+            _accessor = contextAccessor;
         }
 
         public IActionResult OnGet()
         {
-            _utilsService.RemoveSession(HttpContext, CategoriesSession);
-            _utilsService.RemoveSession(HttpContext, IngredientSession);
-            _utilsService.RemoveSession(HttpContext, ImagesSession);
+            _utilsService.RemoveSession(_accessor.HttpContext, CategoriesSession);
+            _utilsService.RemoveSession(_accessor.HttpContext, IngredientSession);
+            _utilsService.RemoveSession(_accessor.HttpContext, ImagesSession);
+            _utilsService.RemoveSession(_accessor.HttpContext, FileSession);
+            FilesAdded = new BindingList<IFormFile>();
             return Page();
         }
 
@@ -70,28 +81,17 @@ namespace PortalKulinarny.Pages.Recipes
                 Recipe.UserId = userId;
                 Recipe.DateTime = DateTime.Now;
                 Recipe.ModificationDateTime = DateTime.Now;
+                RefreshPageModels();
 
                 // Add to database
                 if (await TryUpdateModelAsync<Recipe>(Recipe, "recipe", r => r.UserId, r => r.Name, r => r.Description, r => r.DateTime, r => r.ModificationDateTime))
                 {
-                    if(Recipe.Gallery != null)
-                    {
-                        Recipe.Images = new List<Image>();
-                        foreach (var file in Recipe.Gallery)
-                        {
-                            var name = await _imagesService.UploadImage(file, Recipe.Name);
-                            Recipe.Images.Add(new Image { Name = name });
-                        }
-                    }
+                    Recipe.Images = Images;
+                    FormFileCollection tmp = new FormFileCollection();
+                    foreach(IFormFile file in FilesAdded)
+                        tmp.Add(file);
                     _context.Recipes.Add(Recipe);
-                    if(Categories != null)
-                    {
-                        foreach(var cat in Categories)
-                        {
-                            _context.CategoryRecipes.Add(new CategoryRecipe() { CategoryId = cat.Id, RecipeId=Recipe.RecipeId});
-                        }
-                    }
-                    await AddListsToDb();
+                    AddListsToDb();
                     await _context.SaveChangesAsync();
                     return RedirectToPage("./Details", new { id = Recipe.RecipeId});
                 }
@@ -100,23 +100,60 @@ namespace PortalKulinarny.Pages.Recipes
             return RedirectToPage("./Index");
         }
 
-        
-
-        public async Task AddListsToDb()
+        public void AddListsToDb()
         {
-            await RefreshPageModels();
             Recipe.Ingredients = new List<Ingredient>();
             if (Ingredients != null)
                 Ingredients.ForEach(name => Recipe.Ingredients.Add(new Ingredient { Name = name }));
             Recipe.CategoryRecipes = new List<CategoryRecipe>();
-            if (Categories != null)
-                Categories.ForEach(c => Recipe.CategoryRecipes.Add(new CategoryRecipe { Category = c }));
+            if (CategoriesId != null)
+                CategoriesId.ForEach(c => Recipe.CategoryRecipes.Add(new CategoryRecipe { CategoryId = c }));
         }
 
-        public async void OnPostAddIngredient()
+        public async Task OnPostAddImage()
+        {
+            Images = _utilsService.GetSession<List<Image>>(_accessor.HttpContext, ImagesSession);
+
+            if (Images == null)
+                Images = new List<Image>();
+
+            if(NewFile != null)
+            {
+                FilesAdded.Add(NewFile);
+                Images.Add(new Image { Name = await _imagesService.UploadImage(FilesAdded.Last(), Recipe.Name) });
+            }
+
+            _utilsService.SetSession(_accessor.HttpContext, ImagesSession, Images);
+
+            RefreshPageModels();
+        }
+
+        public void OnPostDeleteImage(int index)
+        {
+            Images = _utilsService.GetSession<List<Image>>(_accessor.HttpContext, ImagesSession);
+
+            if (Images == null)
+                Images = new List<Image>();
+
+            if(index < Images.Count)
+            {
+                FilesAdded.RemoveAt(index);
+                if(System.IO.File.Exists(Images[index].GetUrl()))
+                {
+                    System.IO.File.Delete(Images[index].GetUrl());
+                }
+                Images.RemoveAt(index);
+            }
+
+            _utilsService.SetSession(_accessor.HttpContext, ImagesSession, Images);
+
+            RefreshPageModels();
+        }
+
+        public void OnPostAddIngredient()
         {
 
-            Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientSession);
+            Ingredients = _utilsService.GetSession<List<string>>(_accessor.HttpContext, IngredientSession);
             
             
             if (Ingredients == null)
@@ -125,14 +162,14 @@ namespace PortalKulinarny.Pages.Recipes
             if(!string.IsNullOrWhiteSpace(NewIngredient) && !Ingredients.Contains(NewIngredient))
                 Ingredients.Add(NewIngredient);
             
-            _utilsService.SetSession(HttpContext, IngredientSession, Ingredients);
+            _utilsService.SetSession(_accessor.HttpContext, IngredientSession, Ingredients);
 
-            await RefreshPageModels();
+            RefreshPageModels();
         }
 
-        public async void OnPostDeleteIngredient(String name)
+        public void OnPostDeleteIngredient(String name)
         {
-            Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientSession);
+            Ingredients = _utilsService.GetSession<List<string>>(_accessor.HttpContext, IngredientSession);
 
             if (Ingredients == null)
                 Ingredients = new List<string>();
@@ -140,14 +177,14 @@ namespace PortalKulinarny.Pages.Recipes
             if (Ingredients.Contains(name))
                 Ingredients.Remove(name);
 
-            _utilsService.SetSession(HttpContext, IngredientSession, Ingredients);
+            _utilsService.SetSession(_accessor.HttpContext, IngredientSession, Ingredients);
 
-            await RefreshPageModels();
+            RefreshPageModels();
         }
 
-        public async void OnPostAddCategory()
+        public void OnPostAddCategory()
         {
-            CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
+            CategoriesId = _utilsService.GetSession<List<int>>(_accessor.HttpContext, CategoriesSession);
 
             if (CategoriesId == null)
                 CategoriesId = new List<int>();
@@ -155,14 +192,14 @@ namespace PortalKulinarny.Pages.Recipes
             if (NewCategory != null && !CategoriesId.Contains((int)NewCategory))
                 CategoriesId.Add((int)NewCategory);
 
-            _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
+            _utilsService.SetSession(_accessor.HttpContext, CategoriesSession, CategoriesId);
 
-            await RefreshPageModels();
+            RefreshPageModels();
         }
 
-        public async void OnPostDeleteCategory(int id)
+        public void OnPostDeleteCategory(int id)
         {
-            CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
+            CategoriesId = _utilsService.GetSession<List<int>>(_accessor.HttpContext, CategoriesSession);
 
             if (CategoriesId == null)
                 CategoriesId = new List<int>();
@@ -170,18 +207,16 @@ namespace PortalKulinarny.Pages.Recipes
             if (CategoriesId.Contains(id))
                 CategoriesId.Remove(id);
 
-            _utilsService.SetSession(HttpContext, CategoriesSession, CategoriesId);
+            _utilsService.SetSession(_accessor.HttpContext, CategoriesSession, CategoriesId);
 
-            await RefreshPageModels();
+            RefreshPageModels();
         }
 
-        public async Task RefreshPageModels()
-        {
-            Ingredients = _utilsService.GetSession<List<string>>(HttpContext, IngredientSession);
-            CategoriesId = _utilsService.GetSession<List<int>>(HttpContext, CategoriesSession);
-            Categories = await _context.Categories
-                .Where(c => CategoriesId.Contains(c.Id))
-                .ToListAsync();
+        public void RefreshPageModels()
+            {
+            Ingredients = _utilsService.GetSession<List<string>>(_accessor.HttpContext, IngredientSession);
+            CategoriesId = _utilsService.GetSession<List<int>>(_accessor.HttpContext, CategoriesSession);
+            Images = _utilsService.GetSession<List<Image>>(_accessor.HttpContext, ImagesSession);
         }
     }
 }

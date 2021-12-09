@@ -42,6 +42,7 @@ namespace PortalKulinarny
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddHttpContextAccessor();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -99,10 +100,10 @@ namespace PortalKulinarny
 
             app.UseRouting();
 
+            app.UseSession();
+
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

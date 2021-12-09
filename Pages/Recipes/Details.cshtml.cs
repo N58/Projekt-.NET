@@ -57,10 +57,11 @@ namespace PortalKulinarny.Pages.Recipes
             }
             if(Object.Equals(Recipe.ViewCount, default(int)))
             {
-                Recipe.ViewCount = 1;
+                Recipe.ViewCount = 0;
             }
             else
             {
+                if(Recipe.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
                 Recipe.ViewCount++;
             }
             await _context.SaveChangesAsync();
