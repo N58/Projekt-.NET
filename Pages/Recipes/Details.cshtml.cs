@@ -38,7 +38,9 @@ namespace PortalKulinarny.Pages.Recipes
             _userService = utilsService;
             _imagesService = imagesService;
         }
+        [BindProperty]
         public Recipe Recipe { get; set; }
+        [BindProperty]
         public string UserId { get; set; }
         public List<Comment> comments { get; set; }
 
@@ -55,14 +57,15 @@ namespace PortalKulinarny.Pages.Recipes
             {
                 return NotFound();
             }
-            if(Object.Equals(Recipe.ViewCount, default(int)))
+            UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (Object.Equals(Recipe.ViewCount, default(int)))
             {
                 Recipe.ViewCount = 0;
             }
             else
             {
-                if(Recipe.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
-                Recipe.ViewCount++;
+                if (Recipe.UserId != UserId)
+                    Recipe.ViewCount++;
             }
             await _context.SaveChangesAsync();
             return Page();

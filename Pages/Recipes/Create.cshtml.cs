@@ -35,8 +35,6 @@ namespace PortalKulinarny.Pages.Recipes
         public Recipe Recipe { get; set; }
         [Display(Name = "Dodaj zdjęcie...")]
         public IFormFile NewFile { get; set; }
-        [BindProperty]
-        public BindingList<IFormFile> FilesAdded { get; set; }
         public List<string> Ingredients { get; set; }
         public List<int> CategoriesId { get; set; }
         public List<Image> Images { get; set; }
@@ -50,7 +48,6 @@ namespace PortalKulinarny.Pages.Recipes
         private string IngredientSession = "ingredientSession";
         private string CategoriesSession = "categoriesSession";
         private string ImagesSession = "imagesSession";
-        private string FileSession = "fileSession";
 
         public CreateModel(ApplicationDbContext context, UtilsService utilsService, CategoryService categoryService, ImagesService imagesService, IHttpContextAccessor contextAccessor)
         {
@@ -66,8 +63,6 @@ namespace PortalKulinarny.Pages.Recipes
             _utilsService.RemoveSession(_accessor.HttpContext, CategoriesSession);
             _utilsService.RemoveSession(_accessor.HttpContext, IngredientSession);
             _utilsService.RemoveSession(_accessor.HttpContext, ImagesSession);
-            _utilsService.RemoveSession(_accessor.HttpContext, FileSession);
-            FilesAdded = new BindingList<IFormFile>();
             return Page();
         }
 
@@ -87,10 +82,9 @@ namespace PortalKulinarny.Pages.Recipes
                 if (await TryUpdateModelAsync<Recipe>(Recipe, "recipe", r => r.UserId, r => r.Name, r => r.Description, r => r.DateTime, r => r.ModificationDateTime))
                 {
                     Recipe.Images = Images;
-                    FormFileCollection tmp = new FormFileCollection();
-                    foreach(IFormFile file in FilesAdded)
-                        tmp.Add(file);
                     _context.Recipes.Add(Recipe);
+                    Images.ForEach(i => i.RecipeId = Recipe.RecipeId);
+                    _context.Images.AddRange(Images);
                     AddListsToDb();
                     await _context.SaveChangesAsync();
                     return RedirectToPage("./Details", new { id = Recipe.RecipeId});
@@ -119,8 +113,7 @@ namespace PortalKulinarny.Pages.Recipes
 
             if(NewFile != null)
             {
-                FilesAdded.Add(NewFile);
-                Images.Add(new Image { Name = await _imagesService.UploadImage(FilesAdded.Last(), Recipe.Name) });
+                Images.Add(new Image { Name = await _imagesService.UploadImage(NewFile, Recipe.Name) });
             }
 
             _utilsService.SetSession(_accessor.HttpContext, ImagesSession, Images);
@@ -137,7 +130,6 @@ namespace PortalKulinarny.Pages.Recipes
 
             if(index < Images.Count)
             {
-                FilesAdded.RemoveAt(index);
                 if(System.IO.File.Exists(Images[index].GetUrl()))
                 {
                     System.IO.File.Delete(Images[index].GetUrl());
