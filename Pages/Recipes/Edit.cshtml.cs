@@ -179,6 +179,15 @@ namespace PortalKulinarny.Pages.Recipes
                         _context.Images.Remove(imageToRemove);
                     }
                 }
+                foreach(Image image in images)
+                {
+                    if(!recipeToUpdate.Images.Any(i => i.URL == image.URL))
+                    {
+                        Image NewImage = image;
+                        NewImage.RecipeId = recipeToUpdate.RecipeId;
+                        _context.Images.Add(image);
+                    }
+                }
             }
         }
 
@@ -266,7 +275,16 @@ namespace PortalKulinarny.Pages.Recipes
                 Images = new List<Image>();
 
             if (index < Images.Count)
+            {
+                if( _context.Images.Where(i => i.RecipeId == _utilsService.GetSession<int>(HttpContext, RecipeIdSession)).Any(i => i.Name == Images[index].Name))
+                {
+                    if (System.IO.File.Exists(Images[index].GetUrl()))
+                    {
+                        System.IO.File.Delete(Images[index].GetUrl());
+                    }
+                }
                 Images.RemoveAt(index);
+            }
 
             _utilsService.SetSession(HttpContext, ImagesSession, Images);
 
