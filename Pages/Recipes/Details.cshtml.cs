@@ -75,15 +75,8 @@ namespace PortalKulinarny.Pages.Recipes
                 return NotFound();
             }
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (Object.Equals(Recipe.ViewCount, default(int)))
-            {
-                Recipe.ViewCount = 0;
-            }
-            else
-            {
-                if (Recipe.UserId != UserId)
-                    Recipe.ViewCount++;
-            }
+            if (Recipe.UserId != UserId)
+                Recipe.ViewCount++;
             await _context.SaveChangesAsync();
             return Page();
         }
@@ -112,7 +105,7 @@ namespace PortalKulinarny.Pages.Recipes
             }
 
             await LoadAsync(id);
-            return Redirect("~/Recipes/Details?id=" + id);
+            return Page();
 
         }
 
@@ -123,19 +116,19 @@ namespace PortalKulinarny.Pages.Recipes
                 {
                 await LoadAsync(id);
                 return Page();
-        }
+            }
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                NewComment.RecipeId = (int)id;
-                NewComment.UserId = userId;
-                NewComment.createdAt = DateTime.Now;
-                NewComment.modificationDate = DateTime.Now;
-                await _context.Comments.AddAsync(NewComment);
-                _context.SaveChanges();
-            
-            return Redirect("~/Recipes/Details?id=" + id);
+            NewComment.RecipeId = (int)id;
+            NewComment.UserId = userId;
+            NewComment.createdAt = DateTime.Now;
+            NewComment.modificationDate = DateTime.Now;
+            await _context.Comments.AddAsync(NewComment);
+            _context.SaveChanges();
+            await LoadAsync(id);
+            return Page();
         }
 
-        public async Task<IActionResult> OnPostDownVoteAsync(int? id, string value)
+        public async Task<IActionResult> OnPostDownVoteAsync(int? id)
         {
             var recipeVoted = await _recipesService.FindByIdAsync(id);
 
@@ -150,17 +143,18 @@ namespace PortalKulinarny.Pages.Recipes
                 //todo better exception handling??
                 return RedirectToPage("/Error");
             }
-            return Redirect("~/Recipes/Details?id=" + id);
+            await LoadAsync(id);
+            return Page();
 
         }
 
-        public async Task<IActionResult> OnPostLikeAsync(int id, int? recipe)
+        public async Task<IActionResult> OnPostLikeAsync(int id, int commentId)
         {
             try
             {
                 _context.CommentsLikes.Add(new CommentLike()
                 {
-                    CommentId = id,
+                    CommentId = commentId,
                     UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
                 });
                 _context.SaveChanges();
@@ -169,62 +163,65 @@ namespace PortalKulinarny.Pages.Recipes
             {
 
             }
-            await LoadAsync(recipe);
+            await LoadAsync(id);
             return Page();
         }
 
 
-        public async Task<IActionResult> OnPostUnlikeAsync(int id, int? recipe)
+        public async Task<IActionResult> OnPostUnlikeAsync(int id, int commentId)
         {
             _context.CommentsLikes.Remove(new CommentLike()
             {
-                CommentId = id,
+                CommentId = commentId,
                 UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
             });
             _context.SaveChanges();
-            return Redirect("~/Recipes/Details?id=" + recipe);
+            await LoadAsync(id);
+            return Page();
 
         }
 
-        public async Task<IActionResult> OnPostSaveEditAsync(int id,int recipe)
+        public async Task<IActionResult> OnPostSaveEditAsync(int id,int commentId)
         {
             if (EditComment.comment == null || EditComment.comment == "")
             {
                 await LoadAsync(id);
                 return Page();
             }
-            NewComment = _context.Comments.FirstOrDefault(x=>x.id ==id);
+            NewComment = _context.Comments.FirstOrDefault(x=>x.id == commentId);
             NewComment.modificationDate = DateTime.Now;
             NewComment.comment = EditComment.comment;   
             _context.Update(NewComment);
                 _context.SaveChanges();
-            return Redirect("~/Recipes/Details?id=" + recipe);
+            await LoadAsync(id);
+            return Page();
         }
 
-        public async Task<IActionResult> OnPostEditAsync(int id, int? recipe)
+        public async Task<IActionResult> OnPostEditAsync(int id, int commentId)
         {
            
             try
             {
 
-                EditComment = _context.Comments.FirstOrDefault(x => x.id == id);
+                EditComment = _context.Comments.FirstOrDefault(x => x.id == commentId);
                 editCommentId = EditComment.id;
             }
             catch (Exception e) { }
-            await LoadAsync(recipe);
+            await LoadAsync(id);
             return Page();
         }
-        public async Task<IActionResult> OnPostCommentDeleteAsync(int id, int? recipe)
+        public async Task<IActionResult> OnPostCommentDeleteAsync(int id, int commentId)
         {
             try
             {
                 var c = new Comment();
-                c.id = id;
+                c.id = commentId;
                 _context.Comments.Remove(c);
                 _context.SaveChanges();
             }
             catch (Exception) { }
-            return Redirect("~/Recipes/Details?id=" + recipe);
+            await LoadAsync(id);
+            return Page();
         }
 
         public async Task<IActionResult> OnPostFavouritiesAsync(int id)
@@ -243,7 +240,8 @@ namespace PortalKulinarny.Pages.Recipes
                 //todo better exception handling??
                 return RedirectToPage("/Error");
             }
-            return Redirect("~/Recipes/Details?id=" + id);
+            await LoadAsync(id);
+            return Page();
 
 
         }
@@ -271,6 +269,7 @@ namespace PortalKulinarny.Pages.Recipes
 
             _context.Recipes.Remove(recipe);
             await _context.SaveChangesAsync();
+            await LoadAsync(id);    
             return RedirectToPage("./Index");
         }
 

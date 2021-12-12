@@ -73,7 +73,7 @@
         </div>
         <div class="row d-flex justify-content-between">
             <div>
-                @if (Model.Recipe != null)
+                @if (Model.Recipe != null && Model.Recipe.CategoryRecipes != null)
                     @foreach (var category in Model.Recipe.CategoryRecipes)
                     {
                         <a class="badge badge-pill badge-red" asp-page="../Tags" asp-route-id="@category.CategoryId">#@category.Category.Name</a>
@@ -115,7 +115,7 @@
     <!-- Image segment -->
     <div id="carouselImages" class="carousel-static carousel slide mx-auto d-block" data-ride="carousel" style="margin: 20px;">
         <ol class="carousel-indicators">
-            @if (Model.Recipe.Images.Count > 0)
+            @if (Model.Recipe.Images != null && Model.Recipe.Images.Count > 0)
             {
                 @for (int i = 0; i < Model.Recipe.Images.Count; i++)
                 {
@@ -135,7 +135,7 @@
             }
         </ol>
         <div class="carousel-inner">
-            @if (Model.Recipe.Images.Count > 0)
+            @if (Model.Recipe.Images != null && Model.Recipe.Images.Count > 0)
             {
                 @foreach (var item in Model.Recipe.Images.Select((value, i) => new { i, value }))
                 {
@@ -190,14 +190,31 @@
             <div class="col" style="max-width: 40%">
                 <h5>@Html.DisplayNameFor(model => model.Recipe.Ingredients)</h5>
                 <hr style="margin: 5px 0" />
-                @foreach (var ingredient in Model.Recipe.Ingredients)
-                {
-                    <span>@ingredient.Name</span><hr style="margin: 5px 0" />
-                }
+                @if(Model.Recipe != null && Model.Recipe.Ingredients != null)
+                    @foreach (var ingredient in Model.Recipe.Ingredients)
+                    {
+                        <span>@ingredient.Name</span><hr style="margin: 5px 0" />
+                    }
             </div>
             <div class="col" style="max-width: 60%">
                 <h5>@Html.DisplayNameFor(model => model.Recipe.Description)</h5>
-                <span>@Html.DisplayFor(model => model.Recipe.Description)</span>
+                <span>
+                    @{if (Model.Recipe != null && Model.Recipe.Description != null)
+                        {
+                            string[] lines = Model.Recipe.Description.Split('\n');
+                            for (int i = 0; i < lines.Count(); i++)
+                            {
+                                <span>
+                                    @lines[i]
+                                    @if (i != lines.Count() - 1)
+                                    {
+                                        <br />
+                                    }
+                                </span>
+                            }
+                        }
+                    }
+                </span>
             </div>
         </div>
     </div>
@@ -242,7 +259,7 @@
                             @if (Model.editCommentId == comment.id)
                             {
                                 <div class="comment-form">
-                                    <form method="post" asp-page-handler="SaveEdit" asp-route-id="@Model.EditComment.id" asp-route-recipe="@Model.Recipe.RecipeId" id="edit">
+                                    <form method="post" asp-page-handler="SaveEdit" asp-route-id="@Model.Recipe.RecipeId" asp-route-commentId="@comment.id" id="edit">
                                         <label asp-for="EditComment.comment"></label>
                                         <textarea asp-for="EditComment.comment"></textarea>
                                         <div>
@@ -263,23 +280,23 @@
                                 {
                                     @if (Model.UserId == comment.UserId)
                                     {
-                                        <form class="mr-1 d-inline" method="post" asp-page-handler="Edit" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                                        <form class="mr-1 d-inline" method="post" asp-page-handler="Edit" asp-route-id="@Model.Recipe.RecipeId" asp-route-commentId="@comment.id">
                                             <button class="btn-icon black" type="submit"><i class="fas fa-edit"></i></button>
                                         </form>
 
-                                        <form class="mr-1 d-inline" method="post" asp-page-handler="CommentDelete" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                                        <form class="mr-1 d-inline" method="post" asp-page-handler="CommentDelete" asp-route-id="@Model.Recipe.RecipeId" asp-route-commentId="@comment.id">
                                             <button class="btn-icon red" type="submit"><i class="fas fa-trash-alt"></i></button>
                                         </form>
                                     }
                                     else if (comment.commentsLikes.FirstOrDefault(e => e.UserId == Model.UserId && e.CommentId == comment.id) != null)
                                     {
-                                        <form class="mr-1 d-inline" method="post" asp-page-handler="Unlike" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                                        <form class="mr-1 d-inline" method="post" asp-page-handler="Unlike" asp-route-id="@Model.Recipe.RecipeId" asp-route-commentId="@comment.id">
                                             <button class="btn-icon green" type="submit"><i class="fas fa-thumbs-up"></i></button>
                                         </form>
                                     }
                                     else
                                     {
-                                        <form class="mr-1 d-inline" method="post" asp-page-handler="Like" asp-route-id="@comment.id" asp-route-recipe="@Model.Recipe.RecipeId">
+                                        <form class="mr-1 d-inline" method="post" asp-page-handler="Like" asp-route-id="@Model.Recipe.RecipeId" asp-route-commentId="@comment.id">
                                             <button class="btn-icon gray" type="submit"><i class="far fa-thumbs-up"></i></button>
                                         </form>
                                     }
