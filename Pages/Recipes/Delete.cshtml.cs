@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using PortalKulinarny.Data;
 using PortalKulinarny.Models;
+using PortalKulinarny.Services;
 
 namespace PortalKulinarny.Pages.Recipes
 {
@@ -16,10 +17,12 @@ namespace PortalKulinarny.Pages.Recipes
     public class DeleteModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly ImagesService _images;
 
-        public DeleteModel(ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context, ImagesService images)
         {
             _context = context;
+            _images = images;
         }
 
         [BindProperty]
@@ -60,6 +63,11 @@ namespace PortalKulinarny.Pages.Recipes
                 return RedirectToPage("./Index");
 
             _context.Recipes.Remove(recipe);
+            List<Image> toDelete = await _context.Images.Where(i => i.RecipeId == id).ToListAsync();
+            foreach(Image image in toDelete)
+            {
+                _images.DeleteImage(image.Name);
+            }
             await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
         }
