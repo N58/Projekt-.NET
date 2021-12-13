@@ -240,9 +240,11 @@
     <div>
         <form method="POST" class="comment-sort-form" style="margin-top: 20px" asp-page-handler="sort" asp-route-id="@Model.Recipe.RecipeId">
             Sortuj po: <select class="form-control" asp-for="@Model.sortComments.sort">
-                <option value="createAt">Data utworzenia</option>
-                <option value="modification">Data modyfikacji</option>
-            </select>
+            <option value="newest">Od najnowyszch</option>
+            <option value="oldest">Od najstarszych</option>
+            <option value="mostLiked">Najbardziej lubiane</option>
+            <option value="leastLiked">Najmniej lubiane</option>
+        </select>
             <button type="submit" class="btn btn-light" style="margin-top: 10px;" >Sortuj</button>
         </form>
     </div>
@@ -255,7 +257,7 @@
                 <div class="card card-comment">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h4><a href="#" class="a-link">@comment.user.UserName</a></h4>
+                            <h4><a asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@comment.UserId" class="a-link">@comment.user.UserName</a></h4>
                             @if (Model.editCommentId == comment.id)
                             {
                                 <div class="comment-form">

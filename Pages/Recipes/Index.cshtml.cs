@@ -52,6 +52,8 @@ namespace PortalKulinarny.Pages.Recipes
                 new SelectListItem {Text = "Najgorzej ocenione", Value = "worst-rated" },
                 new SelectListItem {Text = "Od najnowszego", Value = "newest", Selected = true },
                 new SelectListItem {Text = "Od najstarszego", Value = "oldest" },
+                new SelectListItem {Text = "Najczęściej wyświetlane", Value = "most-viewed" },
+                new SelectListItem {Text = "Najrzadziej wyświetlane", Value = "least-viewed" },
                 new SelectListItem {Text = "Najczęściej komentowane", Value = "most-commented" },
                 new SelectListItem {Text = "Najradziej komentowane", Value = "least-commented" }
             };
@@ -324,6 +326,12 @@ namespace PortalKulinarny.Pages.Recipes
                     break;
                 case "least-commented":
                     Recipes = recipes.OrderBy(r => comments.Where(c => c.RecipeId == r.RecipeId).Count()).ToList();
+                    break;
+                case "most-viewed":
+                    Recipes = recipes.OrderByDescending(r => r.ViewCount).ToList();
+                    break;
+                case "least-viewed":
+                    Recipes = recipes.OrderBy(r => r.ViewCount).ToList();
                     break;
                 default:
                     Recipes = recipes.OrderByDescending(r => r.DateTime).ToList();

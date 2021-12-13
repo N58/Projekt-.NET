@@ -86,7 +86,7 @@ else
                             <div class="col">
                                 <h4><a class="a-link" asp-page="./Details" asp-route-id="@item.RecipeId">@Html.DisplayFor(modelItem => item.Name)</a></h4>
                                 <h6>@Html.DisplayNameFor(model => model.Recipes[0].UserId): <a class="a-link" asp-area="Identity" asp-page="/Account/Profile" asp-route-id="@item.UserId">@await Model._userService.GetUserName(item.UserId)</a></h6>
-                                <h8>@Html.DisplayNameFor(model => model.Recipes[0].DateTime): @Html.DisplayFor(modelItem => item.DateTime)</h8><br />
+                                <h8><b>@Html.DisplayNameFor(model => model.Recipes[0].DateTime):</b> @Html.DisplayFor(modelItem => item.DateTime) <b>@Html.DisplayNameFor(model => model.Recipes[0].ViewCount):</b> @Html.DisplayFor(modelItem => item.ViewCount)</h8><br />
                                 <div>
                                     @foreach (var category in item.CategoryRecipes)
                                     {
@@ -169,6 +169,7 @@ else
     <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="favourites-tab">
         <div class="container mt-4">
             <form class="sort-form">
+                <h4>Sortowanie</h4>
                 @Html.DropDownList("SortUsers", Model.SortUsersModes, new { onchange = "submit()", @class = "form-control" })
             </form>
             <br />
@@ -201,6 +202,7 @@ else
     <div class="tab-pane fade show" id="categories" role="tabpanel" aria-labelledby="categories-tab">
         <div class="container mt-4">
             <form class="sort-form">
+                <h4>Sortowanie</h4> 
                 @Html.DropDownList("SortCategories", Model.SortCategoriesModes, new { onchange = "submit()", @class = "form-control" })
             </form>
             <br />

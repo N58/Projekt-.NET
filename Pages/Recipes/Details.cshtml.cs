@@ -285,17 +285,25 @@ namespace PortalKulinarny.Pages.Recipes
 
             switch (sortComments.sort)
             {
-                case "createAt":
+                case "newest":
                     comments= c.OrderByDescending(x => x.createdAt).ToList();
                     break;
-
-                case "modification":
-                    comments = c.OrderByDescending(x => x.modificationDate).ToList();
+                case "oldest":
+                    comments = c.OrderBy(x => x.createdAt).ToList();
+                    break;
+                case "mostLiked":
+                    comments = c.OrderByDescending(c => _context.CommentsLikes.Where(l => l.CommentId == c.id).Count()).ToList();
+                    break;
+                case "leastLiked":
+                    comments = c.OrderBy(c => _context.CommentsLikes.Where(l => l.CommentId == c.id).Count()).ToList();
+                    break;
+                default:
+                    comments = c.OrderByDescending(x => x.createdAt).ToList();
                     break;
             }
 
-            
-            
+
+
         }
     }
 }
